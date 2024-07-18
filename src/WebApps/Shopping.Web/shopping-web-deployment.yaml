@@ -1,0 +1,59 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopping-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shopping-web
+  template:
+    metadata:
+      labels:
+        app: shopping-web
+    spec:
+      containers:
+      - name: shopping-web
+        image: shoppingweb
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        - name: ASPNETCORE_HTTP_PORTS
+          value: "8080"
+        - name: ASPNETCORE_HTTPS_PORTS
+          value: "8081"
+        - name: ApiSettings__GatewayAddress
+          value: "http://yarpapigateway:8080"
+        ports:
+        - containerPort: 8080
+        - containerPort: 8081
+        volumeMounts:
+        - mountPath: /root/.microsoft/usersecrets
+          name: user-secrets
+          readOnly: true
+        - mountPath: /root/.aspnet/https
+          name: aspnet-https
+          readOnly: true
+      volumes:
+      - name: user-secrets
+        hostPath:
+          path: /path/to/microsoft/usersecrets  # Update this path accordingly
+      - name: aspnet-https
+        hostPath:
+          path: /path/to/aspnet/https  # Update this path accordingly
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shopping-web
+spec:
+  selector:
+    app: shopping-web
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+  - protocol: TCP
+    port: 8081
+    targetPort: 8081

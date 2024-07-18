@@ -1,0 +1,36 @@
+@echo off
+echo Deploying catalogdb...
+kubectl apply -f ./../../Services/Catalog/Catalog.Api/catalogdb-deployment.yaml -n eshop-microservices
+
+echo Deploying basketdb...
+kubectl apply -f ./../../Services/Basket/Basket.Api/basketdb-deployment.yaml -n eshop-microservices
+
+echo Deploying distributedcache...
+kubectl apply -f ./CommonDeployments/distributedcache-deployment.yaml -n eshop-microservices
+
+echo Deploying orderdb...
+kubectl apply -f ./../../Services/Ordering/Ordering.Api/orderdb-deployment.yaml -n eshop-microservices
+
+echo Deploying messagebroker...
+kubectl apply -f ./CommonDeployments/messagebroker-deployment.yaml -n eshop-microservices
+
+echo Deploying catalog.api...
+kubectl apply -f ./../../Services/Catalog/Catalog.Api/catalog-api-deployment.yaml -n eshop-microservices
+
+echo Deploying basket.api...
+kubectl apply -f ./../../Services/Basket/Basket.Api/basket-api-deployment.yaml -n eshop-microservices
+
+echo Deploying discount.grpc...
+kubectl apply -f ./../../Services/Discount/Discount.Grpc/discount-grpc-deployment.yaml -n eshop-microservices
+
+echo Deploying ordering.api...
+kubectl apply -f ./../../Services/Ordering/Ordering.Api/ordering-api-deployment.yaml -n eshop-microservices
+
+echo Deploying yarpapigateway...
+kubectl apply -f ./../../ApiGateways/YarpApiGateway/yarpapigateway-deployment.yaml -n eshop-microservices
+
+echo Deploying shopping.web...
+kubectl apply -f ./../../WebApps/Shopping.Web/shopping-web-deployment.yaml -n eshop-microservices
+
+echo Deployment complete.
+pause

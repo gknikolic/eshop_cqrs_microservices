@@ -1,0 +1,59 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: catalog-api
+  template:
+    metadata:
+      labels:
+        app: catalog-api
+    spec:
+      containers:
+      - name: catalog-api
+        image: catalogapi
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        - name: ASPNETCORE_HTTP_PORTS
+          value: "8080"
+        - name: ASPNETCORE_HTTPS_PORTS
+          value: "8081"
+        - name: ConnectionStrings__Database
+          value: "Server=catalogdb;Database=CatalogDb;User Id=postgres;Password=postgres"
+        ports:
+        - containerPort: 8080
+        - containerPort: 8081
+        volumeMounts:
+        - mountPath: /root/.microsoft/usersecrets
+          name: user-secrets
+          readOnly: true
+        - mountPath: /root/.aspnet/https
+          name: aspnet-https
+          readOnly: true
+      volumes:
+      - name: user-secrets
+        hostPath:
+          path: /path/to/microsoft/usersecrets  # Update this path accordingly
+      - name: aspnet-https
+        hostPath:
+          path: /path/to/aspnet/https  # Update this path accordingly
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog-api
+spec:
+  selector:
+    app: catalog-api
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+  - protocol: TCP
+    port: 8081
+    targetPort: 8081
