@@ -18,6 +18,7 @@ public class ShoppingCartItemModel
 
 // wrapper classes
 public record GetBasketResponse(ShoppingCartModel Cart);
+public record GetBasketItemCountResponse(int Count);
 
 public record StoreBasketRequest(ShoppingCartModel Cart);
 public record StoreBasketResponse(string UserName);

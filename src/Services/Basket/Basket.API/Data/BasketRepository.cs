@@ -23,4 +23,14 @@ public class BasketRepository(IDocumentSession session)
         await session.SaveChangesAsync(cancellationToken);
         return true;
     }
+
+    public async Task<int> GetBasketItemCount(string userName, CancellationToken cancellationToken = default)
+    {
+        var itemCount = await session.Query<ShoppingCart>()
+                .Where(x => x.UserName == userName)
+                .Select(x => x.Items)
+                .CountAsync(cancellationToken);
+
+        return itemCount;
+    }
 }

@@ -45,7 +45,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopping.Web", "WebApps\Sho
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Kubernetes", "Kubernetes", "{505D88C2-FFE6-40F8-8861-B731D5297E2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kubernetes", "Kubernetes\Kubernetes\Kubernetes.csproj", "{F8017ED3-F64C-4822-89E1-92F68B575D82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kubernetes", "Kubernetes\Kubernetes\Kubernetes.csproj", "{F8017ED3-F64C-4822-89E1-92F68B575D82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
