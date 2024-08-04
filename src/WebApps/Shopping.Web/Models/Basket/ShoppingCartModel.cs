@@ -1,4 +1,6 @@
-﻿namespace Shopping.Web.Models.Basket;
+﻿using Shopping.Web.Models.Inventory;
+
+namespace Shopping.Web.Models.Basket;
 
 public class ShoppingCartModel
 {
@@ -19,6 +21,7 @@ public class ShoppingCartItemModel
 // wrapper classes
 public record GetBasketResponse(ShoppingCartModel Cart);
 public record GetBasketItemCountResponse(int Count);
+
 
 public record StoreBasketRequest(ShoppingCartModel Cart);
 public record StoreBasketResponse(string UserName);
