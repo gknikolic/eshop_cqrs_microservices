@@ -30,7 +30,7 @@
                             <th scope="col" class="text-center" style="width:1%;">Quantity</th>
                             <th scope="col" class="text-center">Unit Price</th>
                             <th scope="col" class="text-center">Discount</th>
-                            <th scope="col" class="text-right">Price</th>
+                            <th scope="col" class="text-right">Total Price</th>
                             <th> </th>
                         </tr>
                     </thead>
@@ -89,21 +89,36 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            $(".txtQuantity").change(function () {
+
+            $(".txtQuantity").on("change", function () {
                 var quantity = $(this).val();
-                var price = $(this).closest("tr").find(".text-right").eq(0).text().replace("$", "");
-                var discount = $(this).closest("tr").find(".text-right").eq(1).text().replace("$", "");
-                var totalPrice = (price - discount) * quantity;
-                $(this).closest("tr").find(".totalPrice").text(totalPrice + " $");
-                calculateTotalPrice();
+                var productId = $(this).closest("tr").find("input[name='productId']").val();
+
+                $.ajax({
+                    url: '@Url.Page("Cart", "UpdateQuantity")', // URL to the server-side handler
+                    type: 'POST',
+                    data: {
+                        productId: productId,
+                        quantity: quantity
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            // console.log(data);
+                            updateCart(data.cart, $(this).closest("tr"));
+                        } else {
+                            alert("Error updating quantity.");
+                        }
+                    }
+                });
             });
 
-            function calculateTotalPrice() {
-                var totalPrice = 0;
-                $(".totalPrice").each(function () {
-                    totalPrice += parseFloat($(this).text().replace("$", ""));
+            function updateCart(cart, $row) {
+                cart.items.forEach(function (item) {
+                    var row = $("input[name='productId'][value='" + item.productId + "']").closest("tr");
+                    row.find(".totalPrice").text(item.totalPrice + " $");
+                    row.find(".txtQuantity").val(item.quantity);
                 });
-                $("#cartTotalPrice").text(totalPrice + " $");
+                $("#cartTotalPrice").text(cart.totalPrice + " $");
             }
         });
     </script>
