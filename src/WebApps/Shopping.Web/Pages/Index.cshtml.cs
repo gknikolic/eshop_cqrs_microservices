@@ -27,8 +27,8 @@ public class IndexModel
             ProductId = productId,
             ProductName = productResponse.Product.Name,
             Price = productResponse.Product.Price,
-            Quantity = 1,
-            Color = "Black"
+            Color = "Black",
+            Quantity = 1
         });
 
         await basketService.StoreBasket(new StoreBasketRequest(basket));

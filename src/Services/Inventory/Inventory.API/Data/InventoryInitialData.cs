@@ -40,7 +40,7 @@ public class InventoryInitialData : IInitialData
                 {
                     Id = new Guid("4f136e9f-ff8c-4c1f-9a33-d12f689bdab8"),
                     Name = "Huawei Plus",
-                    Quantity = 30,
+                    Quantity = 5,
                     Price = 650.00M,
                     IsActive = true
                 },

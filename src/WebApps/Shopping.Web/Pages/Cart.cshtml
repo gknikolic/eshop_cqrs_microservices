@@ -27,7 +27,9 @@
                             <th scope="col"> </th>
                             <th scope="col">Product</th>
                             <th scope="col">Available</th>
-                            <th scope="col" class="text-center">Quantity</th>
+                            <th scope="col" class="text-center" style="width:1%;">Quantity</th>
+                            <th scope="col" class="text-center">Unit Price</th>
+                            <th scope="col" class="text-center">Discount</th>
                             <th scope="col" class="text-right">Price</th>
                             <th> </th>
                         </tr>
@@ -40,8 +42,10 @@
                                 <td><img src="https://dummyimage.com/50x50/55595c/fff" /></td>
                                 <td>@cartItem.ProductName</td>
                                 <td>In stock</td>
-                                <td><input class="form-control" type="text" value="@cartItem.Quantity" /></td>
-                                <td class="text-right">@(cartItem.Price * cartItem.Quantity) $</td>
+                                <td><input class="form-control txtQuantity" type="number" min="1" step="1" value="@cartItem.Quantity"/></td>
+                                <td class="text-right">@cartItem.Price $</td>
+                                <td class="text-danger text-right discount">@(cartItem.Discount != 0 ? $"-{cartItem.Discount} $" : "")</td>
+                                <td class="text-right totalPrice">@cartItem.TotalPrice $</td>
                                 <td class="text-right">
 
                                     <form asp-page-handler="removetocart" method="post">
@@ -58,8 +62,10 @@
                             <td></td>
                             <td></td>
                             <td></td>
+                            <td></td>
+                            <td></td>
                             <td><strong>Total</strong></td>
-                            <td class="text-right"><strong>@Model.Cart.TotalPrice $</strong></td>
+                            <td id="cartTotalPrice" class="text-right"><strong>@Model.Cart.TotalPrice $</strong></td>
                         </tr>
                     </tbody>
                 </table>
@@ -69,7 +75,7 @@
             <div class="row">
                 <div class="col-sm-12  col-md-6">
                     @*<button class="btn btn-lg btn-block btn-danger">Continue Shopping</button>*@
-                    <a asp-page="Product" class="btn btn-lg btn-block btn-success">Continue Shopping</a>
+                    <a asp-page="ProductList" class="btn btn-lg btn-block btn-success">Continue Shopping</a>
                 </div>
                 <div class="col-sm-12 col-md-6 text-right">
                     @*<button class="btn btn-lg btn-block btn-danger text-uppercase">CheckOut</button>*@
@@ -80,4 +86,25 @@
     </div>
 </div>
 
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $(".txtQuantity").change(function () {
+                var quantity = $(this).val();
+                var price = $(this).closest("tr").find(".text-right").eq(0).text().replace("$", "");
+                var discount = $(this).closest("tr").find(".text-right").eq(1).text().replace("$", "");
+                var totalPrice = (price - discount) * quantity;
+                $(this).closest("tr").find(".totalPrice").text(totalPrice + " $");
+                calculateTotalPrice();
+            });
 
+            function calculateTotalPrice() {
+                var totalPrice = 0;
+                $(".totalPrice").each(function () {
+                    totalPrice += parseFloat($(this).text().replace("$", ""));
+                });
+                $("#cartTotalPrice").text(totalPrice + " $");
+            }
+        });
+    </script>
+}

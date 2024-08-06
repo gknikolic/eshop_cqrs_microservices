@@ -21,6 +21,7 @@ public class BasketCheckoutModel
     public string Expiration { get; set; } = default!;
     public string CVV { get; set; } = default!;
     public int PaymentMethod { get; set; } = default!;
+    public List<ShoppingCartItemModel> Items { get; set; }
 }
 
 // wrapper classes
