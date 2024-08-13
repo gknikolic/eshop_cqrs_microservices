@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Messaging.Events;
+﻿using BuildingBlocks.Messaging.Events.InventoryEvents;
 using Catalog.API.CQRS.Commands.UpdateProductStatus;
 using MassTransit;
 

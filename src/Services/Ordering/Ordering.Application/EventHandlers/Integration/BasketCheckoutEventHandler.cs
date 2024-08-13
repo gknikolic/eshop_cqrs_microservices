@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Messaging.Events;
+﻿using BuildingBlocks.Messaging.Events.BasketCheckout;
 using MassTransit;
 using Ordering.Application.CQRS.Commands.CreateOrder;
 

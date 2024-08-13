@@ -15,6 +15,7 @@ public class UpdateProductStatusCommandHandler(ICatalogRepository repository, IP
         }
 
         product.IsActive = request.IsActive;
+
         await repository.UpdateProductAsync(product, cancellationToken);
 
         return Unit.Value;

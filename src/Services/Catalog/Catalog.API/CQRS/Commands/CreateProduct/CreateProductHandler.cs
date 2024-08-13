@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Messaging.Events;
+﻿using BuildingBlocks.Messaging.Events.InventoryEvents;
 using Catalog.API.Repositories;
 using MassTransit;
 
@@ -25,7 +25,7 @@ internal class CreateProductCommandHandler
 
         await repository.AddProductAsync(product, cancellationToken);
 
-        await publishEndpoint.Publish(product.Adapt<ProductCreatedEvent>(), cancellationToken);
+        await publishEndpoint.Publish(product.Adapt<ProductCreatedIntegrationEvent>(), cancellationToken);
 
         //return result
         return new CreateProductResult(product.Id);

@@ -1,14 +1,9 @@
 ﻿using Carter;
 using Inventory.API.CQRS.Queries.GetInventory;
 using Inventory.API.Models;
-using Inventory.API.Repositories;
-using Mapster;
-using MediatR;
-
 namespace Inventory.API.Endpoints;
 
 public record GetInventoryResponse(IEnumerable<Product> Products);
-
 
 public class GetInventoryEndpoints() : ICarterModule
 {

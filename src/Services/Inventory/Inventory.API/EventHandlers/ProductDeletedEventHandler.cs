@@ -1,15 +1,15 @@
-﻿using BuildingBlocks.Messaging.Events;
+﻿using BuildingBlocks.Messaging.Events.InventoryEvents;
 using Inventory.API.CQRS.Commands.DeleteProduct;
-using MassTransit;
-using MediatR;
 
 namespace Inventory.API.EventHandlers;
 
-public class ProductDeletedEventHandler(ISender sender)
+public class ProductDeletedEventHandler(ISender sender, ILogger<ProductDeletedEventHandler> logger)
     : IConsumer<ProductDeletedEvent>
 {
     public async Task Consume(ConsumeContext<ProductDeletedEvent> context)
     {
+        logger.LogInformation("Integration Event handled: {IntegrationEvent}", context.Message.GetType().Name);
+
         await sender.Send(new DeleteProductCommand(context.Message.Id));
     }
 }

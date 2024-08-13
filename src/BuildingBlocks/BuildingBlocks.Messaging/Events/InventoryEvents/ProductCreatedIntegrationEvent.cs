@@ -1,6 +1,6 @@
-﻿namespace BuildingBlocks.Messaging.Events;
+﻿namespace BuildingBlocks.Messaging.Events.InventoryEvents;
 
-public record ProductCreatedEvent : IntegrationEvent
+public record ProductCreatedIntegrationEvent : IntegrationEvent
 {
     public Guid Id { get; set; } = default!;
     public string Name { get; set; } = default!;

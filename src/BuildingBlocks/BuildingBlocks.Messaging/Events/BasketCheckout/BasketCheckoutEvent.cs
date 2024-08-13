@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.Messaging.Events;
+﻿namespace BuildingBlocks.Messaging.Events.BasketCheckout;
 public record BasketCheckoutEvent : IntegrationEvent
 {
     public string UserName { get; set; } = default!;

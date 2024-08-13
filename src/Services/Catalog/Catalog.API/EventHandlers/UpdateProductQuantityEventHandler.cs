@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Messaging.Events;
+﻿using BuildingBlocks.Messaging.Events.InventoryEvents;
 using Catalog.API.CQRS.Commands.UpdateProductQuantity;
 using MassTransit;
 
@@ -9,7 +9,7 @@ public class UpdateProductQuantityEventHandler(ISender sender)
 {
     public async Task Consume(ConsumeContext<ProductQuantityUpdatedEvent> context)
     {
-        await sender.Send(new UpdateProductQuantityCommand(context.Message.Id, context.Message.QuantityChangedBy));
+        await sender.Send(new UpdateProductQuantityCommand(context.Message.Id, context.Message.Quantity));
     }
 }
 

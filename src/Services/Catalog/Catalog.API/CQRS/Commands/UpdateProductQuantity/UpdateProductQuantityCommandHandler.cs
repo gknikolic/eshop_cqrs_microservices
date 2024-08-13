@@ -3,7 +3,7 @@ using MassTransit;
 
 namespace Catalog.API.CQRS.Commands.UpdateProductQuantity;
 
-public class UpdateProductQuantityCommandHandler(ICatalogRepository repository, IPublishEndpoint publishEndpoint) 
+public class UpdateProductQuantityCommandHandler(ICatalogRepository repository) 
     : ICommandHandler<UpdateProductQuantityCommand>
 {
     public async Task<Unit> Handle(UpdateProductQuantityCommand request, CancellationToken cancellationToken)
@@ -14,7 +14,8 @@ public class UpdateProductQuantityCommandHandler(ICatalogRepository repository, 
             throw new ProductNotFoundException(request.Id);
         }
 
-        product.PeicesInStock += request.QuantityChangedBy;
+        product.PeicesInStock = request.Quantity;
+
         await repository.UpdateProductAsync(product, cancellationToken);
 
         return Unit.Value;
