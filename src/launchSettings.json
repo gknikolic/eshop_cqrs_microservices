@@ -10,7 +10,8 @@
         "discount.grpc": "StartDebugging",
         "ordering.api": "StartDebugging",
         "yarpapigateway": "StartDebugging",
-        "shopping.web": "StartDebugging"
+        "shopping.web": "StartDebugging",
+        "customer.api": "StartDebugging"
       }
     }
   }

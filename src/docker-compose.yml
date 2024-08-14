@@ -10,6 +10,9 @@ services:
   inventorydb:
     image: postgres
 
+  customerdb:
+    image: postgres
+
   distributedcache:
     image: redis
 
@@ -36,6 +39,12 @@ services:
     build:
       context: .
       dockerfile: Services/Inventory/Inventory.API/Dockerfile
+
+  customer.api:
+    image: ${DOCKER_REGISTRY-}customerapi
+    build:
+      context: .
+      dockerfile: Services/Customer/Customer.API/Dockerfile
 
   discount.grpc:
     image: ${DOCKER_REGISTRY-}discountgrpc
@@ -65,6 +74,8 @@ volumes:
   postgres_catalog:
   postgres_basket:
   postgres_inventory:
+  postgres_customer:
+
 
 
 
