@@ -38,6 +38,14 @@
                     </li>
                 }
 
+                @if(Model.Cart.Items.Any(x => x.Discount != 0))
+                {
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Discount</span>
+                        <span class="text-danger">-$@Model.Cart.Items.Sum(x => x.Discount * x.Quantity)</span>
+                    </li>
+                }
+
                 <li class="list-group-item d-flex justify-content-between">
                     <span>Total (USD)</span>
                     <strong>$@Model.Cart.TotalPrice</strong>
