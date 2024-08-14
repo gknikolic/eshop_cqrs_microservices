@@ -1,4 +1,6 @@
-﻿namespace Inventory.API.Models;
+﻿using Inventory.API.Dtos;
+
+namespace Inventory.API.Models;
 
 public class Product
 {
@@ -7,4 +9,9 @@ public class Product
     public decimal Price { get; set; }
     public int Quantity { get; set; }
     public bool IsActive { get; set; }
+
+    internal InventoryItemDto ToInventoryItemDto()
+    {
+        return new InventoryItemDto(Id, Quantity, IsActive);
+    }
 }

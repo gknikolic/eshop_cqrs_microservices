@@ -6,10 +6,24 @@ public class UpdateInventoryItemCommandValidator : AbstractValidator<UpdateInven
 {
     public UpdateInventoryItemCommandValidator()
     {
-        RuleFor(x => x.ItemDto.Id).NotEmpty().WithMessage("Product id can't be empty.");
-        RuleFor(x => x.ItemDto.Quantity).GreaterThanOrEqualTo(0).WithMessage("Quantity can't be negative.");
-        RuleFor(x => x.ItemDto.IsActive).NotNull().WithMessage("Is active can't be null.");
+        RuleFor(x => x.ItemDto)
+            .NotNull()
+            .WithMessage("ItemDto can't be null.");
+
+        When(x => x.ItemDto != null, () =>
+        {
+            RuleFor(x => x.ItemDto.Id)
+                .NotEmpty()
+                .WithMessage("Product id can't be empty.");
+            RuleFor(x => x.ItemDto.Quantity)
+                .GreaterThanOrEqualTo(0)
+                .WithMessage("Quantity can't be negative.");
+            RuleFor(x => x.ItemDto.IsActive)
+                .NotNull()
+                .WithMessage("Is active can't be null.");
+        });
     }
 }
 
-public record UpdateInventoryItemCommand(InventoryItemDto ItemDto) : ICommand;
+public record UpdateInventoryItemCommand(InventoryItemDto ItemDto) : ICommand<UpdateInventoryItemCommandResponse>;
+public record UpdateInventoryItemCommandResponse(InventoryItemDto ItemDto);

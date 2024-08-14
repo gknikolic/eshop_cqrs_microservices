@@ -8,5 +8,5 @@ public interface IInventoryService
     Task<GetInventoryResponse> GetInventory();
 
     [Put("/inventory-service/inventory")]
-    Task<UpdateInventoryItemResponse> UpdateInventoryItem(UpdateInventoryItemModel item);
+    Task<UpdateInventoryItemResponse> UpdateInventoryItem(UpdateInventoryItemRequest request);
 }

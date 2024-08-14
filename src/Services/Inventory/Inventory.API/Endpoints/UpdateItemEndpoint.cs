@@ -4,17 +4,18 @@ using Inventory.API.Dtos;
 
 namespace Inventory.API.Endpoints;
 
-public record UpdateItemRequest(InventoryItemDto ItemDto);
+public record UpdateItemRequest(InventoryItemDto InventoryItemDto);
+public record UpdateItemResponse(InventoryItemDto InventoryItemDto);
 
 public class UpdateItemEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPut("/inventory/update", async (ISender sender, UpdateItemRequest request) =>
+        app.MapPut("/inventory", async (ISender sender, UpdateItemRequest request) =>
         {
-            await sender.Send(request.Adapt<UpdateInventoryItemCommand>());
+            var result = await sender.Send(new UpdateInventoryItemCommand(request.InventoryItemDto));
 
-            return Results.Ok();
+            return Results.Ok(result.Adapt<UpdateItemResponse>());
         });
     }
 }

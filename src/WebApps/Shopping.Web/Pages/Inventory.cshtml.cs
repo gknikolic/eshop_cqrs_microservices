@@ -8,7 +8,7 @@ public class InventoryModel(IInventoryService inventoryService, ILogger<Inventor
     public IEnumerable<InventoryItemModel> Items { get; set; } = default!;
 
     [BindProperty]
-    public UpdateInventoryItemModel UpdateInventoryItemModel { get; set; } = default!;
+    public InventoryItemDto UpdateInventoryItemModel { get; set; } = default!;
 
     public async Task<IActionResult> OnGet()
     {
@@ -20,12 +20,22 @@ public class InventoryModel(IInventoryService inventoryService, ILogger<Inventor
 
     public async Task<IActionResult> OnPostUpdateItemAsync()
     {
+        var response = await inventoryService.GetInventory();
+        Items = response.Products;
+
         if (!ModelState.IsValid)
         {
             return Page();
         }
 
-        var result = await inventoryService.UpdateInventoryItem(UpdateInventoryItemModel);
+        var dto = new InventoryItemModel
+        {
+            Id = UpdateInventoryItemModel.Id,
+            Quantity = UpdateInventoryItemModel.Quantity,
+            IsActive = UpdateInventoryItemModel.IsActive
+        };
+
+        var result = await inventoryService.UpdateInventoryItem(new UpdateInventoryItemRequest(dto));
         if (result != null)
         {
             return RedirectToPage();
@@ -34,4 +44,6 @@ public class InventoryModel(IInventoryService inventoryService, ILogger<Inventor
         ModelState.AddModelError(string.Empty, "An error occurred while updating the item.");
         return Page();
     }
+
+    
 }

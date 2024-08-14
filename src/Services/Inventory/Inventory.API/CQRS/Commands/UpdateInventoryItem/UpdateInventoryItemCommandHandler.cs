@@ -5,9 +5,9 @@ using Inventory.API.Repositories;
 namespace Inventory.API.CQRS.Commands.UpdateProductQuantity;
 
 public class UpdateInventoryItemCommandHandler(IInventoryRepository repository, IPublishEndpoint publishEndpoint, ILogger<UpdateInventoryItemCommandHandler> logger) 
-    : ICommandHandler<UpdateInventoryItemCommand>
+    : ICommandHandler<UpdateInventoryItemCommand, UpdateInventoryItemCommandResponse>
 {
-    public async Task<Unit> Handle(UpdateInventoryItemCommand request, CancellationToken cancellationToken)
+    public async Task<UpdateInventoryItemCommandResponse> Handle(UpdateInventoryItemCommand request, CancellationToken cancellationToken)
     {
         var product = await repository.GetProductByIdAsync(request.ItemDto.Id, cancellationToken);
         if (product == null)
@@ -21,7 +21,7 @@ public class UpdateInventoryItemCommandHandler(IInventoryRepository repository, 
         product.Quantity = request.ItemDto.Quantity;
         product.IsActive = request.ItemDto.IsActive;
 
-        await repository.UpdateProductAsync(product, cancellationToken);
+        var updatedProduct = await repository.UpdateProductAsync(product, cancellationToken);
 
         logger.LogInformation("Product updated: {ProductId}, {Quantity}, {IsActive}", product.Id, request.ItemDto.Quantity, request.ItemDto.IsActive);
 
@@ -37,6 +37,6 @@ public class UpdateInventoryItemCommandHandler(IInventoryRepository repository, 
             await publishEndpoint.Publish(new ProductStatusUpdatedEvent(product.Id, product.IsActive), cancellationToken);
         }
 
-        return Unit.Value;
+        return new UpdateInventoryItemCommandResponse(updatedProduct.ToInventoryItemDto());
     }
 }

@@ -46,7 +46,7 @@
                                 <td>@item.Quantity</td>
                                 <td>@item.IsActive</td>
                                 <td>
-                                    <button class="btn btn-primary" data-toggle="modal" data-target="#updateInventoryItemModal" data-id="@item.Id" data-quantity="@item.Quantity" data-isactive="@item.IsActive">Edit</button>
+                                    <button class="btn btn-danger" data-toggle="modal" data-target="#updateInventoryItemModal" data-id="@item.Id" data-quantity="@item.Quantity" data-isactive="@item.IsActive">Edit</button>
                                 </td>
                             </tr>
                         }
@@ -58,22 +58,29 @@
 </div>
 
 <!-- Partial for Update Item Modal -->
-<partial name="_UpdateInventoryItemModal" model="Model.UpdateInventoryItemModel" />
+<partial name="_UpdateInventoryItemModal" model="Model" />
+
+
 
 @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
     <script>
         $(document).ready(function () {
 
             $('#updateInventoryItemModal').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget);
+                console.log(button);
                 var id = button.data('id');
                 var quantity = button.data('quantity');
-                var isActive = button.data('isactive');
+                var isActive = button.data('isactive').toLowerCase() == "true";
+                console.log(id, quantity, isActive);
 
                 var modal = $(this);
-                modal.find('input[name="Product.Id"]').val(id);
-                modal.find('input[name="Product.Quantity"]').val(quantity);
-                modal.find('input[name="Product.IsActive"]').prop('checked', isActive);
+                console.log("modal", modal);
+                modal.find('input[name="UpdateInventoryItemModel.Id"]').val(id);
+                modal.find('input[name="UpdateInventoryItemModel.Quantity"]').val(quantity);
+                modal.find('input[name="UpdateInventoryItemModel.IsActive"]').prop('checked', isActive);
             });
         });
 
