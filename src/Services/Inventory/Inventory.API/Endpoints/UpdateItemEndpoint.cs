@@ -10,7 +10,7 @@ public class UpdateItemEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("/inventory/update", async (ISender sender, UpdateItemRequest request) =>
+        app.MapPut("/inventory/update", async (ISender sender, UpdateItemRequest request) =>
         {
             await sender.Send(request.Adapt<UpdateInventoryItemCommand>());
 

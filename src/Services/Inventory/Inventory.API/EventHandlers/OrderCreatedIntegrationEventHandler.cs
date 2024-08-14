@@ -11,7 +11,7 @@ public class OrderCreatedIntegrationEventHandler(ISender sender, ILogger<OrderCr
     {
         logger.LogInformation("Integration Event handled: {IntegrationEvent}", context.Message.GetType().Name);
 
-        var pruducts = context.Message.Order.Items;
+        var pruducts = context.Message.Order.OrderItems;
 
         foreach (var item in pruducts)
         {

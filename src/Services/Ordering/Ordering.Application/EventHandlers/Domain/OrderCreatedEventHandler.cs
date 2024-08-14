@@ -21,8 +21,12 @@ public class OrderCreatedEventHandler
         if(await featureManager.IsEnabledAsync("UpdateInventory"))
         {
             logger.LogInformation("Update Inventory feature is enabled. Publishing event.");
-            var orderCreatedIntegrationEvent = new OrderCreatedIntegrationEvent(domainEvent.order.ToOrderDto().Adapt<BuildingBlocks.Messaging.Events.OrderFullfilment.OrderDto>());
+
+            var orderCreatedIntegrationEvent = new OrderCreatedIntegrationEvent();
+            orderCreatedIntegrationEvent.Order = domainEvent.order.ToOrderDto().Adapt<BuildingBlocks.Messaging.Events.OrderFullfilment.OrderDto>();
+
             await publishEndpoint.Publish(orderCreatedIntegrationEvent, cancellationToken);
+
         }
     }
 }

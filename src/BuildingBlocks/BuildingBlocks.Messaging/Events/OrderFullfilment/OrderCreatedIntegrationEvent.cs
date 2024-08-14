@@ -1,5 +1,8 @@
 ﻿namespace BuildingBlocks.Messaging.Events.OrderFullfilment;
-public record OrderCreatedIntegrationEvent(OrderDto Order) : IntegrationEvent;
+public record OrderCreatedIntegrationEvent : IntegrationEvent
+{
+    public OrderDto Order { get; set; }
+}
 
 public record OrderDto
 {
@@ -9,7 +12,7 @@ public record OrderDto
     public AddressDto ShippingAddress { get; init; }
     public AddressDto BillingAddress { get; init; }
     public PaymentDto Payment { get; init; }
-    public List<OrderItemDto> Items { get; set; }
+    public List<OrderItemDto> OrderItems { get; set; }
 }
 
 public record AddressDto(string FirstName, string LastName, string EmailAddress, string AddressLine, string Country, string State, string ZipCode);

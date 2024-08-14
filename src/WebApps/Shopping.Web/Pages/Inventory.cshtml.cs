@@ -8,7 +8,7 @@ public class InventoryModel(IInventoryService inventoryService, ILogger<Inventor
     public IEnumerable<InventoryItemModel> Items { get; set; } = default!;
 
     [BindProperty]
-    public InventoryItemModel Product { get; set; } = default!;
+    public UpdateInventoryItemModel UpdateInventoryItemModel { get; set; } = default!;
 
     public async Task<IActionResult> OnGet()
     {
@@ -25,8 +25,8 @@ public class InventoryModel(IInventoryService inventoryService, ILogger<Inventor
             return Page();
         }
 
-        var result = await inventoryService.UpdateItem(Product);
-        if (result)
+        var result = await inventoryService.UpdateInventoryItem(UpdateInventoryItemModel);
+        if (result != null)
         {
             return RedirectToPage();
         }

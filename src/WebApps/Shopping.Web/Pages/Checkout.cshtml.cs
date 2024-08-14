@@ -14,7 +14,7 @@ namespace Shopping.Web.Pages
         {
             Cart = await basketService.LoadUserBasket();
 
-            HttpContext.Session.SetString("OrderItems", JsonSerializer.Serialize(Order.Items));
+            HttpContext.Session.SetString("OrderItems", JsonSerializer.Serialize(Cart.Items));
 
             return Page();
         }
@@ -35,13 +35,15 @@ namespace Shopping.Web.Pages
             Order.UserName = Cart.UserName;
             Order.TotalPrice = Cart.TotalPrice;
 
-            var orderItems = HttpContext.Session.GetString("OrderItems");
-            if (string.IsNullOrEmpty(orderItems))
-            {
-                return BadRequest("Order items are not persisted in session.");
-            }
+            Order.Items = Cart.Items;
 
-            Order.Items = JsonSerializer.Deserialize<List<ShoppingCartItemModel>>(orderItems)!;
+            //var orderItems = HttpContext.Session.GetString("OrderItems");
+            //if (string.IsNullOrEmpty(orderItems))
+            //{
+            //    return BadRequest("Order items are not persisted in session.");
+            //}
+
+            //Order.Items = JsonSerializer.Deserialize<List<ShoppingCartItemModel>>(orderItems)!;
 
             await basketService.CheckoutBasket(new CheckoutBasketRequest(Order));
 

@@ -22,7 +22,7 @@ public class BasketCheckoutEventHandler
         var addressDto = new AddressDto(message.FirstName, message.LastName, message.EmailAddress, message.AddressLine, message.Country, message.State, message.ZipCode);
         var paymentDto = new PaymentDto(message.CardName, message.CardNumber, message.Expiration, message.CVV, message.PaymentMethod);
         var orderId = Guid.NewGuid();
-        var orderItems = message.Products.Select(p => new OrderItemDto(orderId, p.ProductId, p.Quantity, p.TotalPrice)).ToList();
+        var orderItems = message.Items.Select(p => new OrderItemDto(orderId, p.ProductId, p.Quantity, p.TotalPrice)).ToList();
 
         var orderDto = new OrderDto(
             Id: orderId,

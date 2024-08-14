@@ -32,7 +32,7 @@ builder.Services.AddMarten(opts =>
 }).UseLightweightSessions();
 
 //Async Communication Services
-builder.Services.AddMessageBroker(builder.Configuration);
+builder.Services.AddMessageBroker(builder.Configuration, assembly);
 
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 

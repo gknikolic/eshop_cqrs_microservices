@@ -58,7 +58,7 @@
 </div>
 
 <!-- Partial for Update Item Modal -->
-<partial name="_UpdateInventoryItemModal" model="Model.Product" />
+<partial name="_UpdateInventoryItemModal" model="Model.UpdateInventoryItemModel" />
 
 @section Scripts {
     <script>
@@ -73,7 +73,7 @@
                 var modal = $(this);
                 modal.find('input[name="Product.Id"]').val(id);
                 modal.find('input[name="Product.Quantity"]').val(quantity);
-                modal.find('select[name="Product.IsActive"]').val(isActive);
+                modal.find('input[name="Product.IsActive"]').prop('checked', isActive);
             });
         });
 

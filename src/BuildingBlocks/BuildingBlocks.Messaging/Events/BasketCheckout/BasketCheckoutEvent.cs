@@ -20,10 +20,10 @@ public record BasketCheckoutEvent : IntegrationEvent
     public string Expiration { get; set; } = default!;
     public string CVV { get; set; } = default!;
     public int PaymentMethod { get; set; } = default!;
-    public List<ProductPurchaseModel> Products { get; set; } = default!;
+    public List<ShoppingCartItem> Items { get; set; } = default!;
 }
 
-public record ProductPurchaseModel
+public record ShoppingCartItem
 {
     public Guid ProductId { get; set; }
     public string ProductName { get; set; }

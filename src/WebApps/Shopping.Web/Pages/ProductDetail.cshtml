@@ -2,6 +2,7 @@
 @model Shopping.Web.Pages.ProductDetailModel
 @{
     ViewData["Title"] = "ProductDetail";
+    var isItemAvailable = Model.Product.IsActive && Model.Product.PeicesInStock > 0;
 }
 
 <div class="container">
@@ -38,6 +39,7 @@
                 <div class="card-body">
                     <p class="price">@Model.Product.Price $</p>
                     <p class="price_discounted">@(Model.Product.Price + 120) $</p>
+                    <p class="stock">@(isItemAvailable ? $"In stock - {Model.Product.PeicesInStock} left" : "Unavailable")</p>
                     <form asp-page-handler="AddToCart" method="post" name="addToCartForm" id="add_cart_form">
                         <div class="form-group">
                             <label for="colors">Color</label>
