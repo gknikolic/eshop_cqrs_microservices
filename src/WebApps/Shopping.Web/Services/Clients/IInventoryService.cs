@@ -1,6 +1,7 @@
-﻿using Shopping.Web.Models.Inventory;
+﻿using Refit;
+using Shopping.Web.Models.Inventory;
 
-namespace Shopping.Web.Services;
+namespace Shopping.Web.Services.Clients;
 
 public interface IInventoryService
 {

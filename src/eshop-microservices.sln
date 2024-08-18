@@ -53,7 +53,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Inventory.API", "Services\I
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Customer", "Customer", "{A999E7E6-338F-4E71-9982-A0AE6C74A992}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Customer.API", "Services\Customer\Customer.API\Customer.API.csproj", "{58BB5002-55FE-428E-A59B-C619FCFB4DE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Customer.API", "Services\Customer\Customer.API\Customer.API.csproj", "{58BB5002-55FE-428E-A59B-C619FCFB4DE9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -28,7 +28,9 @@ public static class InitDataExtensions
         var adminUser = new User
         {
             UserName = "admin",
-            Email = adminEmail
+            Email = adminEmail,
+            FirstName = "Admin",
+            LastName = "User"
         };
 
         var user = await userManager.FindByEmailAsync(adminUser.Email);

@@ -1,0 +1,39 @@
+﻿@page
+@model Shopping.Web.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+<form method="post" class="form">
+    <div class="container border p4 col-12 col-md-6 offset-md-3">
+        <h1>Register</h1>
+        <div class="form-group">
+            <label for="username">Email:</label>
+            <input type="text" asp-for="@Model.Email" class="form-control" />
+            @Html.ValidationMessageFor(m => m.Email)
+        </div>
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" asp-for="@Model.Username" class="form-control" />
+            @Html.ValidationMessageFor(m => m.Username)
+        </div>
+        <div class="form-group">
+            <label for="username">First Name:</label>
+            <input type="text" asp-for="@Model.FirstName" class="form-control" />
+            @Html.ValidationMessageFor(m => m.FirstName)
+        </div>
+        <div class="form-group">
+            <label for="username">Last Name:</label>
+            <input type="text" asp-for="@Model.LastName" class="form-control" />
+            @Html.ValidationMessageFor(m => m.LastName)
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" asp-for="@Model.Password" class="form-control" />
+            @Html.ValidationMessageFor(m => m.Password)
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+    </div>
+
+</form>
+
+<partial name="_ValidationScriptsPartial" />

@@ -42,6 +42,7 @@ public class LoginHandler(UserManager<User> _userManager, IConfiguration _config
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id),
             new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
+            new Claim(JwtRegisteredClaimNames.Name, (user.FirstName + " " + user.LastName) ?? string.Empty),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         }.Union(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 

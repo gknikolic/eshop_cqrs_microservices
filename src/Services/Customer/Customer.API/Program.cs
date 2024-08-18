@@ -1,8 +1,9 @@
 using BuildingBlocks.Behaviors;
 using BuildingBlocks.Exceptions.Handler;
-using FluentValidation;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using BuildingBlocks.Authorization;
+using BuildingBlocks.Messaging.MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,8 +11,8 @@ var assembly = typeof(Program).Assembly;
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddSwaggerGen();
 
 builder.Services.AddMediatR(config =>
 {
@@ -23,16 +24,16 @@ builder.Services.AddValidatorsFromAssembly(assembly);
 
 builder.Services.AddCarter();
 
-// Configure CORS
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(builder =>
-    {
-        builder.AllowAnyOrigin()
-               .AllowAnyHeader()
-               .AllowAnyMethod();
-    });
-});
+//// Configure CORS
+//builder.Services.AddCors(options =>
+//{
+//    options.AddDefaultPolicy(builder =>
+//    {
+//        builder.AllowAnyOrigin()
+//               .AllowAnyHeader()
+//               .AllowAnyMethod();
+//    });
+//});
 
 // Configure Entity Framework and Identity
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -49,6 +50,9 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
+//Async Communication Services
+builder.Services.AddMessageBroker(builder.Configuration, assembly);
+
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("Database")!);
 
@@ -57,8 +61,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    //app.UseSwagger();
+    //app.UseSwaggerUI();
 
     app.ApplyMigrations();
 }
@@ -66,8 +70,8 @@ if (app.Environment.IsDevelopment())
 // Ensure roles and admin user are created at startup
 app.SeedData();
 
-app.UseHttpsRedirection();
-app.UseCors();
+//app.UseHttpsRedirection();
+//app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 

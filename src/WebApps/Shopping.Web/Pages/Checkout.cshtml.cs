@@ -1,4 +1,6 @@
 using System.Text.Json;
+using Shopping.Web.Helpers;
+using Shopping.Web.Services.Clients;
 
 namespace Shopping.Web.Pages
 {
@@ -12,7 +14,7 @@ namespace Shopping.Web.Pages
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Cart = await basketService.LoadUserBasket();
+            Cart = await basketService.LoadUserBasket(User);
 
             HttpContext.Session.SetString("OrderItems", JsonSerializer.Serialize(Cart.Items));
 
@@ -23,15 +25,14 @@ namespace Shopping.Web.Pages
         {
             logger.LogInformation("Checkout button clicked");
 
-            Cart = await basketService.LoadUserBasket();
+            Cart = await basketService.LoadUserBasket(User);
 
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            // assumption customerId is passed in from the UI authenticated user swn        
-            Order.CustomerId = new Guid("58c49479-ec65-4de2-86e7-033c546291aa");
+            Order.CustomerId = User.GetId();
             Order.UserName = Cart.UserName;
             Order.TotalPrice = Cart.TotalPrice;
 

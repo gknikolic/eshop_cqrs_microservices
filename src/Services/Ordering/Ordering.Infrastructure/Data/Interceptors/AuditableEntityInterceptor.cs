@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Ordering.Infrastructure.Data.Interceptors;
 public class AuditableEntityInterceptor : SaveChangesInterceptor
@@ -24,13 +25,13 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
         {
             if (entry.State == EntityState.Added)
             {
-                entry.Entity.CreatedBy = "mehmet";
+                entry.Entity.CreatedBy = entry.Entity.CreatedBy.IsNullOrEmpty() ? entry.Entity.CreatedBy : "hardCodedUser";
                 entry.Entity.CreatedAt = DateTime.UtcNow;
             }
 
             if (entry.State == EntityState.Added || entry.State == EntityState.Modified || entry.HasChangedOwnedEntities())
             {
-                entry.Entity.LastModifiedBy = "mehmet";
+                entry.Entity.LastModifiedBy = entry.Entity.LastModifiedBy.IsNullOrEmpty() ? entry.Entity.LastModifiedBy : "hardCodedUser";
                 entry.Entity.LastModified = DateTime.UtcNow;
             }
         }

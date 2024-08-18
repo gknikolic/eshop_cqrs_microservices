@@ -75,10 +75,3 @@ volumes:
   postgres_basket:
   postgres_inventory:
   postgres_customer:
-
-
-
-
-
-
-

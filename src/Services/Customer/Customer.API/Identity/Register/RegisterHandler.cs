@@ -1,6 +1,9 @@
-﻿namespace Customer.API.Identity.Register;
+﻿using MassTransit;
+using BuildingBlocks.Messaging.Events.CustomerEvents;
 
-public record RegisterCommand(string Username, string Email, string Password) : ICommand<Result>;
+namespace Customer.API.Identity.Register;
+
+public record RegisterCommand(string Username, string Email, string Password, string FirstName, string LastName) : ICommand<Result>;
 
 public class RegisterValidator : AbstractValidator<RegisterCommand>
 {
@@ -12,7 +15,7 @@ public class RegisterValidator : AbstractValidator<RegisterCommand>
     }
 }
 
-public class RegisterHandler(UserManager<User> _userManager)
+public class RegisterHandler(UserManager<User> _userManager, IPublishEndpoint publishEndpoint)
     : ICommandHandler<RegisterCommand, Result>
 {
     public async Task<Result> Handle(RegisterCommand command, CancellationToken cancellationToken)
@@ -20,7 +23,9 @@ public class RegisterHandler(UserManager<User> _userManager)
         var user = new User
         {
             UserName = command.Username,
-            Email = command.Email
+            Email = command.Email,
+            FirstName = command.FirstName,
+            LastName = command.LastName
         };
 
         var result = await _userManager.CreateAsync(user, command.Password);
@@ -31,6 +36,9 @@ public class RegisterHandler(UserManager<User> _userManager)
 
         // Optional: Assign "User" role by default to the new user
         await _userManager.AddToRoleAsync(user, "User");
+
+        var userId = new Guid(user.Id);
+        await publishEndpoint.Publish(new UserRegisteredEvent(userId, user.FullName, user.Email, "SelfRegistered"), cancellationToken);
 
         return Result.Success("User registrated");
     }

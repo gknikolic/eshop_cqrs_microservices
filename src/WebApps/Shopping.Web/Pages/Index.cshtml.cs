@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
+using Shopping.Web.Services.Clients;
+
 namespace Shopping.Web.Pages;
 public class IndexModel
     (ICatalogService catalogService, IBasketService basketService, ILogger<IndexModel> logger)
@@ -18,9 +21,14 @@ public class IndexModel
     {
         logger.LogInformation("Add to cart button clicked");
 
+        if (User.Identity.IsAuthenticated == false)
+        {
+            return RedirectToPage("/Account/Login", new { returnUrl = $"/ProductDetail?productId={productId}" });
+        }
+
         var productResponse = await catalogService.GetProduct(productId);
 
-        var basket = await basketService.LoadUserBasket();
+        var basket = await basketService.LoadUserBasket(User);
 
         basket.Items.Add(new ShoppingCartItemModel
         {

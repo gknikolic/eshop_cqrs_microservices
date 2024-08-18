@@ -1,6 +1,10 @@
-﻿@inject IBasketService BasketService
+﻿@using Shopping.Web.Services.Clients
+@inject IBasketService BasketService
 
-<a class="btn btn-success btn-sm ml-3" asp-area="" asp-page="/Cart">
-    <i class="fa fa-shopping-cart"></i> Cart
-    <span class="badge badge-light">@(await BasketService.LoadUserBasketItemsCount())</span>
-</a>
+@if (User.Identity.IsAuthenticated)
+{
+    <a class="btn btn-success btn-sm ml-3" asp-area="" asp-page="/Cart">
+        <i class="fa fa-shopping-cart"></i> Cart
+        <span class="badge badge-light">@(await BasketService.LoadUserBasketItemsCount(User))</span>
+    </a>
+}

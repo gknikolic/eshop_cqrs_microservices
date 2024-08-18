@@ -142,6 +142,12 @@ services:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
       - ConnectionStrings__Database=Server=customerdb;Port=5432;Database=CustomerDb;User Id=postgres;Password=postgres;Include Error Detail=true
+      - Jwt__Issuer=customer.api
+      - Jwt__Audience=yarpapigateway
+      - Jwt__Key=mysecretkey12345mysecretkey12345
+      - MessageBroker__Host=amqp://ecommerce-mq:5672
+      - MessageBroker__UserName=guest
+      - MessageBroker__Password=guest
     depends_on:
       - customerdb
     ports:
@@ -190,6 +196,9 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
+      - Jwt__Issuer=customer.api
+      - Jwt__Audience=yarpapigateway
+      - Jwt__Key=mysecretkey12345mysecretkey12345
     depends_on:
       - catalog.api
       - basket.api

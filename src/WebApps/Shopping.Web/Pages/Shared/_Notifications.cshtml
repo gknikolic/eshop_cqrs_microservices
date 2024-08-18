@@ -1,0 +1,14 @@
+﻿@if(TempData["Error"] != null) {
+    <script>
+        $(document).ready(function () {
+            toastr.error('@TempData["Error"]', 'Error');
+        });
+    </script>
+}
+@if(TempData["Success"] != null) {
+    <script>
+        $(document).ready(function () {
+            toastr.success('@TempData["Success"]', 'Success');
+        });
+    </script>
+}

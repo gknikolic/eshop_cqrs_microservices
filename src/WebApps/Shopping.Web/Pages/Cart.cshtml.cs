@@ -1,7 +1,10 @@
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
+using Shopping.Web.Services.Clients;
 
 namespace Shopping.Web.Pages
 {
+    [Authorize]
     public class CartModel(IBasketService basketService, ILogger<CartModel> logger)
         : PageModel
     {
@@ -9,7 +12,7 @@ namespace Shopping.Web.Pages
 
         public async Task<IActionResult> OnGetAsync()
         {
-            Cart = await basketService.LoadUserBasket();
+            Cart = await basketService.LoadUserBasket(User);
 
             HttpContext.Session.SetString("Cart", JsonSerializer.Serialize(Cart));
 
@@ -19,7 +22,7 @@ namespace Shopping.Web.Pages
         public async Task<IActionResult> OnPostRemoveToCartAsync(Guid productId)
         {
             logger.LogInformation("Remove to cart button clicked");
-            Cart = await basketService.LoadUserBasket();
+            Cart = await basketService.LoadUserBasket(User);
 
             Cart.Items.RemoveAll(x => x.ProductId == productId);
 

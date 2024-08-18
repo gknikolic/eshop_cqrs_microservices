@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
+using Shopping.Web.Services.Clients;
+
 namespace Shopping.Web.Pages
 {
     public class ProductDetailModel
@@ -20,12 +23,19 @@ namespace Shopping.Web.Pages
             return Page();
         }
 
+        [Authorize]
         public async Task<IActionResult> OnPostAddToCartAsync(Guid productId)
         {
             logger.LogInformation("Add to cart button clicked");
+
+            if (User.Identity.IsAuthenticated == false)
+            {
+                return RedirectToPage("/Account/Login", new { returnUrl = $"/ProductDetail?productId={productId}" });
+            }
+
             var productResponse = await catalogService.GetProduct(productId);
 
-            var basket = await basketService.LoadUserBasket();
+            var basket = await basketService.LoadUserBasket(User);
 
             basket.Items.Add(new ShoppingCartItemModel
             {

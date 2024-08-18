@@ -1,7 +1,12 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Shopping.Web.Enums;
 using Shopping.Web.Models.Inventory;
+using Shopping.Web.Services.Clients;
 
 namespace Shopping.Web.Pages;
 
+[Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme, Roles = nameof(RoleEnum.Admin))]
 public class InventoryModel(IInventoryService inventoryService, ILogger<InventoryModel> logger)
     : PageModel
 {

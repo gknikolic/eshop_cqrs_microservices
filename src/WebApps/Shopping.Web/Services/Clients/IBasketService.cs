@@ -1,6 +1,9 @@
-﻿using System.Net;
+﻿using Refit;
+using Shopping.Web.Helpers;
+using System.Net;
+using System.Security.Claims;
 
-namespace Shopping.Web.Services;
+namespace Shopping.Web.Services.Clients;
 
 public interface IBasketService
 {
@@ -20,10 +23,19 @@ public interface IBasketService
     Task<CheckoutBasketResponse> CheckoutBasket(CheckoutBasketRequest request);
 
 
-    public async Task<ShoppingCartModel> LoadUserBasket()
+    public async Task<ShoppingCartModel> LoadUserBasket(ClaimsPrincipal user)
     {
+        if (user == null || user.Identity.IsAuthenticated == false)
+        {
+            return new ShoppingCartModel
+            {
+                UserName = "guest",
+                Items = []
+            };
+        }
+
         // Get Basket If Not Exist Create New Basket with Default Logged In User Name: swn
-        var userName = "swn";
+        var userName = user.GetEmail();
         ShoppingCartModel basket;
 
         try
@@ -43,10 +55,15 @@ public interface IBasketService
         return basket;
     }
 
-    public async Task<int> LoadUserBasketItemsCount()
+    public async Task<int> LoadUserBasketItemsCount(ClaimsPrincipal user)
     {
+        if (user == null || user.Identity.IsAuthenticated == false)
+        {
+            return 0;
+        }
+
         // Get Basket If Not Exist Create New Basket with Default Logged In User Name: swn
-        var userName = "swn";
+        var userName = user.GetEmail();
 
         try
         {

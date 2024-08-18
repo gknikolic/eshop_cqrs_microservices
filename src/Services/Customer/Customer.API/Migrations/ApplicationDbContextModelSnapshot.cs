@@ -42,9 +42,15 @@ namespace Customer.API.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("FirstName")
+                        .HasColumnType("text");
+
                     b.Property<string>("Initials")
                         .HasMaxLength(5)
                         .HasColumnType("character varying(5)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("text");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
