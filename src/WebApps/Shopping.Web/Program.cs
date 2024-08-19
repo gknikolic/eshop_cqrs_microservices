@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Refit;
 using Shopping.Web.Exceptions;
+using Shopping.Web.Helpers;
 using Shopping.Web.Services.Clients;
+using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Dodajte autentifikaciju
+// add authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -14,6 +16,21 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = "/Account/AccessDenied";
         options.LogoutPath = "/Account/Logout";
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        options.SlidingExpiration = true;
+        options.Events = new CookieAuthenticationEvents
+        {
+            OnValidatePrincipal = async context =>
+            {
+                var authService = context.HttpContext.RequestServices.GetRequiredService<IAuthService>();
+
+                await authService.ValidateAndRefreshToken(context);
+            },
+            OnRedirectToLogin = context =>
+            {
+                context.Response.Redirect(context.RedirectUri);
+                return Task.CompletedTask;
+            }
+        };
     });
 
 builder.Services.AddAuthorization();
@@ -28,34 +45,42 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true; // Make the session cookie essential for the app
 });
 
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddTransient<AuthTokenPassingHandler>();
+builder.Services.AddScoped<ITokenProvider, TokenProvider>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 builder.Services.AddRefitClient<ICatalogService>()
     .ConfigureHttpClient(c =>
     {
         c.BaseAddress = new Uri(builder.Configuration["ApiSettings:GatewayAddress"]!);
-    });
+    })
+    .AddHttpMessageHandler<AuthTokenPassingHandler>();
 builder.Services.AddRefitClient<IBasketService>()
     .ConfigureHttpClient(c =>
     {
         c.BaseAddress = new Uri(builder.Configuration["ApiSettings:GatewayAddress"]!);
-    });
+    })
+    .AddHttpMessageHandler<AuthTokenPassingHandler>();
 builder.Services.AddRefitClient<IOrderingService>()
     .ConfigureHttpClient(c =>
     {
         c.BaseAddress = new Uri(builder.Configuration["ApiSettings:GatewayAddress"]!);
-    });
+    })
+    .AddHttpMessageHandler<AuthTokenPassingHandler>();
 builder.Services.AddRefitClient<IInventoryService>()
     .ConfigureHttpClient(c =>
     {
         c.BaseAddress = new Uri(builder.Configuration["ApiSettings:GatewayAddress"]!);
-    });
+    })
+    .AddHttpMessageHandler<AuthTokenPassingHandler>();
 builder.Services.AddRefitClient<ICustomerService>()
     .ConfigureHttpClient(c =>
     {
         c.BaseAddress = new Uri(builder.Configuration["ApiSettings:GatewayAddress"]!);
-    });
-
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<ITokenProvider, TokenProvider>();
+    })
+    .AddHttpMessageHandler<AuthTokenPassingHandler>();
 
 var app = builder.Build();
 
@@ -66,8 +91,6 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
-app.UseMiddleware<ExceptionHandler>();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -80,5 +103,7 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 app.UseSession();
+
+app.UseMiddleware<ExceptionHandler>();
 
 app.Run();

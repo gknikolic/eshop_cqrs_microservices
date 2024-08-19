@@ -1,9 +1,15 @@
+using BuildingBlocks.Authorization;
 using Ordering.API;
 using Ordering.Application;
 using Ordering.Infrastructure;
 using Ordering.Infrastructure.Data.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure JWT Authentication
+builder.Services.AddJwtAuthentication(builder.Configuration);
+
+builder.Services.AddAuthorization();
 
 // Add services to the container.
 builder.Services
@@ -12,6 +18,10 @@ builder.Services
     .AddApiServices(builder.Configuration);
 
 var app = builder.Build();
+
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Configure the HTTP request pipeline.
 app.UseApiServices();

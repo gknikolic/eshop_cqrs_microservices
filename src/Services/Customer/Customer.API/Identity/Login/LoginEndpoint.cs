@@ -2,7 +2,7 @@
 namespace Customer.API.Identity.Login;
 
 public record LoginRequest(string email, string password);
-public record LoginResponse(string token);
+public record LoginResponse(bool isLogedIn, string token, string refreshToken);
 
 public class LoginEndpoint : ICarterModule
 {
@@ -14,9 +14,9 @@ public class LoginEndpoint : ICarterModule
 
             var result = await sender.Send(command);
 
-            if(result.success)
+            if(result.isLogedIn)
             {
-                return Results.Ok(new LoginResponse(result.token));
+                return Results.Ok(new LoginResponse(true, result.token, result.refreshToken));
             }
             else
             {

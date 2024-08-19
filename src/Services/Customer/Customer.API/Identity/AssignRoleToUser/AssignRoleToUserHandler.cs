@@ -1,4 +1,6 @@
-﻿namespace Customer.API.Identity.AssignRoleToUser;
+﻿using Customer.API.Database.Entities;
+
+namespace Customer.API.Identity.AssignRoleToUser;
 
 public record AssignRoleToUserCommand(string UserId, IList<string> NewRoles) : ICommand<Result>;
 

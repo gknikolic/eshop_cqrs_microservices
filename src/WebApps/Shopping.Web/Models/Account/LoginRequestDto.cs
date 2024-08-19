@@ -1,3 +1,3 @@
-﻿namespace Shopping.Web.Dtos.Account;
+﻿namespace Shopping.Web.Models.Account;
 
 public record LoginRequestDto(string email, string password);

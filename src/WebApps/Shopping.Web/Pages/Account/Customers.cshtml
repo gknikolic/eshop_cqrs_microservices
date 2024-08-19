@@ -1,0 +1,146 @@
+﻿@page
+@model Shopping.Web.Pages.Account.CustomersModel
+@{
+    ViewData["Title"] = "Customers";
+}
+
+<style>
+    .buttons {
+        display: flex;
+    }
+
+        .buttons.btn {
+            padding: 0 6px !important;
+        }
+
+    .btn.btn-link {
+        background-color: transparent;
+        border: none;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-page="Index">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Customers</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-4">
+    <div class="row">
+        <div class="col-12">
+            @* <a asp-page="Create" class="btn btn-success">Add new customer</a> *@
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">UserName</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">FullName</th>
+                            <th scope="col">EmailConfirmed</th>
+                            <th scope="col">Roles</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Customers)
+                        {
+                            <tr>
+                                <td class="user-id">@item.Id</td>
+                                <td>@item.UserName</td>
+                                <td>@item.Email</td>
+                                <td>@item.FullName</td>
+                                <td>@item.EmailConfirmed</td>
+                                <td>@item.RolesString</td>
+                                <td class="buttons">
+                                    <form method="post" asp-page-handler="LoginAs">
+                                        <button class="btn btn-link btnLoginAs tooltip" type="button">
+                                            <i class="fa-regular fa-arrow-right-to-bracket"></i>
+                                        </button>
+                                    </form>
+                                    <button class="btn btn-link tooltip" data-toggle="modal" data-target="#changePasswordModal" data-id="@item.Id">
+                                        <i class="fa-regular fa-key"></i>
+                                    </button>
+                                    <form method="post" asp-page-handler="DeleteUser">
+                                        <button class="btn btn-link tooltip" data-toggle="modal" data-target="#DeleteUserModal" data-id="@item.Id">
+                                            <i class="fa-regular fa-trash-can"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function () {
+
+            $(".btnLoginAs").on("click", function (e) { 
+                e.preventDefault();
+
+                var $form = $(this).closest("form");
+                var userId = $(this).closest("tr").find(".user-id").text();
+                $form.append('<input type="hidden" name="userId" value="' + userId + '">');
+
+                $.ajax({
+                    type: "POST",
+                    url: $form.attr("action"),
+                    data: $form.serialize(),
+                    success: function (response) {
+                        console.log(response);
+                    },
+                    error: function (response) {
+                        console.log(response);
+                    }
+                });
+            })
+
+
+
+            // $('#changeRoleModal').on('show.bs.modal', function (event) {
+            //     var button = $(event.relatedTarget);
+            //     var id = button.data('id');
+            //     var role = button.data('role');
+            //     var modal = $(this);
+            //     modal.find('#changeRoleModalLabel').text('Change Role for ' + id);
+            //     modal.find('#changeRoleModal input[name="Id"]').val(id);
+            //     modal.find('#changeRoleModal select[name="Role"]').val(role);
+            // });
+
+            // $('#DeleteUserModal').on('show.bs.modal', function (event) {
+            //     var button = $(event.relatedTarget);
+            //     var id = button.data('id');
+            //     var modal = $(this);
+            //     modal.find('#DeleteUserModalLabel').text('Delete User ' + id);
+            //     modal.find('#DeleteUserModal input[name="Id"]').val(id);
+            // });
+
+            // $('#changePasswordModal').on('show.bs.modal', function (event) {
+            //     var button = $(event.relatedTarget);
+            //     var id = button.data('id');
+            //     var modal = $(this);
+            //     modal.find('#changePasswordModalLabel').text('Change Password for ' + id);
+            //     modal.find('#changePasswordModal input[name="Id"]').val(id);
+            // });
+        })
+        
+    </script>
+}

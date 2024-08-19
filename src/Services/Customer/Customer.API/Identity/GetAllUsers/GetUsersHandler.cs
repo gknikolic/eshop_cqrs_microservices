@@ -1,4 +1,5 @@
 ﻿
+using Customer.API.Database.Entities;
 using Customer.API.Dtos;
 
 namespace Customer.API.Identity.GetAllUsers;
@@ -23,7 +24,9 @@ public class GetUsersHandler(UserManager<User> _userManager)
                 Id = user.Id,
                 UserName = user.UserName,
                 Email = user.Email,
-                Roles = roles
+                Roles = roles.ToList(),
+                FullName = user.FullName,
+                EmailConfirmed = user.EmailConfirmed
             };
 
             userList.Add(userDto);

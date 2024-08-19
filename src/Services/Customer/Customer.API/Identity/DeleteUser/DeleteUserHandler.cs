@@ -1,4 +1,4 @@
-﻿using Customer.API.Database;
+﻿using Customer.API.Database.Entities;
 
 namespace Customer.API.Identity.DeleteUser;
 public record DeleteUserCommand(string userId) : ICommand<Result>;

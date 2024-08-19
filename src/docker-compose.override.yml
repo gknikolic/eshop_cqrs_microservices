@@ -84,6 +84,9 @@ services:
       - MessageBroker__Host=amqp://ecommerce-mq:5672
       - MessageBroker__UserName=guest
       - MessageBroker__Password=guest
+      - JwtSettings__Issuer=customer-api-service
+      - JwtSettings__Audience=eshop-services
+      - JwtSettings__Key=mysecretkey12345mysecretkey12345
     depends_on:
       - catalogdb
       - messagebroker
@@ -105,6 +108,9 @@ services:
       - MessageBroker__Host=amqp://ecommerce-mq:5672
       - MessageBroker__UserName=guest
       - MessageBroker__Password=guest
+      - JwtSettings__Issuer=customer-api-service
+      - JwtSettings__Audience=eshop-services
+      - JwtSettings__Key=mysecretkey12345mysecretkey12345
     depends_on:
       - basketdb
       - distributedcache
@@ -126,6 +132,9 @@ services:
       - MessageBroker__Host=amqp://ecommerce-mq:5672
       - MessageBroker__UserName=guest
       - MessageBroker__Password=guest
+      - JwtSettings__Issuer=customer-api-service
+      - JwtSettings__Audience=eshop-services
+      - JwtSettings__Key=mysecretkey12345mysecretkey12345
     depends_on:
       - inventorydb
       - messagebroker
@@ -142,12 +151,14 @@ services:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
       - ConnectionStrings__Database=Server=customerdb;Port=5432;Database=CustomerDb;User Id=postgres;Password=postgres;Include Error Detail=true
-      - Jwt__Issuer=customer.api
-      - Jwt__Audience=yarpapigateway
-      - Jwt__Key=mysecretkey12345mysecretkey12345
       - MessageBroker__Host=amqp://ecommerce-mq:5672
       - MessageBroker__UserName=guest
       - MessageBroker__Password=guest
+      - JwtSettings__Issuer=customer-api-service
+      - JwtSettings__Audience=eshop-services
+      - JwtSettings__Key=mysecretkey12345mysecretkey12345      
+      - JwtSettings__AccessExpiration=6
+      - JwtSettings__RefreshExpiration=3
     depends_on:
       - customerdb
     ports:
@@ -163,6 +174,9 @@ services:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
       - ConnectionStrings__Database=Data Source=discountdb
+      - JwtSettings__Issuer=customer-api-service
+      - JwtSettings__Audience=eshop-services
+      - JwtSettings__Key=mysecretkey12345mysecretkey12345
     ports:
       - "6002:8080"
       - "6062:8081"
@@ -181,6 +195,9 @@ services:
       - MessageBroker__Password=guest
       - FeatureManagement__OrderFullfilment=false
       - FeatureManagement__UpdateInventory=true
+      - JwtSettings__Issuer=customer-api-service
+      - JwtSettings__Audience=eshop-services
+      - JwtSettings__Key=mysecretkey12345mysecretkey12345
     depends_on:
       - orderdb
       - messagebroker
@@ -196,9 +213,9 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
-      - Jwt__Issuer=customer.api
-      - Jwt__Audience=yarpapigateway
-      - Jwt__Key=mysecretkey12345mysecretkey12345
+      - JwtSettings__Issuer=customer-api-service
+      - JwtSettings__Audience=eshop-services
+      - JwtSettings__Key=mysecretkey12345mysecretkey12345
     depends_on:
       - catalog.api
       - basket.api
@@ -216,6 +233,9 @@ services:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
       - ApiSettings__GatewayAddress=http://yarpapigateway:8080
+      - JwtSettings__Issuer=customer-api-service
+      - JwtSettings__Audience=eshop-services
+      - JwtSettings__Key=mysecretkey12345mysecretkey12345
     depends_on:
       - yarpapigateway
     ports:

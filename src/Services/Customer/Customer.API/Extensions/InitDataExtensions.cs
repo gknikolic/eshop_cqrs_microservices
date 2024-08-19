@@ -1,4 +1,6 @@
-﻿namespace Customer.API.Extensions;
+﻿using Customer.API.Database.Entities;
+
+namespace Customer.API.Extensions;
 
 public static class InitDataExtensions
 {

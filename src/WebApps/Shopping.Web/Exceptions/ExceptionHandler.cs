@@ -1,4 +1,10 @@
-﻿namespace Shopping.Web.Exceptions;
+﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using Refit;
+using System.Net;
+using System.Text;
+
+namespace Shopping.Web.Exceptions;
 
 public class ExceptionHandler(RequestDelegate _next, ILogger<ExceptionHandler> _logger)
 {
@@ -7,6 +13,17 @@ public class ExceptionHandler(RequestDelegate _next, ILogger<ExceptionHandler> _
         try
         {
             await _next(context);
+        }
+        catch (ApiException apiEx) when (apiEx.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            //var context = httpContextAccessor.HttpContext;
+
+            // Get the current URL that caused the 401
+            var currentUrl = context.Request.Path + context.Request.QueryString;
+
+            // Redirect to the login page with returnUrl
+            var loginUrl = $"/Account/Login?returnUrl={Uri.EscapeDataString(currentUrl)}";
+            context.Response.Redirect(loginUrl);
         }
         catch (Exception ex)
         {
@@ -23,6 +40,17 @@ public class ExceptionHandler(RequestDelegate _next, ILogger<ExceptionHandler> _
         var errorPageUrl = $"/Error?message={Uri.EscapeDataString(exception.Message)}";
 
         context.Response.Redirect(errorPageUrl);
+
+        // Check if it is an AJAX request
+        if (context.Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+        {
+            // Handle AJAX request
+            // For example, you can return a JSON response
+            var jsonResponse = new { error = exception.Message };
+            var jsonBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jsonResponse));
+            context.Response.ContentType = "application/json";
+            context.Response.Body.Write(jsonBytes, 0, jsonBytes.Length);
+        }
         return Task.CompletedTask;
     }
 }

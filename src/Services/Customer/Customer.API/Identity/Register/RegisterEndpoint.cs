@@ -12,7 +12,7 @@ public class RegisterEndpoint : ICarterModule
     {
         app.MapPost("/register", async (RegisterRequest request, ISender sender) =>
         {
-            var command = new RegisterCommand(request.username, request.email, request.password, request.firstName, request.lastName);
+            var command = new RegisterCommand(new RegisterUserModel(request.username, request.email, request.password, request.firstName, request.lastName));
             var result = await sender.Send(command);
             if(result.Succeeded)
             {

@@ -1,13 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using Shopping.Web.Services.Clients;
-using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace Shopping.Web.Pages.Account
 {
-    public class LoginModel(ICustomerService customerService, ILogger<LoginModel> logger, ITokenProvider tokenProvider)
+    public class LoginModel(ICustomerService customerService, ILogger<LoginModel> logger, IAuthService authService)
         : PageModel
     {
       
@@ -33,7 +29,7 @@ namespace Shopping.Web.Pages.Account
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var response = await customerService.Login(new Dtos.Account.LoginRequestDto(Email, Password));
+            var response = await customerService.Login(new Models.Account.LoginRequestDto(Email, Password));
 
             if (response.token == null)
             {
@@ -42,7 +38,7 @@ namespace Shopping.Web.Pages.Account
                 return Page();
             }
 
-            await SignInAsync(response.token);
+            await authService.SignInAsync(response.token, response.refreshToken);
 
             if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
             {
@@ -54,33 +50,5 @@ namespace Shopping.Web.Pages.Account
             }
         }
 
-        private async Task SignInAsync(string token)
-        {
-            var handler = new JwtSecurityTokenHandler();
-
-            var jwt = handler.ReadJwtToken(token);
-
-            var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Email, jwt.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email)?.Value ?? string.Empty));
-            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Sub, jwt.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value ?? string.Empty));
-            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Name, jwt.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Name)?.Value ?? string.Empty));
-            identity.AddClaim(new Claim(JwtRegisteredClaimNames.Jti, jwt.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti)?.Value ?? string.Empty));
-
-
-            identity.AddClaim(new Claim(ClaimTypes.Name, jwt.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email)?.Value ?? string.Empty));
-            identity.AddClaim(new Claim(ClaimTypes.Role, jwt.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value ?? string.Empty));
-
-            var principal = new ClaimsPrincipal(identity);
-
-            var authProperties = new AuthenticationProperties
-            {
-                IsPersistent = RememberMe,
-                ExpiresUtc = RememberMe ? DateTimeOffset.UtcNow.AddDays(14) : DateTimeOffset.UtcNow.AddHours(1)
-            };
-
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProperties);
-
-            tokenProvider.SetToken(token);
-        }
     }
 }

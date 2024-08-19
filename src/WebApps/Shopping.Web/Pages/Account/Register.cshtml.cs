@@ -36,7 +36,7 @@ namespace Shopping.Web.Pages.Account
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var response = await customerService.Register(new Dtos.Account.RegisterRequestDto(Username, Email, Password, FirstName, LastName));
+            var response = await customerService.Register(new Models.Account.RegisterRequestDto(Username, Email, Password, FirstName, LastName));
 
             if (response == null)
             {

@@ -1,44 +1,41 @@
 ﻿using MassTransit;
 using BuildingBlocks.Messaging.Events.CustomerEvents;
+using Customer.API.Database.Entities;
+using Customer.API.Services;
 
 namespace Customer.API.Identity.Register;
 
-public record RegisterCommand(string Username, string Email, string Password, string FirstName, string LastName) : ICommand<Result>;
+public record RegisterCommand(RegisterUserModel RegisterUserModel) : ICommand<Result>;
 
 public class RegisterValidator : AbstractValidator<RegisterCommand>
 {
     public RegisterValidator()
     {
-        RuleFor(x => x.Username).NotEmpty();
-        RuleFor(x => x.Email).NotEmpty().EmailAddress();
-        RuleFor(x => x.Password).NotEmpty();
+        RuleFor(x => x.RegisterUserModel.Username).NotEmpty();
+        RuleFor(x => x.RegisterUserModel.Email).NotEmpty().EmailAddress();
+        RuleFor(x => x.RegisterUserModel.Password).NotEmpty();
+        RuleFor(x => x.RegisterUserModel.FirstName).NotEmpty();
+        RuleFor(x => x.RegisterUserModel.LastName).NotEmpty();
     }
 }
 
-public class RegisterHandler(UserManager<User> _userManager, IPublishEndpoint publishEndpoint)
+public class RegisterHandler(IPublishEndpoint _publishEndpoint, IAuthService _authService, ILogger<RegisterHandler> _logger)
     : ICommandHandler<RegisterCommand, Result>
 {
     public async Task<Result> Handle(RegisterCommand command, CancellationToken cancellationToken)
     {
-        var user = new User
-        {
-            UserName = command.Username,
-            Email = command.Email,
-            FirstName = command.FirstName,
-            LastName = command.LastName
-        };
+        
+        var result = await _authService.Register(command.RegisterUserModel);
 
-        var result = await _userManager.CreateAsync(user, command.Password);
-        if (!result.Succeeded)
+        if(!result.IsRegistered)
         {
-            return Result.Failure(result.ToString());
+            _logger.LogError(result.Message);
+            return Result.Failure(result.Message);
         }
 
-        // Optional: Assign "User" role by default to the new user
-        await _userManager.AddToRoleAsync(user, "User");
+        var user = result.User;
 
-        var userId = new Guid(user.Id);
-        await publishEndpoint.Publish(new UserRegisteredEvent(userId, user.FullName, user.Email, "SelfRegistered"), cancellationToken);
+        await _publishEndpoint.Publish(new UserRegisteredEvent(new Guid(user.Id), user.FullName, user.Email, "SelfRegistered"), cancellationToken);
 
         return Result.Success("User registrated");
     }

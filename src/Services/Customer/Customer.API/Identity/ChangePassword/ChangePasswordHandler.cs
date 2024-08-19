@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Customer.API.Database.Entities;
 
 namespace Customer.API.Identity.ChangePassword;
 

@@ -8,6 +8,7 @@ using Marten;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using BuildingBlocks.Messaging.MassTransit;
 using Inventory.API.Data;
+using BuildingBlocks.Authorization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +24,11 @@ builder.Services.AddMediatR(config =>
     config.AddOpenBehavior(typeof(LoggingBehavior<,>));
 });
 builder.Services.AddValidatorsFromAssembly(assembly);
+
+// Configure JWT Authentication
+builder.Services.AddJwtAuthentication(builder.Configuration);
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddCarter();
 
@@ -47,7 +53,8 @@ if (builder.Environment.IsDevelopment())
 
 var app = builder.Build();
 
-
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapCarter();
 

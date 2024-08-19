@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Customer.API.Database;
+namespace Customer.API.Database.Entities;
 
 public class User : IdentityUser
 {
@@ -9,4 +9,7 @@ public class User : IdentityUser
     public string? Initials { get; set; }
 
     public string FullName => $"{FirstName} {LastName}";
+
+    public string? RefreshToken { get; set; }
+    public DateTime? RefreshTokenExpiry { get; set; }
 }
