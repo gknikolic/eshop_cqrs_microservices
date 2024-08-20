@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Refit;
+using System;
 using System.Net;
 using System.Text;
 
@@ -13,6 +14,23 @@ public class ExceptionHandler(RequestDelegate _next, ILogger<ExceptionHandler> _
         try
         {
             await _next(context);
+        }
+
+        catch (ApiException apiEx) when (apiEx.StatusCode == HttpStatusCode.NotFound)
+        {
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+
+            // Log and prepare for redirection to error page
+            var errorPageUrl = $"/Error?message={Uri.EscapeDataString(apiEx.Message)}";
+
+            context.Response.Redirect(errorPageUrl);
+
+            context.Response.Redirect("/Account/AccessDenied");
+        }
+        catch (ApiException apiEx) when (apiEx.StatusCode == HttpStatusCode.Forbidden)
+        {
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            context.Response.Redirect("/Account/AccessDenied");
         }
         catch (ApiException apiEx) when (apiEx.StatusCode == HttpStatusCode.Unauthorized)
         {
