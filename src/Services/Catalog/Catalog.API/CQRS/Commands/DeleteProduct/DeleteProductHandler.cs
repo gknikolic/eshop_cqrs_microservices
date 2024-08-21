@@ -1,5 +1,4 @@
-﻿using BuildingBlocks.Messaging.Events.InventoryEvents;
-using Catalog.API.Repositories;
+﻿using Catalog.API.Repositories;
 using MassTransit;
 
 namespace Catalog.API.CQRS.Commands.DeleteProduct;

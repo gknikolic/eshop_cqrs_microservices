@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Messaging.Events.InventoryEvents;
+﻿using BuildingBlocks.Messaging.Events.ProductEvents;
 using Catalog.API.Repositories;
 using MassTransit;
 
@@ -26,7 +26,7 @@ internal class UpdateProductCommandHandler
 
         if (updatedProduct.Name != product.Name || updatedProduct.Price != product.Price)
         {
-            await publishEndpoint.Publish(new ProductSpecsUpdatedEvent(updatedProduct.Id, updatedProduct.Name, updatedProduct.Price), cancellationToken);
+            await publishEndpoint.Publish(new ProductUpdatedIntegrationEvent(updatedProduct.Id, updatedProduct.Name, updatedProduct.Price), cancellationToken);
         }
 
         return new UpdateProductResult(true);

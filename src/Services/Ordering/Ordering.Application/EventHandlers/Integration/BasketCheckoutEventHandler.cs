@@ -5,9 +5,9 @@ using Ordering.Application.CQRS.Commands.CreateOrder;
 namespace Ordering.Application.EventHandlers.Integration;
 public class BasketCheckoutEventHandler
     (ISender sender, ILogger<BasketCheckoutEventHandler> logger)
-    : IConsumer<BasketCheckoutEvent>
+    : IConsumer<BasketCheckoutIntegrationEvent>
 {
-    public async Task Consume(ConsumeContext<BasketCheckoutEvent> context)
+    public async Task Consume(ConsumeContext<BasketCheckoutIntegrationEvent> context)
     {
         // TODO: Create new order and start order fullfillment process
         logger.LogInformation("Integration Event handled: {IntegrationEvent}", context.Message.GetType().Name);
@@ -16,7 +16,7 @@ public class BasketCheckoutEventHandler
         await sender.Send(command);
     }
 
-    private CreateOrderCommand MapToCreateOrderCommand(BasketCheckoutEvent message)
+    private CreateOrderCommand MapToCreateOrderCommand(BasketCheckoutIntegrationEvent message)
     {
         // Create full order with incoming event data
         var addressDto = new AddressDto(message.FirstName, message.LastName, message.EmailAddress, message.AddressLine, message.Country, message.State, message.ZipCode);

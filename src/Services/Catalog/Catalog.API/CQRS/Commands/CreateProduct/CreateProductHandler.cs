@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Messaging.Events.InventoryEvents;
+﻿using BuildingBlocks.Messaging.Events.ProductEvents;
 using Catalog.API.Repositories;
 using MassTransit;
 

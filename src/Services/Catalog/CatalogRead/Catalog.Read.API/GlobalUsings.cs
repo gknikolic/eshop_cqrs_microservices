@@ -1,0 +1,11 @@
+﻿global using BuildingBlocks.CQRS;
+global using Catalog.Read.API.Models;
+global using Catalog.Read.API.Exceptions;
+global using Carter;
+global using MediatR;
+global using Mapster;
+global using BuildingBlocks.Messaging.MassTransit;
+global using BuildingBlocks.Authorization;
+global using BuildingBlocks.Behaviors;
+global using FluentValidation;
+global using Marten;

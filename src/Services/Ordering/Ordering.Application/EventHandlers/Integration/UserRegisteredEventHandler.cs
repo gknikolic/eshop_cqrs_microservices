@@ -5,9 +5,9 @@ using Ordering.Application.CQRS.Commands.CreateCustomer;
 
 namespace Ordering.Application.EventHandlers.Integration;
 public class UserRegisteredEventHandler(ISender sender)
-    : IConsumer<UserRegisteredEvent>
+    : IConsumer<UserRegisteredIntegrationEvent>
 {
-    public async Task Consume(ConsumeContext<UserRegisteredEvent> context)
+    public async Task Consume(ConsumeContext<UserRegisteredIntegrationEvent> context)
     {
         var command = new CreateCustomerCommand(context.Message.Adapt<CustomerDto>());
         var result = await sender.Send(command);

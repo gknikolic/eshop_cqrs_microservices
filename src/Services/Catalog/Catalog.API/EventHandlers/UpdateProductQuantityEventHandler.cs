@@ -5,9 +5,9 @@ using MassTransit;
 namespace Catalog.API.EventHandlers;
 
 public class UpdateProductQuantityEventHandler(ISender sender)
-    : IConsumer<ProductQuantityUpdatedEvent>
+    : IConsumer<ProductQuantityUpdatedIntegrationEvent>
 {
-    public async Task Consume(ConsumeContext<ProductQuantityUpdatedEvent> context)
+    public async Task Consume(ConsumeContext<ProductQuantityUpdatedIntegrationEvent> context)
     {
         await sender.Send(new UpdateProductQuantityCommand(context.Message.ProductId, context.Message.Quantity));
     }

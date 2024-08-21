@@ -11,7 +11,8 @@
         "ordering.api": "StartDebugging",
         "yarpapigateway": "StartDebugging",
         "shopping.web": "StartDebugging",
-        "customer.api": "StartDebugging"
+        "customer.api": "StartDebugging",
+        "catalog.read.api": "StartDebugging"
       }
     }
   }

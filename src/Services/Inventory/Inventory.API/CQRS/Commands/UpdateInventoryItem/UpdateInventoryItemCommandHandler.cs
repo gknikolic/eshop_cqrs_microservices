@@ -27,14 +27,14 @@ public class UpdateInventoryItemCommandHandler(IInventoryRepository repository, 
 
         if(oldQuantity != product.Quantity)
         {
-            logger.LogInformation("Publishing {ProductQuantityUpdatedEvent}: {ProductId}, {QuantityChangedBy}", nameof(ProductQuantityUpdatedEvent), product.Id, request.ItemDto.Quantity - oldQuantity);
-            await publishEndpoint.Publish(new ProductQuantityUpdatedEvent(product.Id, product.Quantity), cancellationToken);
+            logger.LogInformation("Publishing {ProductQuantityUpdatedEvent}: {ProductId}, {QuantityChangedBy}", nameof(ProductQuantityUpdatedIntegrationEvent), product.Id, request.ItemDto.Quantity - oldQuantity);
+            await publishEndpoint.Publish(new ProductQuantityUpdatedIntegrationEvent(product.Id, product.Quantity), cancellationToken);
         }
 
         if(oldIsActive != product.IsActive)
         {
-            logger.LogInformation("Publishing {ProductStatusUpdatedEvent}: {ProductId}, {IsActive}", nameof(ProductStatusUpdatedEvent), product.Id, product.IsActive);
-            await publishEndpoint.Publish(new ProductStatusUpdatedEvent(product.Id, product.IsActive), cancellationToken);
+            logger.LogInformation("Publishing {ProductStatusUpdatedEvent}: {ProductId}, {IsActive}", nameof(ProductStatusUpdatedIntegrationEvent), product.Id, product.IsActive);
+            await publishEndpoint.Publish(new ProductStatusUpdatedIntegrationEvent(product.Id, product.IsActive), cancellationToken);
         }
 
         return new UpdateInventoryItemCommandResponse(updatedProduct.ToInventoryItemDto());

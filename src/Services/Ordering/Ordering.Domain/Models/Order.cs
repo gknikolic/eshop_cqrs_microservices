@@ -1,4 +1,6 @@
-﻿namespace Ordering.Domain.Models;
+﻿using BuildingBlocks.DDD_Abstractions;
+
+namespace Ordering.Domain.Models;
 public class Order : Aggregate<OrderId>
 {
     private readonly List<OrderItem> _orderItems = new();

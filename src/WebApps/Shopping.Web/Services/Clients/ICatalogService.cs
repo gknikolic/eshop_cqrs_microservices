@@ -1,4 +1,5 @@
 ﻿using Refit;
+using Shopping.Web.Models;
 
 namespace Shopping.Web.Services.Clients;
 
@@ -12,4 +13,7 @@ public interface ICatalogService
 
     [Get("/catalog-service/products/category/{category}")]
     Task<GetProductByCategoryResponse> GetProductsByCategory(string category);
+
+    [Post("/catalog-service/create-product")]
+    Task<ResultDto> CreateProduct(CreateProductRequest request);
 }

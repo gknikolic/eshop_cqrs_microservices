@@ -1,4 +1,6 @@
-﻿namespace Ordering.Domain.Models;
+﻿using BuildingBlocks.DDD_Abstractions;
+
+namespace Ordering.Domain.Models;
 public class Customer : Entity<CustomerId>
 {
     public string Name { get; private set; } = default!;

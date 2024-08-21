@@ -22,7 +22,7 @@ public class UpdateProductQuantityByCommandHandler
 
         logger.LogInformation("Product quantity updated: {ProductId}, {QuantityChangedBy}", product.Id, request.QuantityChangedBy);
 
-        await publishEndpoint.Publish(new ProductQuantityUpdatedEvent(product.Id, product.Quantity), cancellationToken);
+        await publishEndpoint.Publish(new ProductQuantityUpdatedIntegrationEvent(product.Id, product.Quantity), cancellationToken);
 
         return Unit.Value;
     }

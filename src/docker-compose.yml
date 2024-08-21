@@ -4,6 +4,9 @@ services:
   catalogdb:
     image: postgres
 
+  catalogreaddb:
+    image: mongo
+
   basketdb:
     image: postgres
 
@@ -27,6 +30,12 @@ services:
     build:
       context: .
       dockerfile: Services/Catalog/Catalog.API/Dockerfile
+
+  catalog.read.api:
+    image: ${DOCKER_REGISTRY-}catalogreadapi
+    build:
+      context: .
+      dockerfile: Services/Catalog/CatalogRead/Catalog.Read.API/Dockerfile
 
   basket.api:
     image: ${DOCKER_REGISTRY-}basketapi
@@ -72,6 +81,7 @@ services:
 
 volumes:
   postgres_catalog:
+  mongo_catalogread:
   postgres_basket:
   postgres_inventory:
   postgres_customer:

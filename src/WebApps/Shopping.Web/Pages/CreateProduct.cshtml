@@ -1,0 +1,52 @@
+﻿@page
+@model CreateProductModel
+@{
+    ViewData["Title"] = "Create Product";
+}
+
+<h1>Create Product</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Product.Sku" class="control-label"></label>
+        <input asp-for="Product.Sku" class="form-control" />
+        <span asp-validation-for="Product.Sku" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Product.Name" class="control-label"></label>
+        <input asp-for="Product.Name" class="form-control" />
+        <span asp-validation-for="Product.Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Product.Description" class="control-label"></label>
+        <textarea asp-for="Product.Description" class="form-control"></textarea>
+        <span asp-validation-for="Product.Description" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Product.Price" class="control-label"></label>
+        <input asp-for="Product.Price" class="form-control" />
+        <span asp-validation-for="Product.Price" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Product.CategoryId" class="control-label"></label>
+        <select asp-for="Product.CategoryId" class="form-control" asp-items="Model.CategorySelectList"></select>
+        <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Product.IsActive" class="control-label"></label>
+        <input asp-for="Product.IsActive" class="form-control" />
+        <span asp-validation-for="Product.IsActive" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Product.Images" class="control-label"></label>
+        <input asp-for="Product.Images" class="form-control" placeholder="Comma-separated image URLs" />
+        <span asp-validation-for="Product.Images" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+<a asp-page="./Index">Back to List</a>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
