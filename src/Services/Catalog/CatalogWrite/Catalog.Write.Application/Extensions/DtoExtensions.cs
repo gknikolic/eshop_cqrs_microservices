@@ -12,7 +12,7 @@ public static class DtoExtensions
             Description = product.Description,
             Price = product.Price,
             PictureFileName = product.Images.FirstOrDefault()?.AltText ?? "",
-            PictureUri = product.Images.FirstOrDefault()?.Url ?? "",
+            PictureUri = product.Images.FirstOrDefault()?.FilePath ?? "",
             Quantity = product.Stock.Quantity,
             IsAvailable = product.Stock.IsAvailable(),
             Color = product.Color.ToString(),

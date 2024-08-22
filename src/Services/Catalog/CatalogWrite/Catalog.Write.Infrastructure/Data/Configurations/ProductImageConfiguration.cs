@@ -13,7 +13,7 @@ public class ProductImageConfiguration : IEntityTypeConfiguration<ProductImage>
             id => id.Value,
             value => new ProductImageId(value));
 
-        builder.Property(pi => pi.Url)
+        builder.Property(pi => pi.FilePath)
                .IsRequired()
                .HasMaxLength(255);
 

@@ -11,7 +11,7 @@ internal class DeleteProductCommandHandler
     {
         await repository.DeleteProductAsync(command.Id, cancellationToken);
 
-        await publishEndpoint.Publish(new ProductDeletedEvent(command.Id), cancellationToken);
+        //await publishEndpoint.Publish(new ProductDeletedEvent(command.Id), cancellationToken);
 
         return new DeleteProductResult(true);
     }

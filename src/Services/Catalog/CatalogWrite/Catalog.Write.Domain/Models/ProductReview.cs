@@ -13,7 +13,7 @@ public class ProductReview : Entity<ProductReviewId>
     // for ef
     private ProductReview() { }
 
-    public ProductReview(int rating, string comment, CustomerId customerId)
+    public ProductReview(int rating, string comment, Customer customer)
     {
         if (rating < 1 || rating > 5)
             throw new ArgumentException("Rating must be between 1 and 5", nameof(rating));
@@ -21,7 +21,7 @@ public class ProductReview : Entity<ProductReviewId>
         Id = new ProductReviewId(Guid.NewGuid());
         Rating = rating;
         Comment = comment ?? throw new ArgumentException("Comment cannot be null", nameof(comment));
-        CustomerId = customerId ?? throw new ArgumentException("Customer ID cannot be null", nameof(customerId));
+        Customer = customer ?? throw new ArgumentException("Customer cannot be null", nameof(customer));
     }
 
     public void UpdateComment(string comment)

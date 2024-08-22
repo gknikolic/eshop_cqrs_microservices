@@ -4,49 +4,111 @@
     ViewData["Title"] = "Create Product";
 }
 
-<h1>Create Product</h1>
+<h2>Create Product</h2>
 
-<form method="post">
+<form method="post" enctype="multipart/form-data">
+    <input asp-for="Product.Id" type="hidden" class="form-control" />
     <div class="form-group">
-        <label asp-for="Product.Sku" class="control-label"></label>
+        <label asp-for="Product.Sku"></label>
         <input asp-for="Product.Sku" class="form-control" />
         <span asp-validation-for="Product.Sku" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Product.Name" class="control-label"></label>
+        <label asp-for="Product.Name"></label>
         <input asp-for="Product.Name" class="form-control" />
         <span asp-validation-for="Product.Name" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Product.Description" class="control-label"></label>
+        <label asp-for="Product.Description"></label>
         <textarea asp-for="Product.Description" class="form-control"></textarea>
         <span asp-validation-for="Product.Description" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Product.Price" class="control-label"></label>
+        <label asp-for="Product.Price"></label>
         <input asp-for="Product.Price" class="form-control" />
         <span asp-validation-for="Product.Price" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Product.CategoryId" class="control-label"></label>
-        <select asp-for="Product.CategoryId" class="form-control" asp-items="Model.CategorySelectList"></select>
-        <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
+        <label asp-for="Product.Category">Category</label>
+        <select asp-for="Product.Category" class="form-control" asp-items="Model.CategorySelectList"></select>
+        <span asp-validation-for="Product.Category" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Product.IsActive" class="control-label"></label>
+        <label asp-for="Product.Color"></label>
+        <input asp-for="Product.Color" class="form-control" />
+        <span asp-validation-for="Product.Color" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Product.IsActive"></label>
         <input asp-for="Product.IsActive" class="form-control" />
         <span asp-validation-for="Product.IsActive" class="text-danger"></span>
     </div>
+
+    
+    <!-- Product Attributes -->
+    <div id="product-attributes">
+        <h4>Product Attributes</h4>
+        @for (var i = 0; i < Model.Product.ProductAttributes.Count; i++)
+        {
+            <div asp-for="Product.ProductAttributes" class="form-group">
+                <div class="row mb-2">
+                    <div class="col">
+                        <label>Attribute Name</label>
+                        <input type="text" class="form-control" name="Product.ProductAttributes[@Model.Product.ProductAttributes[i].Name" />
+                    </div>
+                    <div class="col">
+                        <label>Attribute Value</label>
+                        <input type="text" class="form-control" name="Product.ProductAttributes[@Model.Product.ProductAttributes[i].Value" />
+                    </div>
+                    <div class="col-auto align-self-end">
+                        <button type="button" class="btn btn-danger remove-attribute">Remove</button>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-secondary" id="add-attribute">Add Attribute</button>
+        }
+
+    </div>
+
     <div class="form-group">
-        <label asp-for="Product.Images" class="control-label"></label>
-        <input asp-for="Product.Images" class="form-control" placeholder="Comma-separated image URLs" />
-        <span asp-validation-for="Product.Images" class="text-danger"></span>
+        <label for="imageUpload">Upload Images</label>
+        <input type="file" name="Product.ImageFiles" multiple class="form-control-file" />
+        <span asp-validation-for="Product.ImageFiles" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary">Create</button>
 </form>
 
-<a asp-page="./Index">Back to List</a>
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('add-attribute').addEventListener('click', function () {
+            var attributeIndex = document.querySelectorAll('#product-attributes .row').length;
+            var newAttribute = `
+                <div class="row mb-2">
+                    <div class="col">
+                        <label>Attribute Name</label>
+                        <input type="text" class="form-control" name="Product.ProductAttributes[${attributeIndex}].Name" />
+                    </div>
+                    <div class="col">
+                        <label>Attribute Value</label>
+                        <input type="text" class="form-control" name="Product.ProductAttributes[${attributeIndex}].Value" />
+                    </div>
+                    <div class="col-auto align-self-end">
+                        <button type="button" class="btn btn-danger remove-attribute">Remove</button>
+                    </div>
+                </div>`;
+            document.querySelector('#product-attributes').insertAdjacentHTML('beforeend', newAttribute);
+            attachRemoveButtonEvent();
+        });
+
+        function attachRemoveButtonEvent() {
+            document.querySelectorAll('.remove-attribute').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    this.closest('.row').remove();
+                });
+            });
+        }
+
+        attachRemoveButtonEvent();
+    </script>
 }

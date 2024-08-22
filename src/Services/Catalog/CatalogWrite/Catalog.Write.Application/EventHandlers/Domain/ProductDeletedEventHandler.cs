@@ -1,9 +1,11 @@
-﻿namespace Catalog.Write.Application.EventHandlers.Domain;
-public class ProductDeletedEventHandler
+﻿using BuildingBlocks.Messaging.Events.ProductEvents;
+
+namespace Catalog.Write.Application.EventHandlers.Domain;
+public class ProductDeletedEventHandler(IPublishEndpoint publishEndpoint)
     : INotificationHandler<ProductDeletedEvent>
 {
-    public Task Handle(ProductDeletedEvent notification, CancellationToken cancellationToken)
+    public async Task Handle(ProductDeletedEvent notification, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        await publishEndpoint.Publish(new ProductDeletedIntegrationEvent(notification.ProductId));
     }
 }

@@ -35,7 +35,7 @@ public class ReviewProductHandler(IApplicationDbContext context)
         var review = new ProductReview(
             rating: request.ProductReviewDto.Rating,
             comment: request.ProductReviewDto.Comment,
-            customerId: customer.Id
+            customer: customer
         );
 
         product.AddReview(review);

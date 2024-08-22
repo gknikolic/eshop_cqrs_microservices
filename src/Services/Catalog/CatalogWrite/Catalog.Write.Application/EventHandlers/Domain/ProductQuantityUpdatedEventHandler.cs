@@ -1,9 +1,9 @@
 ﻿namespace Catalog.Write.Application.EventHandlers.Domain;
-public class ProductQuantityUpdatedEventHandler
+public class ProductQuantityUpdatedEventHandler(IPublishEndpoint publishEndpoint)
     : INotificationHandler<ProductQuantityUpdatedEvent>
 {
-    public Task Handle(ProductQuantityUpdatedEvent notification, CancellationToken cancellationToken)
+    public async Task Handle(ProductQuantityUpdatedEvent notification, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        await publishEndpoint.Publish(new ProductQuantityUpdatedIntegrationEvent(notification.ProductId, notification.Quantity));
     }
 }

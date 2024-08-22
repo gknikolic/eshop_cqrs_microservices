@@ -1,7 +1,7 @@
 ﻿namespace Catalog.Write.Domain.Models;
 public class ProductImage : Entity<ProductImageId>
 {
-    public string Url { get; private set; }
+    public string FilePath { get; private set; }
     public string AltText { get; private set; }
     public int DisplayOrder { get; private set; }
 
@@ -18,7 +18,7 @@ public class ProductImage : Entity<ProductImageId>
             throw new ArgumentException("Image URL cannot be empty", nameof(url));
 
         Id = new ProductImageId(new Guid());
-        Url = url;
+        FilePath = url;
         AltText = altText;
         DisplayOrder = displayOrder;
     }
@@ -28,7 +28,7 @@ public class ProductImage : Entity<ProductImageId>
         if (string.IsNullOrWhiteSpace(url))
             throw new ArgumentException("Image URL cannot be empty", nameof(url));
 
-        Url = url;
+        FilePath = url;
         AltText = altText;
         DisplayOrder = displayOrder;
     }

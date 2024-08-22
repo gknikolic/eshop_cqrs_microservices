@@ -12,8 +12,26 @@ public class CatalogRepository(IDocumentSession session) : ICatalogRepository
         return product;
     }
 
+    public async Task AddProductReviewAsync(Guid productId, ProductReview review, CancellationToken cancellationToken = default)
+    {
+        var product = await session.LoadAsync<Product>(productId, cancellationToken);
+        if (product == null)
+        {
+            throw new InvalidOperationException($"Product with id {productId} not found.");
+        }
+        product.Reviews.Add(review);
+        session.Update(product);
+        await session.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task DeleteProductAsync(Guid id, CancellationToken cancellationToken = default)
     {
+        var product = await session.LoadAsync<Product>(id, cancellationToken);
+        if (product == null)
+        {
+            throw new InvalidOperationException($"Product with id {id} not found.");
+        }
+
         session.Delete<Product>(id);
         await session.SaveChangesAsync(cancellationToken);
     }

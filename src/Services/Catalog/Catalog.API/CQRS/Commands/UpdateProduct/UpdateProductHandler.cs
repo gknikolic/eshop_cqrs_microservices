@@ -24,10 +24,10 @@ internal class UpdateProductCommandHandler
 
         var updatedProduct = await repository.UpdateProductAsync(product, cancellationToken);
 
-        if (updatedProduct.Name != product.Name || updatedProduct.Price != product.Price)
-        {
-            await publishEndpoint.Publish(new ProductUpdatedIntegrationEvent(updatedProduct.Id, updatedProduct.Name, updatedProduct.Price), cancellationToken);
-        }
+        //if (updatedProduct.Name != product.Name || updatedProduct.Price != product.Price)
+        //{
+        //    await publishEndpoint.Publish(new ProductUpdatedIntegrationEvent(updatedProduct.Id, updatedProduct.Name, updatedProduct.Price), cancellationToken);
+        //}
 
         return new UpdateProductResult(true);
     }

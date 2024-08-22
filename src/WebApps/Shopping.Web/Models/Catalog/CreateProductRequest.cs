@@ -1,3 +1,3 @@
 ﻿namespace Shopping.Web.Models.Catalog;
 
-public record CreateProductRequest(ProductDto product);
+public record CreateProductRequest(ProductModel product);
