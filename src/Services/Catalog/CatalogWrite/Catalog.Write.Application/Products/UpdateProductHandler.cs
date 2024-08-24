@@ -1,4 +1,6 @@
-﻿namespace Catalog.Write.Application.Products;
+﻿using Catalog.Write.Application.Repositories;
+
+namespace Catalog.Write.Application.Products;
 public record UpdateProductCommand(ProductDto ProductDto) : ICommand<UpdateProductResult>;
 public record UpdateProductResult(bool IsUpdated, string Message);
 public class UpdateProductCommandValidator : AbstractValidator<UpdateProductCommand>
@@ -13,22 +15,14 @@ public class UpdateProductCommandValidator : AbstractValidator<UpdateProductComm
         RuleFor(x => x.ProductDto.Color).NotEmpty();
     }
 }
-public class UpdateProductHandler(IApplicationDbContext context)
+public class UpdateProductHandler(IApplicationDbContext context, ICategoryRepository categoryRepository, IProductRepository productRepository)
     : ICommandHandler<UpdateProductCommand, UpdateProductResult>
 {
     public async Task<UpdateProductResult> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
-        var product = await context.Products.FirstOrDefaultAsync(x => x.Id == request.ProductDto.Id);
-        if (product == null) { 
-            return new UpdateProductResult(false, "Product not found");
-        }
+        var product = await productRepository.GetAsync(request.ProductDto.Id);
 
-        var category = await context.Categories.FirstOrDefaultAsync(x => x.Name == request.ProductDto.Category);
-        if (category == null)
-        {
-            category = new Category(request.ProductDto.Category, string.Empty);
-            await context.Categories.AddAsync(category, cancellationToken);
-        }
+        var category = await categoryRepository.GetOrCreateAsync(request.ProductDto.Category);
 
         product.UpdateDetails(
             name: request.ProductDto.Name,
@@ -37,6 +31,11 @@ public class UpdateProductHandler(IApplicationDbContext context)
             categoryId: category.Id,
             color: (Color)Enum.Parse(typeof(Color), request.ProductDto.Color)
         );
+
+        if(category.Id != product.Category.Id)
+        {
+            product.ChangeCategory(category);
+        }
 
         var updatedAttributes = request.ProductDto.Attributes.Where(x => product.Attributes.Any(y => y.Key == x.Name)).ToList();
         foreach (var attribute in updatedAttributes)

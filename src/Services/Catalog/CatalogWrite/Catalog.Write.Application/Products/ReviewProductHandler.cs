@@ -1,4 +1,5 @@
 ﻿
+using Catalog.Write.Application.Repositories;
 using Catalog.Write.Domain.Exceptions;
 
 namespace Catalog.Write.Application.Products;
@@ -15,16 +16,12 @@ public class ReviewProductCommandValidator : AbstractValidator<ReviewProductComm
         RuleFor(x => x.ProductReviewDto.Email).NotEmpty().EmailAddress();
     }
 }
-public class ReviewProductHandler(IApplicationDbContext context)
+public class ReviewProductHandler(IApplicationDbContext context, IProductRepository productRepository)
     : ICommandHandler<ReviewProductCommand, ReviewProductResult>
 {
     public async Task<ReviewProductResult> Handle(ReviewProductCommand request, CancellationToken cancellationToken)
     {
-        var product = await context.Products.FirstOrDefaultAsync(x => x.Id == request.ProductReviewDto.ProductId);
-        if (product == null)
-        {
-            throw new DomainException($"Product with ID {request.ProductReviewDto.ProductId} not found");
-        }
+        var product = await productRepository.GetAsync(request.ProductReviewDto.ProductId);
 
         var customer = await context.Customers.FirstOrDefaultAsync(x => x.Id == request.ProductReviewDto.UserId);
         if (customer == null)

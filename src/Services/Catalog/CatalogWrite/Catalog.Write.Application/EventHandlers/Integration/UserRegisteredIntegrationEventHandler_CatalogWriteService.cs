@@ -1,6 +1,6 @@
 using BuildingBlocks.Messaging.Events.CustomerEvents;
 
-public class UserRegisteredIntegrationEventHandler(IApplicationDbContext dbContext)
+public class UserRegisteredIntegrationEventHandler_CatalogWriteService(IApplicationDbContext dbContext)
     : IConsumer<UserRegisteredIntegrationEvent>
 {
     public async Task Consume(ConsumeContext<UserRegisteredIntegrationEvent> context)

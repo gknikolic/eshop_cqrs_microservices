@@ -4,7 +4,7 @@ using MassTransit;
 using Ordering.Application.CQRS.Commands.CreateCustomer;
 
 namespace Ordering.Application.EventHandlers.Integration;
-public class UserRegisteredIntegrationEventHandler(ISender sender)
+public class UserRegisteredIntegrationEventHandler_OrderingService(ISender sender)
     : IConsumer<UserRegisteredIntegrationEvent>
 {
     public async Task Consume(ConsumeContext<UserRegisteredIntegrationEvent> context)

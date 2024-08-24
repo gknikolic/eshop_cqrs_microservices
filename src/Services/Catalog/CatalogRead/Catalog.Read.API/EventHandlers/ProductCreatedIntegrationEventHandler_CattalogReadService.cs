@@ -4,7 +4,7 @@ using MassTransit;
 
 namespace Catalog.Read.API.EventHandlers;
 
-public class ProductCreatedIntegrationEventHandler(ICatalogRepository repository)
+public class ProductCreatedIntegrationEventHandler_CattalogReadService(ICatalogRepository repository)
     : IConsumer<ProductCreatedIntegrationEvent>
 {
     public async Task Consume(ConsumeContext<ProductCreatedIntegrationEvent> context)

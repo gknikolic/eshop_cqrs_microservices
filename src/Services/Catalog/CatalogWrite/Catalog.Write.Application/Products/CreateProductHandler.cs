@@ -1,4 +1,6 @@
-﻿namespace Catalog.Write.Application.Products;
+﻿using Catalog.Write.Application.Repositories;
+
+namespace Catalog.Write.Application.Products;
 
 public record CreateProductCommand(ProductDto ProductDto) : ICommand<CreateProductResult>;
 public record CreateProductResult(bool Success, Guid? ProductId);
@@ -14,18 +16,12 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
         RuleFor(x => x.ProductDto.Color).NotEmpty();
     }
 }
-public class CreateProductHandler(IApplicationDbContext context)
+public class CreateProductHandler(IApplicationDbContext context, ICategoryRepository categoryRepository)
     : ICommandHandler<CreateProductCommand, CreateProductResult>
 {
     public async Task<CreateProductResult> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
-        var category = await context.Categories.FirstOrDefaultAsync(x => x.Name == request.ProductDto.Category);
-
-        if(category == null)
-        {
-            category = new Category(request.ProductDto.Category, string.Empty);
-            await context.Categories.AddAsync(category, cancellationToken);
-        }
+        var category = await categoryRepository.GetOrCreateAsync(request.ProductDto.Category);
 
         var product = new Product(
             id: new ProductId(Guid.NewGuid()),

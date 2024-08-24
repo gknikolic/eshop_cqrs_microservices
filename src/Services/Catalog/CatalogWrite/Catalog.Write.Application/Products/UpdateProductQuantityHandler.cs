@@ -1,4 +1,6 @@
-﻿namespace Catalog.Write.Application.Products;
+﻿using Catalog.Write.Application.Repositories;
+
+namespace Catalog.Write.Application.Products;
 public record UpdateProductQuantityCommand(Guid ProductId, int Quantity) : ICommand<bool>;
 public class UpdateProductQuantityCommandValidator : AbstractValidator<UpdateProductQuantityCommand>
 {
@@ -8,16 +10,12 @@ public class UpdateProductQuantityCommandValidator : AbstractValidator<UpdatePro
         RuleFor(x => x.Quantity).GreaterThan(0);
     }
 }
-public class UpdateProductQuantityHandler(IApplicationDbContext context)
+public class UpdateProductQuantityHandler(IApplicationDbContext context, IProductRepository productRepository)
     : ICommandHandler<UpdateProductQuantityCommand, bool>
 {
     public async Task<bool> Handle(UpdateProductQuantityCommand request, CancellationToken cancellationToken)
     {
-        var product = await context.Products.FirstOrDefaultAsync(x => x.Id == request.ProductId);
-        if (product == null)
-        {
-            throw new DomainException($"Product with ID {request.ProductId} not found");
-        }
+        var product = await productRepository.GetAsync(request.ProductId);
 
         var previousStock = product.Stock.Quantity;
 

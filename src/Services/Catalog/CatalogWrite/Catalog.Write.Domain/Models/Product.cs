@@ -87,6 +87,20 @@ public class Product : Aggregate<ProductId>
     public void ChangeCategory(Category category)
     {
         Category = category ?? throw new ArgumentNullException(nameof(category));
+        CategoryId = category.Id;
+    }
+
+    public void AddOrUpdateAttribute(string key, string value)
+    {
+        var attribute = Attributes.SingleOrDefault(a => a.Key == key);
+        if (attribute != null)
+        {
+            attribute.UpdateValue(value);
+        }
+        else
+        {
+            AddAttribute(key, value);
+        }
     }
 
     public void AddAttribute(string key, string value)

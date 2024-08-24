@@ -1,10 +1,14 @@
 ﻿using BuildingBlocks.DDD_Abstractions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace Ordering.Infrastructure.Data.Interceptors;
-public class AuditableEntityInterceptor : SaveChangesInterceptor
+public class AuditableEntityInterceptor 
+    (IHttpContextAccessor httpContextAccessor)
+    : SaveChangesInterceptor
 {
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {
@@ -36,6 +40,17 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
                 entry.Entity.LastModified = DateTime.UtcNow;
             }
         }
+    }
+
+    private string? GetCurrentUserId()
+    {
+        var httpContext = httpContextAccessor.HttpContext;
+        if (httpContext?.User?.Identity?.IsAuthenticated == true)
+        {
+            return httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        }
+
+        return null; // or throw an exception if user info is required
     }
 }
 

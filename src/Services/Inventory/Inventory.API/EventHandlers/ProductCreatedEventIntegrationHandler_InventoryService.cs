@@ -4,7 +4,7 @@ using Inventory.API.Dtos;
 
 namespace Inventory.API.EventHandlers;
 
-public class ProductCreatedEventIntegrationHandler(ISender sender, ILogger<ProductCreatedEventIntegrationHandler> logger)
+public class ProductCreatedEventIntegrationHandler_InventoryService(ISender sender, ILogger<ProductCreatedEventIntegrationHandler_InventoryService> logger)
     : IConsumer<ProductCreatedIntegrationEvent>
 {
     public async Task Consume(ConsumeContext<ProductCreatedIntegrationEvent> context)
