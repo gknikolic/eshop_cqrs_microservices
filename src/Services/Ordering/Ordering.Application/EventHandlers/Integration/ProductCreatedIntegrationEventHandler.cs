@@ -6,7 +6,7 @@ using Ordering.Application.CQRS.Commands.CreateProduct;
 
 namespace Ordering.Application.EventHandlers.Integration;
 
-public class ProductCreatedEventHandler(ISender sender, ILogger<ProductCreatedEventHandler> logger)
+public class ProductCreatedIntegrationEventHandler(ISender sender, ILogger<ProductCreatedIntegrationEventHandler> logger)
     : IConsumer<ProductCreatedIntegrationEvent>
 {
     public async Task Consume(ConsumeContext<ProductCreatedIntegrationEvent> context)

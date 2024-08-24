@@ -1,4 +1,6 @@
-﻿using Customer.API.Database.Entities;
+﻿using BuildingBlocks.Messaging.Events.CustomerEvents;
+using Customer.API.Database.Entities;
+using MassTransit;
 
 namespace Customer.API.Extensions;
 
@@ -15,6 +17,7 @@ public static class InitDataExtensions
     {
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+        var publishEndpoints = serviceProvider.GetRequiredService<IPublishEndpoint>();
 
         IdentityResult roleResult;
 
@@ -45,5 +48,9 @@ public static class InitDataExtensions
                 await userManager.AddToRoleAsync(adminUser, "Admin");
             }
         }
+
+        var userRegisteredIntegrationEvent = new UserRegisteredIntegrationEvent(new Guid(adminUser.Id), adminUser.FullName, adminUser.Email);
+
+        await publishEndpoints.Publish(userRegisteredIntegrationEvent);
     }
 }

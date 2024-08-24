@@ -73,7 +73,7 @@ services:
       - SA_PASSWORD=SwN12345678
     restart: always
     ports:
-      - "1433:1433"
+      - "1435:1433"
     volumes:
       - sqlserver_order:/var/lib/sqlserver/data/   
 

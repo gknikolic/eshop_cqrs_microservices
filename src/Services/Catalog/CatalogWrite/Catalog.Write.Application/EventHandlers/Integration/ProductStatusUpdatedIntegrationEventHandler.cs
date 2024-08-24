@@ -25,4 +25,4 @@ public class ProductStatusUpdatedIntegrationEventHandler(IApplicationDbContext d
 
         await dbContext.SaveChangesAsync(context.CancellationToken);
     }
-}
+}   

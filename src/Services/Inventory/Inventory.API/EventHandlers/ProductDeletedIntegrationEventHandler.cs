@@ -3,7 +3,7 @@ using Inventory.API.CQRS.Commands.DeleteProduct;
 
 namespace Inventory.API.EventHandlers;
 
-public class ProductDeletedEventHandler(ISender sender, ILogger<ProductDeletedEventHandler> logger)
+public class ProductDeletedIntegrationEventHandler(ISender sender, ILogger<ProductDeletedIntegrationEventHandler> logger)
     : IConsumer<ProductDeletedIntegrationEvent>
 {
     public async Task Consume(ConsumeContext<ProductDeletedIntegrationEvent> context)

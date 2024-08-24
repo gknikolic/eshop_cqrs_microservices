@@ -3,8 +3,8 @@ using MassTransit;
 using Ordering.Application.CQRS.Commands.CreateOrder;
 
 namespace Ordering.Application.EventHandlers.Integration;
-public class BasketCheckoutEventHandler
-    (ISender sender, ILogger<BasketCheckoutEventHandler> logger)
+public class BasketCheckoutIntegrationEventHandler
+    (ISender sender, ILogger<BasketCheckoutIntegrationEventHandler> logger)
     : IConsumer<BasketCheckoutIntegrationEvent>
 {
     public async Task Consume(ConsumeContext<BasketCheckoutIntegrationEvent> context)

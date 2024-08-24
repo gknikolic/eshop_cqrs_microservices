@@ -1,7 +1,7 @@
 ﻿using BuildingBlocks.Exceptions;
 
 namespace Catalog.Write.Application.EventHandlers.Integration;
-public class ProductQuantityUpdatedEventHandler(IApplicationDbContext dbContext)
+public class ProductQuantityUpdatedIntegrationEventHandler(IApplicationDbContext dbContext)
     : IConsumer<ProductQuantityUpdatedIntegrationEvent>
 {
     public async Task Consume(ConsumeContext<ProductQuantityUpdatedIntegrationEvent> context)

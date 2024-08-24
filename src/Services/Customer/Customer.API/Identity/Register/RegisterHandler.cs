@@ -35,7 +35,7 @@ public class RegisterHandler(IPublishEndpoint _publishEndpoint, IAuthService _au
 
         var user = result.User;
 
-        await _publishEndpoint.Publish(new UserRegisteredIntegrationEvent(new Guid(user.Id), user.FullName, user.Email, "SelfRegistered"), cancellationToken);
+        await _publishEndpoint.Publish(new UserRegisteredIntegrationEvent(new Guid(user.Id), user.FullName, user.Email), cancellationToken);
 
         return Result.Success("User registrated");
     }

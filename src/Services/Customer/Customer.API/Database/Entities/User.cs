@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using BuildingBlocks.DDD_Abstractions;
 
 namespace Customer.API.Database.Entities;
 
