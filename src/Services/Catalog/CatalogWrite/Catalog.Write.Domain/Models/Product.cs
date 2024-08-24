@@ -17,15 +17,14 @@ public class Product : Aggregate<ProductId>
     // Private constructor for EF Core
     private Product() { }
 
-    public Product(Guid id, Sku sku, string name, string description, Price price, CategoryId categoryId, Color color)
+    public Product(Guid id, Sku sku, string name, string description, Price price, Color color)
     {
-        Id = Id;
+        Id = new ProductId(id);
         Sku = sku;
         Name = name;
         Description = description;
         Price = price;
         IsActive = true;
-        CategoryId = categoryId;
         Color = color;
         Stock = new Stock(0); // stock can be updated later with events from inventory service
         Images = new List<ProductImage>();

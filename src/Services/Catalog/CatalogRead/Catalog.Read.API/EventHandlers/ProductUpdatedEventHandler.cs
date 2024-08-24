@@ -17,10 +17,11 @@ public class ProductUpdatedEventHandler(ICatalogRepository repository)
         product.Name = context.Message.Name;
         product.Description = context.Message.Description;
         product.Price = context.Message.Price;
-        product.PeicesInStock = context.Message.PeicesInStock;
-        product.ImageFiles = context.Message.ImagePaths;
+        product.PeicesInStock = context.Message.Quantity;
+        product.ImageFiles = context.Message.ImageFiles;
         product.Categories = context.Message.Categories;
-        product.IsActive = context.Message.IsActive;
+        product.Color = context.Message.Color;
+        product.Attributes = context.Message.ProductAttributes.Select(x => new ProductAttribute { Name = x.Name, Value = x.Value }).ToList();
 
         await repository.UpdateProductAsync(product);
     }

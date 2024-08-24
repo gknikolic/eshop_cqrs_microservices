@@ -23,9 +23,9 @@ public class CatalogInitialData : IInitialData
                     Id = new Guid("5334c996-8457-4cf0-815c-ed2b77c4ff61"),
                     Name = "IPhone X",
                     Description = "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",
-                    ImageFiles = new List<string>{ "product-1.png" },
+                    ImageFiles = new List<string>{ "product-1.png", "product-2.png"  },
                     Price = 950.00M,
-                    Categories = new List<string> { "Smart Phone" },
+                    Categories = new List<string> { "Smart Phone", "White Appliances" },
                     PeicesInStock = 10,
                     IsActive = true
                 },

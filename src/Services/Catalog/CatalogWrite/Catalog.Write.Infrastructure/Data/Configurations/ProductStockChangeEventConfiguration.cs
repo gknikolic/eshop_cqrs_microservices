@@ -9,6 +9,8 @@ public class ProductStockChangeEventConfiguration : IEntityTypeConfiguration<Pro
 {
     public void Configure(EntityTypeBuilder<ProductStockChangeEvent> builder)
     {
+        builder.ToTable(nameof(ProductStockChangeEvent));
+
         builder.HasKey(e => e.Id);
 
         builder.Property(e => e.Id)

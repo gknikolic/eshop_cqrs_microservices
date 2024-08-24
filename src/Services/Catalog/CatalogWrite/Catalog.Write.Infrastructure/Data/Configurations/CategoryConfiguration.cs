@@ -8,6 +8,7 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 {
     public void Configure(EntityTypeBuilder<Category> builder)
     {
+        builder.ToTable(nameof(Category));
         builder.HasKey(c => c.Id);
 
         builder.Property(c => c.Id)
@@ -35,7 +36,7 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
                .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(c => c.Subcategories)
-               .WithOne()
+               .WithOne(x => x.ParentCategory)
                .HasForeignKey(c => c.ParentCategoryId)
                .OnDelete(DeleteBehavior.Restrict);
 

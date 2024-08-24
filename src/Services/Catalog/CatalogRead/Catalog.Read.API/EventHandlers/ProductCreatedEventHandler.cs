@@ -15,10 +15,11 @@ public class ProductCreatedEventHandler(ICatalogRepository repository)
             Name = context.Message.Name,
             Description = context.Message.Description,
             Price = context.Message.Price,
-            PeicesInStock = context.Message.PeicesInStock,
-            ImageFiles = context.Message.ImagePaths,
+            PeicesInStock = context.Message.Quantity,
+            ImageFiles = context.Message.ImageFiles,
             Categories = context.Message.Categories,
-            IsActive = context.Message.IsActive,
+            Color = context.Message.Color,
+            Attributes = context.Message.ProductAttributes.Select(x => new ProductAttribute { Name = x.Name, Value = x.Value}).ToList()
         };
 
         await repository.AddProductAsync(product);

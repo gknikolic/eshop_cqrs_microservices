@@ -25,7 +25,7 @@ public class GetUsersHandler(UserManager<User> _userManager)
                 Id = user.Id,
                 UserName = user.UserName,
                 Email = user.Email,
-                Role = (RoleEnum) Enum.Parse(typeof(RoleEnum), roles.FirstOrDefault() ?? RoleEnum.User.ToString()),
+                Role = roles.FirstOrDefault() ?? RoleEnum.User.ToString(),
                 FullName = user.FullName,
                 EmailConfirmed = user.EmailConfirmed
             };

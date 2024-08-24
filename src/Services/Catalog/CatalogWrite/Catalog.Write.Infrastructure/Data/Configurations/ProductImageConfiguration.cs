@@ -8,6 +8,8 @@ public class ProductImageConfiguration : IEntityTypeConfiguration<ProductImage>
 {
     public void Configure(EntityTypeBuilder<ProductImage> builder)
     {
+        builder.ToTable(nameof(ProductImage));
+
         builder.HasKey(pi => pi.Id);
         builder.Property(x => x.Id).HasConversion(
             id => id.Value,

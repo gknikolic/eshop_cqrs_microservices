@@ -27,6 +27,26 @@ public class InitialData
 
     private static IEnumerable<Product> GetProducts()
     {
+        var categories = new List<Category>
+        {
+            new Category(
+                name: "Smart Phone",
+                description: "Mobile phones with smart operating systems and advanced features."
+            ),
+            new Category(
+                name: "White Appliances",
+                description: "Large home appliances such as refrigerators and washing machines."
+            ),
+            new Category(
+                name: "Home Kitchen",
+                description: "Appliances and products for kitchen use at home."
+            ),
+            new Category(
+                name: "Camera",
+                description: "Cameras and photography equipment."
+            )
+        };
+
         var products = new List<Product>();
 
         var product = new Product(
@@ -35,9 +55,9 @@ public class InitialData
             name: "IPhone X",
             description: "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",
             price: new Price(950.00M),
-            categoryId: Categories.FirstOrDefault(x => x.Name == "Smart Phone").Id,
             color: Domain.Enum.Color.Black
         );
+        product.ChangeCategory(categories.FirstOrDefault(x => x.Name == "Smart Phone"));
         product.UpdateStock(10);
         product.AddImage("product-1.png", "IPhone X", 1);
         product.AddAttribute("Storage", "256GB");
@@ -51,9 +71,9 @@ public class InitialData
             name: "Samsung 10",
             description: "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",
             price: new Price(840.00M),
-            categoryId: Categories.FirstOrDefault(x => x.Name == "Smart Phone").Id,
             color: Domain.Enum.Color.White
         );
+        product.ChangeCategory(categories.FirstOrDefault(x => x.Name == "Smart Phone"));
         product.UpdateStock(20);
         product.AddImage("product-2.png", "Samsung 10", 1);
         product.AddAttribute("Storage", "128GB");
@@ -67,9 +87,9 @@ public class InitialData
             name: "Huawei Plus",
             description: "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",
             price: new Price(650.00M),
-            categoryId: Categories.FirstOrDefault(x => x.Name == "White Appliances").Id,
             color: Domain.Enum.Color.Blue
         );
+        product.ChangeCategory(categories.FirstOrDefault(x => x.Name == "White Appliances"));
         product.UpdateStock(5);
         product.AddImage("product-3.png", "Huawei Plus", 1);
         product.AddAttribute("Storage", "64GB");
@@ -83,9 +103,9 @@ public class InitialData
             name: "Xiaomi Mi 9",
             description: "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",
             price: new Price(470.00M),
-            categoryId: Categories.FirstOrDefault(x => x.Name == "White Appliances").Id,
             color: Domain.Enum.Color.Red
         );
+        product.ChangeCategory(categories.FirstOrDefault(x => x.Name == "White Appliances"));
         product.UpdateStock(10);
         product.AddImage("product-4.png", "Xiaomi Mi 9", 1);
         product.AddAttribute("Storage", "64GB");
@@ -99,9 +119,9 @@ public class InitialData
             name: "HTC U11+ Plus",
             description: "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",
             price: new Price(380.00M),
-            categoryId: Categories.FirstOrDefault(x => x.Name == "Smart Phone").Id,
             color: Domain.Enum.Color.Silver
         );
+        product.ChangeCategory(categories.FirstOrDefault(x => x.Name == "Smart Phone"));
         product.UpdateStock(10);
         product.AddImage("product-5.png", "HTC U11+ Plus", 1);
         product.AddAttribute("Storage", "128GB");
@@ -115,9 +135,9 @@ public class InitialData
             name: "LG G7 ThinQ",
             description: "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",
             price: new Price(240.00M),
-            categoryId: Categories.FirstOrDefault(x => x.Name == "Home Kitchen").Id,
             color: Domain.Enum.Color.Black
         );
+        product.ChangeCategory(categories.FirstOrDefault(x => x.Name == "Home Kitchen"));
         product.UpdateStock(10);
         product.AddImage("product-6.png", "LG G7 ThinQ", 1);
         product.AddAttribute("Storage", "64GB");
@@ -131,9 +151,9 @@ public class InitialData
             name: "Panasonic Lumix",
             description: "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",
             price: new Price(240.00M),
-            categoryId: Categories.FirstOrDefault(x => x.Name == "Camera").Id,
             color: Domain.Enum.Color.Black
         );
+        product.ChangeCategory(categories.FirstOrDefault(x => x.Name == "Camera"));
         product.UpdateStock(10);
         product.AddImage("product-6.png", "Panasonic Lumix", 1);
         product.AddAttribute("Storage", "32GB");

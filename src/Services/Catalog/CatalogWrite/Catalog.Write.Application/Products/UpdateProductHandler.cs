@@ -1,6 +1,6 @@
 ﻿namespace Catalog.Write.Application.Products;
-public record UpdateProductCommand(ProductDto ProductDto) : ICommand<UpdateProductResponse>;
-public record UpdateProductResponse(bool IsUpdated, string Message);
+public record UpdateProductCommand(ProductDto ProductDto) : ICommand<UpdateProductResult>;
+public record UpdateProductResult(bool IsUpdated, string Message);
 public class UpdateProductCommandValidator : AbstractValidator<UpdateProductCommand>
 {
     public UpdateProductCommandValidator()
@@ -14,13 +14,13 @@ public class UpdateProductCommandValidator : AbstractValidator<UpdateProductComm
     }
 }
 public class UpdateProductHandler(IApplicationDbContext context)
-    : ICommandHandler<UpdateProductCommand, UpdateProductResponse>
+    : ICommandHandler<UpdateProductCommand, UpdateProductResult>
 {
-    public async Task<UpdateProductResponse> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
+    public async Task<UpdateProductResult> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
         var product = await context.Products.FirstOrDefaultAsync(x => x.Id == request.ProductDto.Id);
         if (product == null) { 
-            return new UpdateProductResponse(false, "Product not found");
+            return new UpdateProductResult(false, "Product not found");
         }
 
         var category = await context.Categories.FirstOrDefaultAsync(x => x.Name == request.ProductDto.Category);
@@ -58,6 +58,6 @@ public class UpdateProductHandler(IApplicationDbContext context)
 
         await context.SaveChangesAsync(cancellationToken);
 
-        return new UpdateProductResponse(true, "Product updated successfully");
+        return new UpdateProductResult(true, "Product updated successfully");
     }
 }

@@ -19,9 +19,14 @@ public class UpdateProductQuantityHandler(IApplicationDbContext context)
             throw new DomainException($"Product with ID {request.ProductId} not found");
         }
 
+        var previousStock = product.Stock.Quantity;
+
         product.UpdateStock(request.Quantity);
 
-        product.AddDomainEvent(new ProductQuantityUpdatedEvent(product.Id, request.Quantity));
+        product.AddDomainEvent(new ProductUpdatedEvent(product));
+
+        var stockChangedLog = new ProductStockChangeEvent(product.Id, request.Quantity, product.Stock.Quantity - previousStock >= 0 ? StockChangeReason.Added : StockChangeReason.Sold);
+        context.ProductStockChangeEvents.Add(stockChangedLog);
 
         await context.SaveChangesAsync(cancellationToken);
         return true;

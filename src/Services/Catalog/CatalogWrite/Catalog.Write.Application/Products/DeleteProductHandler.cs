@@ -1,17 +1,17 @@
 ﻿
 namespace Catalog.Write.Application.Products;
 
-public record DeleteProductCommand(Guid ProductId, bool HardDelete = false) : ICommand<DeleteProductResponse>;
-public record DeleteProductResponse(bool IsDeleted, string Message);
+public record DeleteProductCommand(Guid ProductId, bool HardDelete = false) : ICommand<DeleteProductResult>;
+public record DeleteProductResult(bool IsDeleted, string Message);
 public class DeleteProductHandler(IApplicationDbContext context)
-    : ICommandHandler<DeleteProductCommand, DeleteProductResponse>
+    : ICommandHandler<DeleteProductCommand, DeleteProductResult>
 {
-    public async Task<DeleteProductResponse> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
+    public async Task<DeleteProductResult> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
     {
         var product = await context.Products.FirstOrDefaultAsync(p => p.Id == request.ProductId, cancellationToken);
         if (product == null)
         {
-            return new DeleteProductResponse(false, "Product not found");
+            return new DeleteProductResult(false, "Product not found");
         }
 
         if (request.HardDelete)
@@ -27,6 +27,6 @@ public class DeleteProductHandler(IApplicationDbContext context)
 
         await context.SaveChangesAsync(cancellationToken);
 
-        return new DeleteProductResponse(true, "Product deleted");
+        return new DeleteProductResult(true, "Product deleted");
     }
 }

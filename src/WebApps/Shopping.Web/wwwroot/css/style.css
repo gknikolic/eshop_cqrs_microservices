@@ -62,3 +62,37 @@ footer a {
 .field-validation-error {
     color: firebrick;
 }
+
+.star-rating {
+    direction: rtl;
+    display: inline-flex;
+    justify-content: center;
+    font-size: 1.5em;
+}
+
+    .star-rating input {
+        display: none;
+    }
+
+    .star-rating label {
+        cursor: pointer;
+    }
+
+    .star-rating .fa-star {
+        color: #ccc;
+    }
+
+        .star-rating .fa-star.checked {
+            color: #ffcc00;
+        }
+
+    .star-rating input:checked ~ label .fa-star,
+    .star-rating input:hover ~ label .fa-star,
+    .star-rating label:hover ~ label .fa-star {
+        color: #ffcc00;
+    }
+
+.btn.btn-link {
+    background-color: transparent;
+    border: none;
+}

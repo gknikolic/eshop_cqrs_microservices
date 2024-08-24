@@ -33,11 +33,11 @@ public class CreateProductHandler(IApplicationDbContext context)
             name: request.ProductDto.Name,
             description: request.ProductDto.Description,
             price: new Price(request.ProductDto.Price),
-            categoryId: category.Id,
             color: (Color)Enum.Parse(typeof(Color), request.ProductDto.Color)
             );
 
-        product.AddImage(request.ProductDto.PictureUri, request.ProductDto.PictureFileName, 1);
+        product.ChangeCategory(category);
+        product.AddImage(request.ProductDto.PicturePath, request.ProductDto.PictureFileName, 1);
 
         foreach (var attribute in request.ProductDto.Attributes)
         {

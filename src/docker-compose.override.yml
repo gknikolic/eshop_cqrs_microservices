@@ -1,8 +1,8 @@
 version: '3.4'
 
 services:
-  catalogdb:
-    container_name: catalogdb
+  catalog_read_db:
+    container_name: catalog_read_db
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -11,18 +11,18 @@ services:
     ports:
         - "5432:5432"
     volumes:
-      - postgres_catalog:/var/lib/postgresql/data/ 
- 
-  catalogreaddb:
-    container_name: catalogreaddb
-    restart: always
+      - postgres_catalog_read:/var/lib/postgresql/data/   
+      
+  catalog_write_db:
+    container_name: catalog_write_db
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=SwN12345678
+    restart: always
     ports:
-      - "27017:27017"
+      - "1434:1433"
     volumes:
-      - mongo_catalogread:/var/lib/mongo/data/ 
+      - sqlserver_catalog_write:/var/lib/sqlserver/data/ 
       
   basketdb:
     container_name: basketdb
@@ -74,6 +74,8 @@ services:
     restart: always
     ports:
       - "1433:1433"
+    volumes:
+      - sqlserver_order:/var/lib/sqlserver/data/   
 
   messagebroker:
     container_name: messagebroker
@@ -86,12 +88,12 @@ services:
       - "5672:5672"
       - "15672:15672"
 
-  catalog.api:
+  catalog.read.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
-      - ConnectionStrings__Database=Server=catalogdb;Port=5432;Database=CatalogDb;User Id=postgres;Password=postgres;Include Error Detail=true
+      - ConnectionStrings__Database=Server=catalog_read_db;Port=5432;Database=CatalogDb;User Id=postgres;Password=postgres;Include Error Detail=true
       - MessageBroker__Host=amqp://ecommerce-mq:5672
       - MessageBroker__UserName=guest
       - MessageBroker__Password=guest
@@ -99,7 +101,7 @@ services:
       - JwtSettings__Audience=eshop-services
       - JwtSettings__Key=mysecretkey12345mysecretkey12345
     depends_on:
-      - catalogdb
+      - catalog_read_db
       - messagebroker
     ports:
       - "6000:8080"
@@ -108,7 +110,7 @@ services:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
 
-  catalog.read.api:
+  catalog.write.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
@@ -116,12 +118,12 @@ services:
       - MessageBroker__Host=amqp://ecommerce-mq:5672
       - MessageBroker__UserName=guest
       - MessageBroker__Password=guest
+      - ConnectionStrings__Database=Server=catalog_write_db;Database=CatalogDb;User Id=sa;Password=SwN12345678;Encrypt=False;TrustServerCertificate=True
       - JwtSettings__Issuer=customer-api-service
       - JwtSettings__Audience=eshop-services
       - JwtSettings__Key=mysecretkey12345mysecretkey12345
-      - MongoDbSettings__ConnectionString=mongodb://root:example@catalogreaddb:27017
     depends_on:
-      - catalogreaddb
+      - catalog_write_db
       - messagebroker
     ports:
       - "6008:8080"
@@ -250,9 +252,12 @@ services:
       - JwtSettings__Audience=eshop-services
       - JwtSettings__Key=mysecretkey12345mysecretkey12345
     depends_on:
-      - catalog.api
+      - catalog.read.api
+      - catalog.write.api
       - basket.api
       - ordering.api
+      - customer.api
+      - inventory.api
     ports:
       - "6004:8080"
       - "6064:8081"

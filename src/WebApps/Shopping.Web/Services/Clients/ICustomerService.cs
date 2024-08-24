@@ -25,10 +25,10 @@ public interface ICustomerService
     [Post("/customer-service/changePasswordForUser")]
     Task<ResultDto> ChangeUserPassword(ChangeUserPasswordDto request);
 
-    [Get("/customer-service/impersonate")]
+    [Post("/customer-service/impersonate")]
     Task<LoginResponseDto> ImpersonateUser(ImpersonateUserRequestDto request);
     
-    [Get("/customer-service/deleteUser")]
+    [Delete("/customer-service/deleteUser")]
     Task<ResultDto> DeleteUser(string userId);
 
     [Post("/customer-service/refreshToken")]

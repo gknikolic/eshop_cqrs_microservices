@@ -7,6 +7,8 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
 {
     public void Configure(EntityTypeBuilder<Customer> builder)
     {
+        builder.ToTable(nameof(Customer));
+
         builder.HasKey(c => c.Id);
         builder.Property(c => c.Id)
                .HasConversion(id => id.Value, value => new CustomerId(value))

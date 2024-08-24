@@ -7,6 +7,5 @@ public class CustomerDto
     public string Email { get; set; }
     public string FullName { get; set; }
     public bool EmailConfirmed { get; set; }
-    public List<string> Roles { get; set; } = new List<string>();
-    public string RolesString => string.Join(", ", Roles);
+    public string Role { get; set; } 
 }

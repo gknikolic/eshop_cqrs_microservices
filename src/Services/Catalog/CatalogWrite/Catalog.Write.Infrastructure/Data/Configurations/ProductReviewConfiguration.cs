@@ -8,6 +8,8 @@ public class ProductReviewConfiguration : IEntityTypeConfiguration<ProductReview
 {
     public void Configure(EntityTypeBuilder<ProductReview> builder)
     {
+        builder.ToTable(nameof(ProductReview));
+
         builder.HasKey(pr => pr.Id);
 
         builder.Property(pr => pr.Id)

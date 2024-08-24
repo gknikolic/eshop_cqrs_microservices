@@ -17,7 +17,7 @@ public class ProductImage : Entity<ProductImageId>
         if (string.IsNullOrWhiteSpace(url))
             throw new ArgumentException("Image URL cannot be empty", nameof(url));
 
-        Id = new ProductImageId(new Guid());
+        Id = new ProductImageId(Guid.NewGuid());
         FilePath = url;
         AltText = altText;
         DisplayOrder = displayOrder;

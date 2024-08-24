@@ -18,7 +18,6 @@ public static class DatabaseExtentions
 
     private static async Task SeedAsync(ApplicationDbContext context)
     {
-        await SeedCategoriesAsync(context);
         await SeedProductAsync(context);
     }
 
@@ -27,15 +26,6 @@ public static class DatabaseExtentions
         if (!await context.Products.AnyAsync())
         {
             await context.Products.AddRangeAsync(InitialData.Products);
-            await context.SaveChangesAsync();
-        }
-    }
-
-    private static async Task SeedCategoriesAsync(ApplicationDbContext context)
-    {
-        if (!await context.Categories.AnyAsync())
-        {
-            await context.Categories.AddRangeAsync(InitialData.Categories);
             await context.SaveChangesAsync();
         }
     }

@@ -7,8 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{B5
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Catalog", "Catalog", "{5C4D4D4E-3B6C-4B12-BC95-AF41C8FF3EEC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catalog.API", "Services\Catalog\Catalog.API\Catalog.API.csproj", "{B39E950B-EDA6-4D94-85F5-93ED1FD03CF1}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingBlocks", "{0CB8C063-EE8E-46F7-B20B-A68C529DEF82}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildingBlocks", "BuildingBlocks\BuildingBlocks\BuildingBlocks.csproj", "{BDC2CC46-602A-4FC3-AF32-C13E632EC174}"
@@ -59,15 +57,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CatalogRead", "CatalogRead"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CatalogWrite", "CatalogWrite", "{5354BE60-98CA-40DE-B58B-03E7869B9D33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Read.API", "Services\Catalog\CatalogRead\Catalog.Read.API\Catalog.Read.API.csproj", "{A4181C96-2940-40EA-BF75-D9BF8E038523}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catalog.Read.API", "Services\Catalog\CatalogRead\Catalog.Read.API\Catalog.Read.API.csproj", "{A4181C96-2940-40EA-BF75-D9BF8E038523}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Write.Domain", "Services\Catalog\CatalogWrite\Catalog.Write.Domain\Catalog.Write.Domain.csproj", "{1A91A023-C4A6-4BE5-A4D6-B2766D3C5EB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catalog.Write.Domain", "Services\Catalog\CatalogWrite\Catalog.Write.Domain\Catalog.Write.Domain.csproj", "{1A91A023-C4A6-4BE5-A4D6-B2766D3C5EB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Write.Infrastructure", "Services\Catalog\CatalogWrite\Catalog.Write.Infrastructure\Catalog.Write.Infrastructure.csproj", "{B5EB5519-705A-40DC-9A60-F45CF48D85E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catalog.Write.Infrastructure", "Services\Catalog\CatalogWrite\Catalog.Write.Infrastructure\Catalog.Write.Infrastructure.csproj", "{B5EB5519-705A-40DC-9A60-F45CF48D85E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Write.Application", "Services\Catalog\CatalogWrite\Catalog.Write.Application\Catalog.Write.Application.csproj", "{D3A717EE-6008-4554-A0FA-665829E88745}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catalog.Write.Application", "Services\Catalog\CatalogWrite\Catalog.Write.Application\Catalog.Write.Application.csproj", "{D3A717EE-6008-4554-A0FA-665829E88745}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Write.API", "Services\Catalog\CatalogWrite\Catalog.Write.API\Catalog.Write.API.csproj", "{A62E42AC-093F-4218-BAA0-1CAD28E190DC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Write.API", "Services\Catalog\CatalogWrite\Catalog.Write.API\Catalog.Write.API.csproj", "{56FE841E-AEC2-4621-9D7C-87D0C7F1D8D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,10 +73,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B39E950B-EDA6-4D94-85F5-93ED1FD03CF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B39E950B-EDA6-4D94-85F5-93ED1FD03CF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B39E950B-EDA6-4D94-85F5-93ED1FD03CF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B39E950B-EDA6-4D94-85F5-93ED1FD03CF1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BDC2CC46-602A-4FC3-AF32-C13E632EC174}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BDC2CC46-602A-4FC3-AF32-C13E632EC174}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BDC2CC46-602A-4FC3-AF32-C13E632EC174}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -151,17 +145,16 @@ Global
 		{D3A717EE-6008-4554-A0FA-665829E88745}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3A717EE-6008-4554-A0FA-665829E88745}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3A717EE-6008-4554-A0FA-665829E88745}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A62E42AC-093F-4218-BAA0-1CAD28E190DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A62E42AC-093F-4218-BAA0-1CAD28E190DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A62E42AC-093F-4218-BAA0-1CAD28E190DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A62E42AC-093F-4218-BAA0-1CAD28E190DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56FE841E-AEC2-4621-9D7C-87D0C7F1D8D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56FE841E-AEC2-4621-9D7C-87D0C7F1D8D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56FE841E-AEC2-4621-9D7C-87D0C7F1D8D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56FE841E-AEC2-4621-9D7C-87D0C7F1D8D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{5C4D4D4E-3B6C-4B12-BC95-AF41C8FF3EEC} = {B5BFF034-CA54-427C-B7CE-9C0BB65C5A0D}
-		{B39E950B-EDA6-4D94-85F5-93ED1FD03CF1} = {5C4D4D4E-3B6C-4B12-BC95-AF41C8FF3EEC}
 		{BDC2CC46-602A-4FC3-AF32-C13E632EC174} = {0CB8C063-EE8E-46F7-B20B-A68C529DEF82}
 		{A067C785-233F-4139-8B82-A8989520FBEB} = {B5BFF034-CA54-427C-B7CE-9C0BB65C5A0D}
 		{439ADDA5-EA6B-4B30-BD7B-3E2000D33CE5} = {A067C785-233F-4139-8B82-A8989520FBEB}
@@ -186,7 +179,7 @@ Global
 		{1A91A023-C4A6-4BE5-A4D6-B2766D3C5EB5} = {5354BE60-98CA-40DE-B58B-03E7869B9D33}
 		{B5EB5519-705A-40DC-9A60-F45CF48D85E1} = {5354BE60-98CA-40DE-B58B-03E7869B9D33}
 		{D3A717EE-6008-4554-A0FA-665829E88745} = {5354BE60-98CA-40DE-B58B-03E7869B9D33}
-		{A62E42AC-093F-4218-BAA0-1CAD28E190DC} = {5354BE60-98CA-40DE-B58B-03E7869B9D33}
+		{56FE841E-AEC2-4621-9D7C-87D0C7F1D8D0} = {5354BE60-98CA-40DE-B58B-03E7869B9D33}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C4C1ECE9-A4AD-4FED-B0FC-7EA1636ACABF}

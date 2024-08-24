@@ -18,7 +18,7 @@ public class Category : Entity<CategoryId>
 
     public Category(string name, string description, CategoryId? parentCategoryId = null)
     {
-        Id = new CategoryId(new Guid());
+        Id = new CategoryId(Guid.NewGuid());
         Name = name;
         Description = description;
         ParentCategoryId = parentCategoryId;

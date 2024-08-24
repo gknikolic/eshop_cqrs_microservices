@@ -5,18 +5,11 @@
 }
 
 <style>
-    .buttons {
-        display: flex;
+
+    .buttons .btn {
+        padding: 0 0.3rem !important;
     }
 
-        .buttons.btn {
-            padding: 0 6px !important;
-        }
-
-    .btn.btn-link {
-        background-color: transparent;
-        border: none;
-    }
 </style>
 
 <div class="container">
@@ -41,7 +34,7 @@
     <div class="row">
         <div class="col-12">
             <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table table-striped" id="customersTable">
                     <thead>
                         <tr>
                             <th scope="col">Id</th>
@@ -49,7 +42,7 @@
                             <th scope="col">Email</th>
                             <th scope="col">FullName</th>
                             <th scope="col">EmailConfirmed</th>
-                            <th scope="col">Roles</th>
+                            <th scope="col">Role</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -62,18 +55,18 @@
                                 <td>@item.Email</td>
                                 <td>@item.FullName</td>
                                 <td>@item.EmailConfirmed</td>
-                                <td>@item.RolesString</td>
+                                <td>@item.Role</td>
                                 <td class="buttons">
-                                    <form method="post" asp-page-handler="LoginAs">
-                                        <button class="btn btn-link btnLoginAs tooltip" type="button">
-                                            <i class="fa-regular fa-arrow-right-to-bracket"></i>
+                                    <form method="post" asp-page-handler="LoginAs" class="d-inline-block">
+                                        <button class="btn btn-link btnLoginAs showTootip" type="button" title="Login As User">
+                                            <i class="fa-solid fa-right-to-bracket"></i>
                                         </button>
                                     </form>
-                                    <button class="btn btn-link tooltip" data-toggle="modal" data-target="#changePasswordModal" data-id="@item.Id">
-                                        <i class="fa-regular fa-key"></i>
+                                    <button class="btn btn-link d-inline-block showTootip" data-toggle="modal" data-target="#changePasswordModal" data-id="@item.Id" title="Change password">
+                                        <i class="fa-solid fa-key"></i>
                                     </button>
-                                    <form method="post" asp-page-handler="DeleteUser">
-                                        <button class="btn btn-link tooltip" data-toggle="modal" data-target="#DeleteUserModal" data-id="@item.Id">
+                                    <form method="post" asp-page-handler="DeleteUser" class="d-inline">
+                                        <button class="btn btn-link d-inline showTootip" type="button" onclick="confirmDelete('@item.Id')" title="Delete user">
                                             <i class="fa-regular fa-trash-can"></i>
                                         </button>
                                     </form>
@@ -87,11 +80,36 @@
     </div>
 </div>
 
+<partial name="_ChangePasswordModal" />
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
     <script>
+        function confirmDelete(userId) {
+            app.confirmAction("Are you sure you want to delete this user?", function (result) {
+                if (result) {
+                    // Show loader and submit the form
+                    app.blockUI();
+                    document.getElementById('deleteForm-' + userId).submit();
+                }
+            });
+        }
+
         $(document).ready(function () {
+            var table = new DataTable('#customersTable');
+
+            // Listen for search events in the DataTable
+            $('#customersTable_filter input').on('keyup', function () {
+                // Remove previous highlights
+                $('#customersTable tbody').unhighlight();
+
+                // Highlight the searched term
+                var searchTerm = $(this).val();
+                if (searchTerm) {
+                    $('#customersTable tbody').highlight(searchTerm);
+                }
+            });
 
             $(".btnLoginAs").on("click", function (e) { 
                 e.preventDefault();

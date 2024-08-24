@@ -1,11 +1,11 @@
 version: '3.4'
 
 services:
-  catalogdb:
-    image: postgres
-
-  catalogreaddb:
-    image: mongo
+  catalog_read_db:
+    image: postgres  
+    
+  catalog_write_db:
+    image: mcr.microsoft.com/mssql/server
 
   basketdb:
     image: postgres
@@ -25,17 +25,18 @@ services:
   messagebroker:
     image: rabbitmq:management
 
-  catalog.api:
-    image: ${DOCKER_REGISTRY-}catalogapi
-    build:
-      context: .
-      dockerfile: Services/Catalog/Catalog.API/Dockerfile
 
   catalog.read.api:
     image: ${DOCKER_REGISTRY-}catalogreadapi
     build:
       context: .
       dockerfile: Services/Catalog/CatalogRead/Catalog.Read.API/Dockerfile
+
+  catalog.write.api:
+    image: ${DOCKER_REGISTRY-}catalogwriteapi
+    build:
+      context: .
+      dockerfile: Services/Catalog/CatalogWrite/Catalog.Write.API/Dockerfile
 
   basket.api:
     image: ${DOCKER_REGISTRY-}basketapi
@@ -80,8 +81,9 @@ services:
       dockerfile: WebApps/Shopping.Web/Dockerfile
 
 volumes:
-  postgres_catalog:
-  mongo_catalogread:
+  postgres_catalog_read:
+  sqlserver_catalog_write:
   postgres_basket:
   postgres_inventory:
   postgres_customer:
+  sqlserver_order:
