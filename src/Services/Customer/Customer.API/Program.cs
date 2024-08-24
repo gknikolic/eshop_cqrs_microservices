@@ -6,6 +6,7 @@ using BuildingBlocks.Authorization;
 using BuildingBlocks.Messaging.MassTransit;
 using Customer.API.Database.Entities;
 using Customer.API.Services;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,8 +41,11 @@ builder.Services.AddCarter();
 //});
 
 // Configure Entity Framework and Identity
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
+builder.Services.AddDbContext<ApplicationDbContext>((sp, options) =>
+{
+    //options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Database")!);
+});
 
 builder.Services.AddIdentity<User, IdentityRole>(options => { })
     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -58,7 +62,7 @@ builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 builder.Services.AddMessageBroker(builder.Configuration, assembly);
 
 builder.Services.AddHealthChecks()
-    .AddNpgSql(builder.Configuration.GetConnectionString("Database")!);
+    .AddSqlServer(builder.Configuration.GetConnectionString("Database")!);
 
 var app = builder.Build();
 
