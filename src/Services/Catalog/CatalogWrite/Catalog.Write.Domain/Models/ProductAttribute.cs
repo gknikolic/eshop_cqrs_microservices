@@ -7,7 +7,7 @@ public class ProductAttribute : Entity<ProductAttributeId>
     public virtual Product Product { get; private set; }
 
     // Private constructor for EF Core
-    private ProductAttribute() { }
+    protected ProductAttribute() { }
 
     public ProductAttribute(string key, string value, ProductId productId)
     {

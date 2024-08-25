@@ -2,7 +2,7 @@
 using Catalog.Write.Application.Repositories;
 
 namespace Catalog.Write.Application.EventHandlers.Integration;
-public class ProductStatusUpdatedIntegrationEventHandler(IApplicationDbContext dbContext, IProductRepository productRepository) 
+public class ProductStatusUpdatedIntegrationEventHandler(IProductRepository productRepository) 
     : IConsumer<ProductStatusUpdatedIntegrationEvent>
 {
     public async Task Consume(ConsumeContext<ProductStatusUpdatedIntegrationEvent> context)
@@ -18,8 +18,6 @@ public class ProductStatusUpdatedIntegrationEventHandler(IApplicationDbContext d
             product.Activate();
         }
 
-        product.AddDomainEvent(new ProductUpdatedEvent(product));
-
-        await dbContext.SaveChangesAsync(context.CancellationToken);
+        await productRepository.UpdateProductAsync(product, context.CancellationToken);
     }
 }   

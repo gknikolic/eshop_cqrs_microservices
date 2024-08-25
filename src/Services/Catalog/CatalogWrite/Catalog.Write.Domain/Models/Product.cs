@@ -15,7 +15,7 @@ public class Product : Aggregate<ProductId>
     public Stock Stock { get; private set; }
 
     // Private constructor for EF Core
-    private Product() { }
+    protected Product() { }
 
     public Product(Guid id, Sku sku, string name, string description, Price price, Color color)
     {

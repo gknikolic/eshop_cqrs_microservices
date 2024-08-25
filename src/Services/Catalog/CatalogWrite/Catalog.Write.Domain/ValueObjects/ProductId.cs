@@ -13,4 +13,5 @@ public class ProductId
 
     // Implicit conversion to Guid
     public static implicit operator Guid(ProductId self) => self.Value;
+
 }

@@ -10,7 +10,7 @@ public class ProductImage : Entity<ProductImageId>
     public virtual Product Product { get; private set; }
 
     // Private constructor za EF Core
-    private ProductImage() { }
+    protected ProductImage() { }
 
     public ProductImage(string url, string altText, int displayOrder)
     {

@@ -12,7 +12,7 @@ public class Category : Entity<CategoryId>
     public virtual List<Product> Products { get; private set; }
 
     // Private constructor za EF Core
-    private Category() { }
+    protected Category() { }
 
     public Category(string name, string description, CategoryId? parentCategoryId = null)
     {

@@ -1,6 +1,7 @@
 ﻿using BuildingBlocks.Exceptions;
 using Catalog.Write.Application.Data;
 using Catalog.Write.Application.Repositories;
+using Catalog.Write.Domain.Events;
 using Catalog.Write.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,21 +37,22 @@ public class ProductRepository(IApplicationDbContext dbContext)
 
     public async Task<Product> GetAsync(Guid id)
     {
-        //var p = await Products.Where(x => x.Id == id).ToListAsync();
-        //var product = p.FirstOrDefault(x => x.Id == id);
-        var product = await dbContext.Products
-            .AsNoTracking()
-            //.Include(x => x.Category)
-            //.Include(x => x.Reviews)
-            .Include(x => x.Images)
-            //.Include(x => x.Attributes)
-            .FirstOrDefaultAsync(x => x.Id == id);
+        var product = await Products.Include(x => x.Category).Include(x => x.Attributes).FirstOrDefaultAsync(x => x.Id == id);
 
         if (product == null)
         {
             throw new Exception($"Product with id: {id} not found");
         }
 
+        return product;
+    }
+
+    public async Task<Product> UpdateProductAsync(Product product, CancellationToken cancellationToken = default)
+    {
+        product.AddDomainEvent(new ProductUpdatedEvent(product));
+
+        dbContext.Products.Update(product);
+        await dbContext.SaveChangesAsync(cancellationToken);
         return product;
     }
 }

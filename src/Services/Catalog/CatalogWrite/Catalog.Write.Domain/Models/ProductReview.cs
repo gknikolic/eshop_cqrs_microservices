@@ -11,7 +11,7 @@ public class ProductReview : Entity<ProductReviewId>
 
 
     // for ef
-    private ProductReview() { }
+    protected ProductReview() { }
 
     public ProductReview(int rating, string comment, Customer customer)
     {
