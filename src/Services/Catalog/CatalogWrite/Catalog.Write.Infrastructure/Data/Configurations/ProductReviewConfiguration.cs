@@ -12,13 +12,13 @@ public class ProductReviewConfiguration : IEntityTypeConfiguration<ProductReview
 
         builder.HasKey(pr => pr.Id);
 
-        builder.Property(pr => pr.Id)
-               .HasConversion(id => id.Value, value => new ProductReviewId(value))
-               .IsRequired();
+        //builder.Property(pr => pr.Id)
+        //       .HasConversion(id => id.Value, value => new ProductReviewId(value))
+        //       .IsRequired();
 
-        builder.Property(pr => pr.ProductId)
-               .HasConversion(id => id.Value, value => new ProductId(value))
-               .IsRequired();
+        //builder.Property(pr => pr.ProductId)
+        //       .HasConversion(id => id.Value, value => new ProductId(value))
+        //       .IsRequired();
 
         builder.Property(pr => pr.Rating)
                .IsRequired();

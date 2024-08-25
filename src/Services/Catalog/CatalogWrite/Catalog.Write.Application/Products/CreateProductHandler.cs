@@ -24,7 +24,7 @@ public class CreateProductHandler(IApplicationDbContext context, ICategoryReposi
         var category = await categoryRepository.GetOrCreateAsync(request.ProductDto.Category);
 
         var product = new Product(
-            id: new ProductId(Guid.NewGuid()),
+            id: Guid.NewGuid(),
             sku: new Sku(request.ProductDto.Sku),
             name: request.ProductDto.Name,
             description: request.ProductDto.Description,
@@ -45,6 +45,6 @@ public class CreateProductHandler(IApplicationDbContext context, ICategoryReposi
         await context.Products.AddAsync(product, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
 
-        return new CreateProductResult(true, product.Id.Value);
+        return new CreateProductResult(true, product.Id);
     }
 }

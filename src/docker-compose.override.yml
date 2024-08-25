@@ -191,8 +191,8 @@ services:
       - JwtSettings__Issuer=customer-api-service
       - JwtSettings__Audience=eshop-services
       - JwtSettings__Key=mysecretkey12345mysecretkey12345      
-      - JwtSettings__AccessExpiration=6
-      - JwtSettings__RefreshExpiration=3
+      - JwtSettings__AccessExpiration=15
+      - JwtSettings__RefreshExpiration=120
     depends_on:
       - customerdb
     ports:

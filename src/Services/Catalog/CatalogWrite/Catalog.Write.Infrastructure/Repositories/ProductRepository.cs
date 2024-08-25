@@ -11,13 +11,12 @@ public class ProductRepository(IApplicationDbContext dbContext)
 {
     private IQueryable<Product> Products => dbContext.Products
         .AsNoTracking()
-        //.Include(x => x.Category)
-        //.Include(x => x.Reviews)
-        //.Include(x => x.Images)
-        //.Include(x => x.Attributes)
+        .Include(x => x.Category)
+        .Include(x => x.Reviews)
+        .Include(x => x.Images)
+        .Include(x => x.Attributes)
         .AsQueryable();
         //.AsSplitQuery()
-        //.AsNoTracking();
 
     public async Task<IEnumerable<Product>> GetAllAsync(IEnumerable<Guid> ids)
     {
@@ -28,7 +27,7 @@ public class ProductRepository(IApplicationDbContext dbContext)
             if (products.Count != ids.Count())
             {
                 throw new NotFoundException(@$"Not all product found from order: orderItems={ids.Count()} found={products.Count}.
-                Missing products with ids: {string.Join(", ", ids.Except(products.Select(x => x.Id.Value)))}");
+                Missing products with ids: {string.Join(", ", ids.Except(products.Select(x => x.Id)))}");
             }
         }
 
@@ -37,7 +36,7 @@ public class ProductRepository(IApplicationDbContext dbContext)
 
     public async Task<Product> GetAsync(Guid id)
     {
-        var product = await Products.Include(x => x.Category).Include(x => x.Attributes).FirstOrDefaultAsync(x => x.Id == id);
+        var product = await Products.FirstOrDefaultAsync(x => x.Id == id);
 
         if (product == null)
         {

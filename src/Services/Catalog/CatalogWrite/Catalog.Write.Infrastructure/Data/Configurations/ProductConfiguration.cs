@@ -14,11 +14,11 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
 
         builder.HasKey(p => p.Id);
 
-        builder.Property(p => p.Id)
-               .HasConversion(id => id.Value, value => new ProductId(value))
-               .IsRequired();
+        //builder.Property(p => p.Id)
+        //       .HasConversion(id => id.Value, value => new ProductId(value))
+        //       .IsRequired();
 
-        builder.Property(p => p.CategoryId).HasConversion(x => x.Value, p => new CategoryId(p));
+        //builder.Property(p => p.CategoryId).HasConversion(x => x.Value, p => new CategoryId(p));
 
         builder.Property(p => p.Sku)
                .HasConversion(sku => sku.Value, value => new Sku(value))

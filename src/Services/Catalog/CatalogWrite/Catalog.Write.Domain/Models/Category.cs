@@ -1,5 +1,5 @@
 ﻿namespace Catalog.Write.Domain.Models;
-public class Category : Entity<CategoryId>
+public class Category : Entity<Guid>
 {
     public string Name { get; private set; }
     public string Description { get; private set; }
@@ -14,9 +14,9 @@ public class Category : Entity<CategoryId>
     // Private constructor za EF Core
     protected Category() { }
 
-    public Category(string name, string description, CategoryId? parentCategoryId = null)
+    public Category(string name, string description, Guid? parentCategoryId = null)
     {
-        Id = new CategoryId(Guid.NewGuid());
+        Id = Guid.NewGuid();
         Name = name;
         Description = description;
         //ParentCategoryId = parentCategoryId;

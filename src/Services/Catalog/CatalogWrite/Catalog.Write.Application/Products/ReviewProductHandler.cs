@@ -41,6 +41,6 @@ public class ReviewProductHandler(IApplicationDbContext context, IProductReposit
 
         await context.SaveChangesAsync(cancellationToken);
 
-        return new ReviewProductResult(true, review.Id.Value);
+        return new ReviewProductResult(true, review.Id);
     }
 }

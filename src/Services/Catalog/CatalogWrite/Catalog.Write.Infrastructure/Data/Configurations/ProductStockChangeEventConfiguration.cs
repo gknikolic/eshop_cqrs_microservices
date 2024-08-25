@@ -16,9 +16,9 @@ public class ProductStockChangeEventConfiguration : IEntityTypeConfiguration<Pro
         builder.Property(e => e.Id)
                .ValueGeneratedNever();
 
-        builder.Property(e => e.ProductId)
-               .HasConversion(id => id.Value, value => new ProductId(value))
-               .IsRequired();
+        //builder.Property(e => e.ProductId)
+        //       .HasConversion(id => id.Value, value => new ProductId(value))
+        //       .IsRequired();
 
         builder.Property(e => e.Quantity)
                .IsRequired();

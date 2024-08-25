@@ -15,12 +15,12 @@ public class ProductAttributeConfiguration : IEntityTypeConfiguration<ProductAtt
         builder.Property(pa => pa.Id)
                .ValueGeneratedNever();
 
-        builder.Property(pa => pa.Id).HasConversion(id => id.Value, value => new ProductAttributeId(value))
-               .IsRequired();
+        //builder.Property(pa => pa.Id).HasConversion(id => id.Value, value => new ProductAttributeId(value))
+        //       .IsRequired();
 
-        builder.Property(pa => pa.ProductId)
-               .HasConversion(id => id.Value, value => new ProductId(value))
-               .IsRequired();
+        //builder.Property(pa => pa.ProductId)
+        //       .HasConversion(id => id.Value, value => new ProductId(value))
+        //       .IsRequired();
 
         builder.Property(pa => pa.Key)
                .IsRequired()

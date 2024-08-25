@@ -1,12 +1,12 @@
 ﻿namespace Catalog.Write.Domain.Models;
-public class Product : Aggregate<ProductId>
+public class Product : Aggregate<Guid>
 {
     public Sku Sku { get; private set; }
     public string Name { get; private set; }
     public string Description { get; private set; }
     public Price Price { get; private set; }
     public bool IsActive { get; private set; }
-    public CategoryId CategoryId { get; private set; }
+    public Guid CategoryId { get; private set; }
     public virtual Category Category { get ; private set ; }
     public virtual List<ProductImage> Images { get; private set; }
     public virtual List<ProductReview> Reviews { get; private set; }
@@ -19,7 +19,7 @@ public class Product : Aggregate<ProductId>
 
     public Product(Guid id, Sku sku, string name, string description, Price price, Color color)
     {
-        Id = new ProductId(id);
+        Id = id;
         Sku = sku;
         Name = name;
         Description = description;
@@ -32,7 +32,7 @@ public class Product : Aggregate<ProductId>
         Attributes = new List<ProductAttribute>();
     }
 
-    public void UpdateDetails(string name, string description, Price price, CategoryId categoryId, Color color)
+    public void UpdateDetails(string name, string description, Price price, Guid categoryId, Color color)
     {
         Name = name;
         Description = description;

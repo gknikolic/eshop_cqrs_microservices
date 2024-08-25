@@ -50,7 +50,7 @@ public class InitialData
         var products = new List<Product>();
 
         var product = new Product(
-            id: new ProductId(new Guid("5334c996-8457-4cf0-815c-ed2b77c4ff61")),
+            id: new Guid("5334c996-8457-4cf0-815c-ed2b77c4ff61"),
             sku: new Sku("IPH-X"),
             name: "IPhone X",
             description: "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",
@@ -66,7 +66,7 @@ public class InitialData
         products.Add(product);
 
         product = new Product(
-            id: new ProductId(new Guid("c67d6323-e8b1-4bdf-9a75-b0d0d2e7e914")),
+            id: new Guid("c67d6323-e8b1-4bdf-9a75-b0d0d2e7e914"),
             sku: new Sku("SAM-10"),
             name: "Samsung 10",
             description: "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",
@@ -82,7 +82,7 @@ public class InitialData
         products.Add(product);
 
         product = new Product(
-            id: new ProductId(new Guid("4f136e9f-ff8c-4c1f-9a33-d12f689bdab8")),
+            id: new Guid("4f136e9f-ff8c-4c1f-9a33-d12f689bdab8"),
             sku: new Sku("HUA-P"),
             name: "Huawei Plus",
             description: "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",
@@ -98,7 +98,7 @@ public class InitialData
         products.Add(product);
 
         product = new Product(
-            id: new ProductId(new Guid("6ec1297b-ec0a-4aa1-be25-6726e3b51a27")),
+            id: new Guid("6ec1297b-ec0a-4aa1-be25-6726e3b51a27"),
             sku: new Sku("XIA-M9"),
             name: "Xiaomi Mi 9",
             description: "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",
@@ -114,7 +114,7 @@ public class InitialData
         products.Add(product);
 
         product = new Product(
-            id: new ProductId(new Guid("b786103d-c621-4f5a-b498-23452610f88c")),
+            id: new Guid("b786103d-c621-4f5a-b498-23452610f88c"),
             sku: new Sku("HTC-U11"),
             name: "HTC U11+ Plus",
             description: "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",
@@ -130,7 +130,7 @@ public class InitialData
         products.Add(product);
 
         product =  new Product(
-            id: new ProductId(new Guid("c4bbc4a2-4555-45d8-97cc-2a99b2167bff")),
+            id: new Guid("c4bbc4a2-4555-45d8-97cc-2a99b2167bff"),
             sku: new Sku("LG-G7"),
             name: "LG G7 ThinQ",
             description: "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",
@@ -146,7 +146,7 @@ public class InitialData
         products.Add(product);
 
         product = new Product(
-            id: new ProductId(new Guid("93170c85-7795-489c-8e8f-7dcf3b4f4188")),
+            id: new Guid("93170c85-7795-489c-8e8f-7dcf3b4f4188"),
             sku: new Sku("PAN-LUMIX"),
             name: "Panasonic Lumix",
             description: "This phone is the company's biggest change to its flagship smartphone in years. It includes a borderless.",

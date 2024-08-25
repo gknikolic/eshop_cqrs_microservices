@@ -1,5 +1,5 @@
 ﻿namespace Catalog.Write.Domain.Models;
-public class Customer : Entity<CustomerId>
+public class Customer : Entity<Guid>
 {
     public string Name { get; private set; }
     public string Email { get; private set; }
@@ -7,7 +7,7 @@ public class Customer : Entity<CustomerId>
     // Private constructor for EF Core
     protected Customer() { }
 
-    public Customer(CustomerId id , string name, string email)
+    public Customer(Guid id , string name, string email)
     {
         Id = id;
         Name = name ?? throw new ArgumentNullException(nameof(name));

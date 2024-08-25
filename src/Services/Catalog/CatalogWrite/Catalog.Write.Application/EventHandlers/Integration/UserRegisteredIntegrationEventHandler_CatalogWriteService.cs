@@ -5,7 +5,7 @@ public class UserRegisteredIntegrationEventHandler_CatalogWriteService(IApplicat
 {
     public async Task Consume(ConsumeContext<UserRegisteredIntegrationEvent> context)
     {
-        var user = new Customer(new CustomerId(context.Message.Id), context.Message.Name, context.Message.Email);
+        var user = new Customer(context.Message.Id, context.Message.Name, context.Message.Email);
 
         await dbContext.Customers.AddAsync(user);
         await dbContext.SaveChangesAsync(context.CancellationToken);

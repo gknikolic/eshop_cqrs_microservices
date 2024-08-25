@@ -1,12 +1,12 @@
 ﻿namespace Catalog.Write.Domain.Models;
-public class ProductImage : Entity<ProductImageId>
+public class ProductImage : Entity<Guid>
 {
     public string FilePath { get; private set; }
     public string AltText { get; private set; }
     public int DisplayOrder { get; private set; }
 
     // Navigacija prema parent entitetu
-    public virtual ProductId ProductId { get; private set; }
+    public virtual Guid ProductId { get; private set; }
     public virtual Product Product { get; private set; }
 
     // Private constructor za EF Core
@@ -17,7 +17,7 @@ public class ProductImage : Entity<ProductImageId>
         if (string.IsNullOrWhiteSpace(url))
             throw new ArgumentException("Image URL cannot be empty", nameof(url));
 
-        Id = new ProductImageId(Guid.NewGuid());
+        Id = Guid.NewGuid();
         FilePath = url;
         AltText = altText;
         DisplayOrder = displayOrder;
