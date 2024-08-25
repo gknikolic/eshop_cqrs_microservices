@@ -4,9 +4,10 @@ namespace Shopping.Web.Services;
 
 public interface ITokenProvider
 {
-    void ClearToken();
+    void ClearTokens();
     string? GetToken();
     void SetToken(string token);
 
+    string? GetRefreshToken();
     void StoreRefreshToken(string refreshToken);
 }

@@ -5,10 +5,18 @@ namespace Shopping.Web.Services;
 public class TokenProvider(IHttpContextAccessor httpContextAccessor)
     : ITokenProvider
 {
-    public void ClearToken()
+    public void ClearTokens()
     {
         httpContextAccessor.HttpContext?.Response.Cookies.Delete(Constants.AccessTokenCookieName);
         httpContextAccessor.HttpContext?.Response.Cookies.Delete(Constants.RefreshTokenCookieName);
+    }
+
+    public string? GetRefreshToken()
+    {
+        string? token = null;
+        bool hasToken = httpContextAccessor.HttpContext?.Request.Cookies.TryGetValue(Constants.RefreshTokenCookieName, out token) ?? false;
+
+        return hasToken ? token : null;
     }
 
     public string? GetToken()

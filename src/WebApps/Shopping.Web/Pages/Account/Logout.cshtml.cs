@@ -11,7 +11,7 @@ namespace Shopping.Web.Pages.Account
         public async Task<IActionResult> OnGet()
         {
             await HttpContext.SignOutAsync();
-            tokenProvider.ClearToken();
+            tokenProvider.ClearTokens();
             return RedirectToPage("/Index");
         }
     }
