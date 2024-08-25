@@ -25,22 +25,22 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
         builder.Property(c => c.IsActive)
                .IsRequired();
 
-        builder.HasOne(c => c.ParentCategory)
-               .WithMany(pc => pc.Subcategories)
-               .HasForeignKey(c => c.ParentCategoryId)
-               .OnDelete(DeleteBehavior.Restrict);
+        //builder.HasOne(c => c.ParentCategory)
+        //       .WithMany(pc => pc.Subcategories)
+        //       .HasForeignKey(c => c.ParentCategoryId)
+        //       .OnDelete(DeleteBehavior.Restrict);
 
-        builder.HasMany(c => c.Products)
-               .WithOne(p => p.Category)
-               .HasForeignKey(p => p.CategoryId)
-               .OnDelete(DeleteBehavior.Cascade);
+        //builder.HasMany(c => c.Products)
+        //       .WithOne(p => p.Category)
+        //       .HasForeignKey(p => p.CategoryId)
+        //       .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasMany(c => c.Subcategories)
-               .WithOne(x => x.ParentCategory)
-               .HasForeignKey(c => c.ParentCategoryId)
-               .OnDelete(DeleteBehavior.Restrict);
+        //builder.HasMany(c => c.Subcategories)
+        //       .WithOne(x => x.ParentCategory)
+        //       .HasForeignKey(c => c.ParentCategoryId)
+        //       .OnDelete(DeleteBehavior.Restrict);
 
-        builder.Navigation(c => c.Subcategories)
-               .UsePropertyAccessMode(PropertyAccessMode.Field);
+        //builder.Navigation(c => c.Subcategories)
+        //       .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

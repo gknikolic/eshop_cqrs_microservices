@@ -47,10 +47,10 @@ public static class InitDataExtensions
             {
                 await userManager.AddToRoleAsync(adminUser, "Admin");
             }
+
+            var userRegisteredIntegrationEvent = new UserRegisteredIntegrationEvent(new Guid(adminUser.Id), adminUser.FullName, adminUser.Email);
+
+            await publishEndpoints.Publish(userRegisteredIntegrationEvent);
         }
-
-        var userRegisteredIntegrationEvent = new UserRegisteredIntegrationEvent(new Guid(adminUser.Id), adminUser.FullName, adminUser.Email);
-
-        await publishEndpoints.Publish(userRegisteredIntegrationEvent);
     }
 }

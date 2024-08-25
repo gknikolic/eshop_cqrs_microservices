@@ -6,7 +6,7 @@ public class ReviewProductEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPost("/products/review", async (ISender sender, ReviewProductRequest request) =>
+        app.MapPost("/products/review", async (ReviewProductRequest request, ISender sender) =>
         {
             var result = await sender.Send(new ReviewProductCommand(request.ProductReviewDto));
             return new ReviewProductResponse(result.Success, result.ProductReviewId);

@@ -14,8 +14,8 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
                .HasConversion(id => id.Value, value => new CustomerId(value))
                .IsRequired();
 
-        builder.Property(c => c.Id)
-               .ValueGeneratedNever();
+        //builder.Property(c => c.Id)
+        //       .ValueGeneratedNever();
 
         builder.Property(c => c.Name)
                .IsRequired()

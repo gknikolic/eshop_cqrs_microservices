@@ -3,27 +3,25 @@ public class Category : Entity<CategoryId>
 {
     public string Name { get; private set; }
     public string Description { get; private set; }
-    public CategoryId? ParentCategoryId { get; private set; }
-    public Category ParentCategory { get; private set; }
+    //public virtual CategoryId? ParentCategoryId { get; private set; }
+    //public virtual Category ParentCategory { get;  set; }
     public bool IsActive { get; private set; }
 
-    // Kolekcija podkategorija
-    public List<Category> Subcategories { get; private set; }
+    //public virtual List<Category> Subcategories { get;  set; }
 
-    // Navigacija prema proizvodima u ovoj kategoriji
-    public List<Product> Products { get; private set; }
+    public virtual List<Product> Products { get; set; }
 
     // Private constructor za EF Core
-    private Category() { }
+    public Category() { }
 
     public Category(string name, string description, CategoryId? parentCategoryId = null)
     {
         Id = new CategoryId(Guid.NewGuid());
         Name = name;
         Description = description;
-        ParentCategoryId = parentCategoryId;
+        //ParentCategoryId = parentCategoryId;
         IsActive = true;
-        Subcategories = new List<Category>();
+        //Subcategories = new List<Category>();
         Products = new List<Product>();
     }
 
@@ -33,21 +31,21 @@ public class Category : Entity<CategoryId>
         Description = description;
     }
 
-    public void AddSubcategory(Category subcategory)
-    {
-        if (subcategory == null)
-            throw new ArgumentNullException(nameof(subcategory));
+    //public void AddSubcategory(Category subcategory)
+    //{
+    //    if (subcategory == null)
+    //        throw new ArgumentNullException(nameof(subcategory));
 
-        Subcategories.Add(subcategory);
-    }
+    //    Subcategories.Add(subcategory);
+    //}
 
-    public void RemoveSubcategory(Category subcategory)
-    {
-        if (subcategory == null)
-            throw new ArgumentNullException(nameof(subcategory));
+    //public void RemoveSubcategory(Category subcategory)
+    //{
+    //    if (subcategory == null)
+    //        throw new ArgumentNullException(nameof(subcategory));
 
-        Subcategories.Remove(subcategory);
-    }
+    //    Subcategories.Remove(subcategory);
+    //}
 
     public void Deactivate()
     {

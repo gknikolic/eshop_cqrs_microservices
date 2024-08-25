@@ -6,11 +6,11 @@ public class ProductImage : Entity<ProductImageId>
     public int DisplayOrder { get; private set; }
 
     // Navigacija prema parent entitetu
-    public ProductId ProductId { get; private set; }
-    public Product Product { get; private set; }
+    public virtual ProductId ProductId { get; private set; }
+    public virtual Product Product { get; set; }
 
     // Private constructor za EF Core
-    private ProductImage() { }
+    public ProductImage() { }
 
     public ProductImage(string url, string altText, int displayOrder)
     {

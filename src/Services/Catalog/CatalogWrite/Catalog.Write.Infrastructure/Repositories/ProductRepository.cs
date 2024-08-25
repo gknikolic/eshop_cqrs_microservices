@@ -9,10 +9,13 @@ public class ProductRepository(IApplicationDbContext dbContext)
     : IProductRepository
 {
     private IQueryable<Product> Products => dbContext.Products
-        .Include(x => x.Category)
-        .Include(x => x.Reviews)
-        .Include(x => x.Images)
+        .AsNoTracking()
+        //.Include(x => x.Category)
+        //.Include(x => x.Reviews)
+        //.Include(x => x.Images)
         .Include(x => x.Attributes);
+        //.AsSplitQuery()
+        //.AsNoTracking();
 
     public async Task<IEnumerable<Product>> GetAllAsync(IEnumerable<Guid> ids)
     {
@@ -32,9 +35,11 @@ public class ProductRepository(IApplicationDbContext dbContext)
 
     public async Task<Product> GetAsync(Guid id)
     {
-        var product = await Products.FirstOrDefaultAsync(x => x.Id == id);
+        //var p = await Products.Where(x => x.Id == id).ToListAsync();
+        //var product = p.FirstOrDefault(x => x.Id == id);
+        var product = Products.FirstOrDefault(x => x.Id == id);
 
-        if(product == null)
+        if (product == null)
         {
             throw new Exception($"Product with id: {id} not found");
         }
