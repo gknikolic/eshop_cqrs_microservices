@@ -5,6 +5,13 @@
     var isItemAvailable = Model.Product.IsActive && Model.Product.PeicesInStock > 0;
 }
 
+<style>
+    .attributes-table tr td:first-child {
+        font-weight: bold;
+        width: 30%;
+    }
+</style>
+
 <div class="container">
     <!-- Breadcrumb -->
     <div class="row">
@@ -155,6 +162,20 @@
                 <div class="card-header bg-primary text-white text-uppercase"><i class="fa fa-align-justify"></i> Description</div>
                 <div class="card-body">
                     <p class="card-text">@Model.Product.Description</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-borderless table-striped attributes-table">\
+                                @foreach(var spec in Model.Product.ProductAttributes)
+                                {
+                                    <tr>
+                                        <td>@spec.Name</td>
+                                        <td>@spec.Value</td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
