@@ -4,10 +4,10 @@ public class ProductAttribute : Entity<ProductAttributeId>
     public string Key { get; private set; }
     public string Value { get; private set; }
     public ProductId ProductId { get; private set; }
-    public virtual Product Product { get; set; }
+    public virtual Product Product { get; private set; }
 
     // Private constructor for EF Core
-    public ProductAttribute() { }
+    private ProductAttribute() { }
 
     public ProductAttribute(string key, string value, ProductId productId)
     {

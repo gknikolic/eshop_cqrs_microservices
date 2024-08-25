@@ -45,20 +45,15 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             value => (Color)Enum.Parse(typeof(Color), value))
                     .IsRequired();
 
-        //builder.HasOne(p => p.Category)
-        //       .WithMany(c => c.Products)
-        //       .HasForeignKey(p => p.CategoryId)
-        //       .OnDelete(DeleteBehavior.Restrict);
+        builder.HasMany(p => p.Images)
+               .WithOne(i => i.Product)
+               .HasForeignKey(i => i.ProductId)
+               .OnDelete(DeleteBehavior.Cascade);
 
-        //builder.HasMany(p => p.Images)
-        //       .WithOne(i => i.Product)
-        //       .HasForeignKey(i => i.ProductId)
-        //       .OnDelete(DeleteBehavior.Cascade);
-
-        //builder.HasMany(p => p.Reviews)
-        //       .WithOne(r => r.Product)
-        //       .HasForeignKey(r => r.ProductId)
-        //       .OnDelete(DeleteBehavior.Cascade);
+        builder.HasMany(p => p.Reviews)
+               .WithOne(r => r.Product)
+               .HasForeignKey(r => r.ProductId)
+               .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasMany(p => p.Attributes)
                .WithOne(a => a.Product)

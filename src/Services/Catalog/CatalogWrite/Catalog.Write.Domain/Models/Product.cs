@@ -7,15 +7,15 @@ public class Product : Aggregate<ProductId>
     public Price Price { get; private set; }
     public bool IsActive { get; private set; }
     public CategoryId CategoryId { get; private set; }
-    public virtual Category Category { get;  set; }
-    public virtual List<ProductImage> Images { get; set; }
-    public virtual List<ProductReview> Reviews { get;  set; }
-    public virtual List<ProductAttribute> Attributes { get;  set; }
-    public virtual Color Color { get; private set; }
+    public virtual Category Category { get ; private set ; }
+    public virtual List<ProductImage> Images { get; private set; }
+    public virtual List<ProductReview> Reviews { get; private set; }
+    public virtual List<ProductAttribute> Attributes { get; private set; }
+    public Color Color { get; private set; }
     public Stock Stock { get; private set; }
 
     // Private constructor for EF Core
-    public Product() { }
+    private Product() { }
 
     public Product(Guid id, Sku sku, string name, string description, Price price, Color color)
     {
@@ -28,7 +28,7 @@ public class Product : Aggregate<ProductId>
         Color = color;
         Stock = new Stock(0); // stock can be updated later with events from inventory service
         Images = new List<ProductImage>();
-        Reviews = new List<ProductReview>(); 
+        Reviews = new List<ProductReview>();
         Attributes = new List<ProductAttribute>();
     }
 

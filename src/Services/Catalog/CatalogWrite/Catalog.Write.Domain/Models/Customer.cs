@@ -5,7 +5,7 @@ public class Customer : Entity<CustomerId>
     public string Email { get; private set; }
 
     // Private constructor for EF Core
-    protected Customer() { }
+    private Customer() { }
 
     public Customer(CustomerId id , string name, string email)
     {

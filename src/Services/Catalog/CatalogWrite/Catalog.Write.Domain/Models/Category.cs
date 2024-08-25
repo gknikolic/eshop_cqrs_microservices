@@ -9,10 +9,10 @@ public class Category : Entity<CategoryId>
 
     //public virtual List<Category> Subcategories { get;  set; }
 
-    public virtual List<Product> Products { get; set; }
+    public virtual List<Product> Products { get; private set; }
 
     // Private constructor za EF Core
-    public Category() { }
+    private Category() { }
 
     public Category(string name, string description, CategoryId? parentCategoryId = null)
     {

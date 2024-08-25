@@ -13,7 +13,8 @@ public class ProductRepository(IApplicationDbContext dbContext)
         //.Include(x => x.Category)
         //.Include(x => x.Reviews)
         //.Include(x => x.Images)
-        .Include(x => x.Attributes);
+        //.Include(x => x.Attributes)
+        .AsQueryable();
         //.AsSplitQuery()
         //.AsNoTracking();
 
@@ -37,7 +38,13 @@ public class ProductRepository(IApplicationDbContext dbContext)
     {
         //var p = await Products.Where(x => x.Id == id).ToListAsync();
         //var product = p.FirstOrDefault(x => x.Id == id);
-        var product = Products.FirstOrDefault(x => x.Id == id);
+        var product = await dbContext.Products
+            .AsNoTracking()
+            //.Include(x => x.Category)
+            //.Include(x => x.Reviews)
+            .Include(x => x.Images)
+            //.Include(x => x.Attributes)
+            .FirstOrDefaultAsync(x => x.Id == id);
 
         if (product == null)
         {

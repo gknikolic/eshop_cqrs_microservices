@@ -16,6 +16,10 @@ public class ProductReviewConfiguration : IEntityTypeConfiguration<ProductReview
                .HasConversion(id => id.Value, value => new ProductReviewId(value))
                .IsRequired();
 
+        builder.Property(pr => pr.ProductId)
+               .HasConversion(id => id.Value, value => new ProductId(value))
+               .IsRequired();
+
         builder.Property(pr => pr.Rating)
                .IsRequired();
 

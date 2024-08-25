@@ -12,8 +12,8 @@ public class ProductAttributeConfiguration : IEntityTypeConfiguration<ProductAtt
 
         builder.HasKey(pa => pa.Id);
 
-        //builder.Property(pa => pa.Id)
-        //       .ValueGeneratedNever();
+        builder.Property(pa => pa.Id)
+               .ValueGeneratedNever();
 
         builder.Property(pa => pa.Id).HasConversion(id => id.Value, value => new ProductAttributeId(value))
                .IsRequired();

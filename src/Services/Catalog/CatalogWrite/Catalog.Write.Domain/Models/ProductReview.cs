@@ -5,13 +5,13 @@ public class ProductReview : Entity<ProductReviewId>
     public string Comment { get; private set; }
 
     public virtual ProductId ProductId { get; private set; }
-    public virtual Product Product { get; set; }
+    public virtual Product Product { get; private set; }
     public virtual CustomerId CustomerId { get; private set; }
-    public virtual Customer Customer { get; set; }
+    public virtual Customer Customer { get; private set; }
 
 
     // for ef
-    public ProductReview() { }
+    private ProductReview() { }
 
     public ProductReview(int rating, string comment, Customer customer)
     {

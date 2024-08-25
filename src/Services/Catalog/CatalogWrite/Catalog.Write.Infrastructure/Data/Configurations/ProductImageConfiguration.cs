@@ -29,8 +29,9 @@ public class ProductImageConfiguration : IEntityTypeConfiguration<ProductImage>
         builder.Property(pi => pi.DisplayOrder)
                .IsRequired();
 
-        builder.HasOne(pi => pi.Product)
-               .WithMany(p => p.Images)
-               .HasForeignKey(pi => pi.ProductId);
+        //builder.HasOne(pi => pi.Product)
+        //       .WithMany(p => p.Images)
+        //       .HasForeignKey(pi => pi.ProductId)
+        //       .OnDelete(DeleteBehavior.Cascade);
     }
 }
