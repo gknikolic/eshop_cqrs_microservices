@@ -1,3 +1,3 @@
 ﻿namespace BuildingBlocks.Messaging.Events.InventoryEvents;
-public record ProductStatusUpdatedIntegrationEvent(Guid ProductId, bool Status) : IntegrationEvent;
+public record ProductStatusUpdatedIntegrationEvent(Guid ProductId, bool IsActive) : IntegrationEvent;
 

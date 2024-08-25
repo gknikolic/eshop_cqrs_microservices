@@ -22,6 +22,7 @@ public class ProductUpdatedIntegrationEventHandler(ICatalogRepository repository
         product.Categories = context.Message.Categories;
         product.Color = context.Message.Color;
         product.Attributes = context.Message.ProductAttributes.Select(x => new ProductAttribute { Name = x.Name, Value = x.Value }).ToList();
+        product.IsActive = context.Message.IsActive;
 
         await repository.UpdateProductAsync(product);
     }

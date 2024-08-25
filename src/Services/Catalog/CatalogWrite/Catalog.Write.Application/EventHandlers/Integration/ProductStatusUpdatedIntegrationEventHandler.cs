@@ -9,7 +9,7 @@ public class ProductStatusUpdatedIntegrationEventHandler(IProductRepository prod
     {
         var product = await productRepository.GetAsync(context.Message.ProductId);
 
-        if (context.Message.Status == false)
+        if (context.Message.IsActive == false)
         {
             product.Deactivate();
         }
