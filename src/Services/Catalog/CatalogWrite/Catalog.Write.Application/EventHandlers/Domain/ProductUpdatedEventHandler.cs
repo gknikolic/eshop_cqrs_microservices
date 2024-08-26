@@ -12,6 +12,7 @@ public class ProductUpdatedEventHandler(IPublishEndpoint publishEndpoint)
 
         message.Id = notification.Product.Id;
         message.Name = notification.Product.Name;
+        message.Sku = notification.Product.Sku;
         message.Description = notification.Product.Description;
         message.Price = notification.Product.Price;
         message.Categories = new List<string> { notification.Product.Category.Name };
