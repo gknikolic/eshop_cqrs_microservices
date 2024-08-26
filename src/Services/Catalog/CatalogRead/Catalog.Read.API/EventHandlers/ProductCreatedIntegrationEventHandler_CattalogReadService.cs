@@ -13,6 +13,7 @@ public class ProductCreatedIntegrationEventHandler_CattalogReadService(ICatalogR
         {
             Id = context.Message.Id,
             Name = context.Message.Name,
+            Sku = context.Message.Sku,
             Description = context.Message.Description,
             Price = context.Message.Price,
             PeicesInStock = context.Message.Quantity,

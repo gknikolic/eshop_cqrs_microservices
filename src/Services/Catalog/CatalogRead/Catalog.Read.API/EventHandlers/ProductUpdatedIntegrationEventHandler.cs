@@ -15,6 +15,7 @@ public class ProductUpdatedIntegrationEventHandler(ICatalogRepository repository
         }
 
         product.Name = context.Message.Name;
+        product.Sku = context.Message.Sku;
         product.Description = context.Message.Description;
         product.Price = context.Message.Price;
         product.PeicesInStock = context.Message.Quantity;
