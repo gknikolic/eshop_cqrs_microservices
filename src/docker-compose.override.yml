@@ -22,7 +22,7 @@ services:
     ports:
       - "1434:1433"
     volumes:
-      - sqlserver_catalog_write:/var/lib/sqlserver/data/ 
+      - sqlserver_catalog_write:/var/opt/mssql
       
   basketdb:
     container_name: basketdb
@@ -57,7 +57,7 @@ services:
     ports:
       - "1436:1433"
     volumes:
-      - sqlserver_customer:/var/lib/sqlserver/data/ 
+      - sqlserver_customer:/var/opt/mssql
 
   distributedcache:
     container_name: distributedcache
@@ -74,7 +74,7 @@ services:
     ports:
       - "1435:1433"
     volumes:
-      - sqlserver_order:/var/lib/sqlserver/data/   
+      - sqlserver_order:/var/opt/mssql 
 
   messagebroker:
     container_name: messagebroker
