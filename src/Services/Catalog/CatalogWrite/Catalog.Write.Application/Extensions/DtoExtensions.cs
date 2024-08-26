@@ -11,15 +11,14 @@ public static class DtoExtensions
             Name = product.Name,
             Description = product.Description,
             Price = product.Price,
-            PictureFileName = product.Images.FirstOrDefault()?.AltText ?? "",
-            PicturePath = product.Images.FirstOrDefault()?.FilePath ?? "",
             Quantity = product.Stock.Quantity,
             IsAvailable = product.Stock.IsAvailable(),
             Color = product.Color.ToString(),
             CategoryId = product.CategoryId,
             Category = product.Category?.Name,
             Attributes = product.Attributes.Select(a => a.ToDto()).ToList(),
-            Reviews = product.Reviews.Select(r => r.ToDto()).ToList()
+            Reviews = product.Reviews.Select(r => r.ToDto()).ToList(),
+            Images = product.Images.Select(i => i.ToDto()).ToList()
         };
     }
 
@@ -41,10 +40,20 @@ public static class DtoExtensions
         {
             ProductId = review.ProductId,
             Comment = review.Comment,
-            Rating = review.Rating,
-            Created = review.CreatedAt.Value,
-            UserId = review.CustomerId,
-            Email = review.Customer.Email
+            Rating = review.Rating
         };
     }
+
+    // productImage.ToDto()
+    public static ProductImageDto ToDto(this ProductImage productImage)
+    {
+        return new ProductImageDto
+        {
+            ProductId = productImage.ProductId,
+            FilePath = productImage.FilePath,
+            AltText = productImage.AltText,
+            DisplayOrder = productImage.DisplayOrder
+        };
+    }
+
 }

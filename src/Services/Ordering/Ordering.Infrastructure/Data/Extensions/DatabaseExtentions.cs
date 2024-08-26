@@ -19,7 +19,7 @@ public static class DatabaseExtentions
     {
 
         //await SeedCustomerAsync(context);
-        await SeedProductAsync(context);
+        //await SeedProductAsync(context);
         //await SeedOrdersWithItemsAsync(context);
     }
 

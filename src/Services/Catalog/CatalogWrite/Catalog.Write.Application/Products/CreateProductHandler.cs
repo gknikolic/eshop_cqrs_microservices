@@ -33,7 +33,11 @@ public class CreateProductHandler(IApplicationDbContext context, ICategoryReposi
             );
 
         product.ChangeCategory(category);
-        product.AddImage(request.ProductDto.PicturePath, request.ProductDto.PictureFileName, 1);
+
+        request.ProductDto.Images.ForEach(image =>
+        {
+            product.AddImage(image.FilePath, image.AltText, image.DisplayOrder);
+        });
 
         foreach (var attribute in request.ProductDto.Attributes)
         {

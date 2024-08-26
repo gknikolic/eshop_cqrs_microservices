@@ -29,3 +29,19 @@
     });
 
 });
+
+function initDataTable (tableId) {
+    var table = new DataTable(tableId);
+
+    // Listen for search events in the DataTable
+    $(`${tableId}_filter input`).on('keyup', function () {
+        // Remove previous highlights
+        $(`${tableId} tbody`).unhighlight();
+
+        // Highlight the searched term
+        var searchTerm = $(this).val();
+        if (searchTerm) {
+            $(`${tableId} tbody`).highlight(searchTerm);
+        }
+    });
+};

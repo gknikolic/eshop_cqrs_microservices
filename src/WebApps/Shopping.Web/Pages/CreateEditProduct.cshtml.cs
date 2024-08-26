@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.IdentityModel.Tokens;
+using Shopping.Web.Enums;
+using Shopping.Web.Models;
 using Shopping.Web.Services.Clients;
+using System.ComponentModel.DataAnnotations;
 
 public class CreateProductModel(ICatalogService catalogService)
     : PageModel
@@ -10,7 +13,14 @@ public class CreateProductModel(ICatalogService catalogService)
     public ProductViewModel Product { get; set; }
 
     public SelectList CategorySelectList { get; set; } = new SelectList(new List<string> { "Electronics", "Clothing", "Books", "Home", "Smart Phone", "White Appliances", "Camera", "Home Kitchen" });
-    public SelectList ColorSelectList { get; set; } = new SelectList(new List<string> { "Red", "Blue", "Green", "Yellow", "Silver", "Gray", "Pink", "White" });
+    public List<SelectListItem> ColorSelectList { get; set; } = Enum.GetValues(typeof(Color))
+                                               .Cast<Color>()
+                                                   .Select(e => new SelectListItem
+                                                   {
+                                                       Value = e.ToString(),
+                                                       Text = e.ToString()
+                                                   })
+                                                   .ToList();
     public bool IsEditMode => Product.Id != Guid.Empty;
 
     // Maximum allowed file size in bytes (e.g., 2MB)
@@ -19,8 +29,30 @@ public class CreateProductModel(ICatalogService catalogService)
     // Permitted file extensions
     private readonly string[] _permittedExtensions = { ".jpg", ".jpeg", ".png", ".gif" };
 
-    public async Task<IActionResult> OnGetAsync()
+    public async Task<IActionResult> OnGetAsync(Guid? Id)
     {
+        if(Id.HasValue)
+        {
+            var response = await catalogService.GetProduct(Id.Value);
+            var product = response.Product;
+            Product = new ProductViewModel
+            {
+                Id = product.Id,
+                Sku = product.Sku,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                Category = product.Categories.FirstOrDefault(),
+                Color = product.Color.ToString(),
+                Rate = product.RateString,
+                UploadedImages = product.ImageFiles.Select(image => Path.GetFileName(image)).ToList(),
+                ProductAttributes = product.ProductAttributes.Select(attr => new ProductAttribute { Name = attr.Name, Value = attr.Value }).ToList()
+            };
+        }
+        else
+        {
+            Product = new ProductViewModel();
+        }
         return Page();
     }
 
@@ -73,8 +105,8 @@ public class CreateProductModel(ICatalogService catalogService)
             existingProduct.Sku = Product.Sku;
             existingProduct.Name = Product.Name;
             existingProduct.Description = Product.Description;
-            existingProduct.Price = Product.Price;
-            existingProduct.Category = new List<string> { Product.Category };
+            existingProduct.Price = Product.Price.Value;
+            existingProduct.Categories = new List<string> { Product.Category };
 
             existingProduct.ProductAttributes = new List<ProductAttribute>();
             foreach (var attribute in Product.ProductAttributes)
@@ -82,11 +114,12 @@ public class CreateProductModel(ICatalogService catalogService)
                 existingProduct.ProductAttributes.Add(new ProductAttribute { Name = attribute.Name, Value = attribute.Value });
             }
 
-            existingProduct.ImageFiles = new List<string>();
-            foreach (var imageName in Product.UploadedImages)
-            {
-                existingProduct.ImageFiles.Add($"/images/{imageName}");
-            }
+            var imageResult = await HandleImages();
+            //if(imageResult.success == false)
+            //{
+            //    ModelState.AddModelError("Product.ImageFiles", imageResult.errors);
+            //    return Page();
+            //}
 
             var result = await catalogService.UpdateProduct(new UpdateProductRequest(existingProduct));
         }
@@ -98,9 +131,8 @@ public class CreateProductModel(ICatalogService catalogService)
                 Sku = Product.Sku,
                 Name = Product.Name,
                 Description = Product.Description,
-                Price = Product.Price,
-                Category = new List<string> { Product.Category },
-                IsActive = Product.IsActive,
+                Price = Product.Price.Value,
+                Categories = new List<string> { Product.Category },
                 ImageFiles = new List<string>(),
                 ProductAttributes = Product.ProductAttributes.Select(attr => new ProductAttribute { Name = attr.Name, Value = attr.Value }).ToList()
             };
@@ -111,16 +143,40 @@ public class CreateProductModel(ICatalogService catalogService)
                 product.ProductAttributes.Add(new ProductAttribute { Name = attribute.Name, Value = attribute.Value });
             }
 
-            foreach (var imageName in Product.UploadedImages)
-            {
-                product.ImageFiles.Add($"/images/{imageName}");
-            }
+            var imageResult = await HandleImages();
 
             var result = await catalogService.CreateProduct(new CreateProductRequest(product));
         }
 
         return RedirectToPage("ProductList"); // Or wherever you want to redirect after creation
 
+    }
+
+    private async Task<(bool success, string errors)> HandleImages()
+    {
+        // Handle image uploads
+        Product.UploadedImages = new List<string>();
+
+        foreach (var imageFile in Product.ImageFiles)
+        {
+            var validationError = ValidateImage(imageFile);
+            if (!string.IsNullOrEmpty(validationError))
+            {
+                return (false, validationError);
+            }
+
+            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(imageFile.FileName)}";
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(stream);
+            }
+
+            Product.UploadedImages.Add(fileName);
+        }
+
+        return (true, "");
     }
 
     private string ValidateImage(IFormFile imageFile)
@@ -146,17 +202,23 @@ public class CreateProductModel(ICatalogService catalogService)
 
 public class ProductViewModel
 {
+    [Required]
     public Guid Id { get; set; }
+    [Required]
     public string Sku { get; set; }
+    [Required]
     public string Name { get; set; }
     public string Description { get; set; }
-    public decimal Price { get; set; }
+    [Required]
+    public decimal? Price { get; set; }
+    [Required]
     public string Category { get; set; }
     public bool IsActive { get; set; }
     public string Color { get; set; }
+    public string Rate { get; set; }
     public List<string> UploadedImages { get; set; }
     public List<ProductAttribute> ProductAttributes { get; set; }
 
-    // Add this property for handling file uploads
-    public List<IFormFile> ImageFiles { get; set; }
+    [Required]
+    public List<IFormFile> ImageFiles { get; set; } // this property for handling file uploads
 }

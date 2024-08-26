@@ -19,7 +19,7 @@ public class ProductCreatedIntegrationEventHandler_CattalogReadService(ICatalogR
             ImageFiles = context.Message.ImageFiles,
             Categories = context.Message.Categories,
             Color = context.Message.Color,
-            Attributes = context.Message.ProductAttributes.Select(x => new ProductAttribute { Name = x.Name, Value = x.Value }).ToList(),
+            ProductAttributes = context.Message.ProductAttributes.Select(x => new ProductAttribute { Name = x.Name, Value = x.Value }).ToList(),
             IsActive = context.Message.IsActive
         };
 

@@ -1,4 +1,5 @@
-﻿using BuildingBlocks.DDD_Abstractions;
+﻿using BuildingBlocks.Authorization;
+using BuildingBlocks.DDD_Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -26,17 +27,19 @@ public class AuditableEntityInterceptor
     {
         if (context == null) return;
 
+        string? currentUser = httpContextAccessor.HttpContext?.User?.GetEmail();
+
         foreach (var entry in context.ChangeTracker.Entries<IEntity>())
         {
             if (entry.State == EntityState.Added)
             {
-                entry.Entity.CreatedBy = entry.Entity.CreatedBy.IsNullOrEmpty() ? entry.Entity.CreatedBy : "hardCodedUser";
+                entry.Entity.CreatedBy = currentUser;
                 entry.Entity.CreatedAt = DateTime.UtcNow;
             }
 
             if (entry.State == EntityState.Added || entry.State == EntityState.Modified || entry.HasChangedOwnedEntities())
             {
-                entry.Entity.LastModifiedBy = entry.Entity.LastModifiedBy.IsNullOrEmpty() ? entry.Entity.LastModifiedBy : "hardCodedUser";
+                entry.Entity.LastModifiedBy = currentUser;
                 entry.Entity.LastModified = DateTime.UtcNow;
             }
         }

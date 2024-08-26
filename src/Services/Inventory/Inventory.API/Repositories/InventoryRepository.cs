@@ -1,7 +1,6 @@
 ﻿using Inventory.API.Dtos;
 using Inventory.API.Models;
 using Marten;
-using System.Threading;
 
 namespace Inventory.API.Repositories;
 
@@ -14,9 +13,7 @@ public class InventoryRepository(IDocumentSession session)
         {
             Id = product.Id,
             Name = product.Name,
-            Price = product.Price,
             Quantity = 0,
-            IsActive = false
         };
 
         session.Store(newProduct);

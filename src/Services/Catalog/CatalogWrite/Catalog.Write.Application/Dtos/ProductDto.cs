@@ -6,8 +6,6 @@ public class ProductDto
     public string Name { get; set; }
     public string Description { get; set; }
     public decimal Price { get; set; }
-    public string PictureFileName { get; set; }
-    public string PicturePath { get; set; }
     public int Quantity { get; set; }
     public bool IsAvailable { get; set; }
     public string Color { get; set; }
@@ -15,5 +13,6 @@ public class ProductDto
     public string? Category { get; set; }
     public List<ProductAttributeDto> Attributes { get; set; }
     public List<ProductReviewDto> Reviews { get; set; }
+    public List<ProductImageDto> Images { get; set; }
 
 }

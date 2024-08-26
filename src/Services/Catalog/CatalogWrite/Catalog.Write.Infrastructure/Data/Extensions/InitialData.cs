@@ -1,4 +1,5 @@
-﻿using Catalog.Write.Domain.Models;
+﻿using Catalog.Write.Domain.Events;
+using Catalog.Write.Domain.Models;
 using Catalog.Write.Domain.ValueObjects;
 
 namespace Catalog.Write.Infrastructure.Data.Extensions;
@@ -58,11 +59,12 @@ public class InitialData
             color: Domain.Enum.Color.Black
         );
         product.ChangeCategory(categories.FirstOrDefault(x => x.Name == "Smart Phone"));
-        product.UpdateStock(10);
+        //product.UpdateStock(10);
         product.AddImage("product-1.png", "IPhone X", 1);
         product.AddAttribute("Storage", "256GB");
         product.AddAttribute("Screen Size", "5.8 inches");
         product.AddAttribute("Battery Life", "12 hours");
+        product.AddDomainEvent(new ProductCreatedEvent(product));
         products.Add(product);
 
         product = new Product(
@@ -74,11 +76,12 @@ public class InitialData
             color: Domain.Enum.Color.White
         );
         product.ChangeCategory(categories.FirstOrDefault(x => x.Name == "Smart Phone"));
-        product.UpdateStock(20);
+        //product.UpdateStock(20);
         product.AddImage("product-2.png", "Samsung 10", 1);
         product.AddAttribute("Storage", "128GB");
         product.AddAttribute("Camera", "16MP");
         product.AddAttribute("Water Resistance", "IP68");
+        product.AddDomainEvent(new ProductCreatedEvent(product));
         products.Add(product);
 
         product = new Product(
@@ -90,11 +93,12 @@ public class InitialData
             color: Domain.Enum.Color.Blue
         );
         product.ChangeCategory(categories.FirstOrDefault(x => x.Name == "White Appliances"));
-        product.UpdateStock(5);
+        //product.UpdateStock(5);
         product.AddImage("product-3.png", "Huawei Plus", 1);
         product.AddAttribute("Storage", "64GB");
         product.AddAttribute("RAM", "6GB");
         product.AddAttribute("Processor", "Kirin 970");
+        product.AddDomainEvent(new ProductCreatedEvent(product));
         products.Add(product);
 
         product = new Product(
@@ -106,11 +110,12 @@ public class InitialData
             color: Domain.Enum.Color.Red
         );
         product.ChangeCategory(categories.FirstOrDefault(x => x.Name == "White Appliances"));
-        product.UpdateStock(10);
+        //product.UpdateStock(10);
         product.AddImage("product-4.png", "Xiaomi Mi 9", 1);
         product.AddAttribute("Storage", "64GB");
         product.AddAttribute("Battery Life", "15 hours");
         product.AddAttribute("Fast Charging", "Yes");
+        product.AddDomainEvent(new ProductCreatedEvent(product));
         products.Add(product);
 
         product = new Product(
@@ -122,11 +127,12 @@ public class InitialData
             color: Domain.Enum.Color.Silver
         );
         product.ChangeCategory(categories.FirstOrDefault(x => x.Name == "Smart Phone"));
-        product.UpdateStock(10);
+        //product.UpdateStock(10);
         product.AddImage("product-5.png", "HTC U11+ Plus", 1);
         product.AddAttribute("Storage", "128GB");
         product.AddAttribute("Screen Resolution", "1440 x 2880 pixels");
         product.AddAttribute("Audio", "BoomSound");
+        product.AddDomainEvent(new ProductCreatedEvent(product));
         products.Add(product);
 
         product =  new Product(
@@ -138,11 +144,12 @@ public class InitialData
             color: Domain.Enum.Color.Black
         );
         product.ChangeCategory(categories.FirstOrDefault(x => x.Name == "Home Kitchen"));
-        product.UpdateStock(10);
+        //product.UpdateStock(10);
         product.AddImage("product-6.png", "LG G7 ThinQ", 1);
         product.AddAttribute("Storage", "64GB");
         product.AddAttribute("Camera", "Dual 16MP");
         product.AddAttribute("AI Integration", "ThinQ AI");
+        product.AddDomainEvent(new ProductCreatedEvent(product));
         products.Add(product);
 
         product = new Product(
@@ -154,11 +161,12 @@ public class InitialData
             color: Domain.Enum.Color.Black
         );
         product.ChangeCategory(categories.FirstOrDefault(x => x.Name == "Camera"));
-        product.UpdateStock(10);
+        //product.UpdateStock(10);
         product.AddImage("product-6.png", "Panasonic Lumix", 1);
         product.AddAttribute("Storage", "32GB");
         product.AddAttribute("Zoom", "10x Optical Zoom");
         product.AddAttribute("Display", "3-inch LCD");
+        product.AddDomainEvent(new ProductCreatedEvent(product));
         products.Add(product);
 
         return products;

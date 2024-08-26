@@ -97,19 +97,7 @@
         }
 
         $(document).ready(function () {
-            var table = new DataTable('#customersTable');
-
-            // Listen for search events in the DataTable
-            $('#customersTable_filter input').on('keyup', function () {
-                // Remove previous highlights
-                $('#customersTable tbody').unhighlight();
-
-                // Highlight the searched term
-                var searchTerm = $(this).val();
-                if (searchTerm) {
-                    $('#customersTable tbody').highlight(searchTerm);
-                }
-            });
+            initDataTable("#customersTable");
 
             $(".btnLoginAs").on("click", function (e) { 
                 e.preventDefault();

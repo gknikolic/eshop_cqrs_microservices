@@ -65,7 +65,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catalog.Write.Infrastructur
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catalog.Write.Application", "Services\Catalog\CatalogWrite\Catalog.Write.Application\Catalog.Write.Application.csproj", "{D3A717EE-6008-4554-A0FA-665829E88745}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Catalog.Write.API", "Services\Catalog\CatalogWrite\Catalog.Write.API\Catalog.Write.API.csproj", "{56FE841E-AEC2-4621-9D7C-87D0C7F1D8D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Catalog.Write.API", "Services\Catalog\CatalogWrite\Catalog.Write.API\Catalog.Write.API.csproj", "{56FE841E-AEC2-4621-9D7C-87D0C7F1D8D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

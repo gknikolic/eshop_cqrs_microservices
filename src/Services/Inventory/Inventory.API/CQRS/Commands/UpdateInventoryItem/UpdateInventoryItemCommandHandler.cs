@@ -15,27 +15,18 @@ public class UpdateInventoryItemCommandHandler(IInventoryRepository repository, 
             throw new ProductNotFoundException(request.ItemDto.Id);
         }
 
-        var oldQuantity = product.Quantity;
-        var oldIsActive = product.IsActive;
+        // check if the quantity is the same
+        if (product.Quantity == request.ItemDto.Quantity)
+        {
+            return new UpdateInventoryItemCommandResponse(product.ToInventoryItemDto());
+        }
 
+        // update the quantity
         product.Quantity = request.ItemDto.Quantity;
-        product.IsActive = request.ItemDto.IsActive;
-
         var updatedProduct = await repository.UpdateProductAsync(product, cancellationToken);
 
-        logger.LogInformation("Product updated: {ProductId}, {Quantity}, {IsActive}", product.Id, request.ItemDto.Quantity, request.ItemDto.IsActive);
-
-        if(oldQuantity != product.Quantity)
-        {
-            logger.LogInformation("Publishing {ProductQuantityUpdatedEvent}: {ProductId}, {QuantityChangedBy}", nameof(ProductQuantityUpdatedIntegrationEvent), product.Id, request.ItemDto.Quantity - oldQuantity);
-            await publishEndpoint.Publish(new ProductQuantityUpdatedIntegrationEvent(product.Id, product.Quantity), cancellationToken);
-        }
-
-        if(oldIsActive != product.IsActive)
-        {
-            logger.LogInformation("Publishing {ProductStatusUpdatedEvent}: {ProductId}, {IsActive}", nameof(ProductStatusUpdatedIntegrationEvent), product.Id, product.IsActive);
-            await publishEndpoint.Publish(new ProductStatusUpdatedIntegrationEvent(product.Id, product.IsActive), cancellationToken);
-        }
+        // publish the event
+        await publishEndpoint.Publish(new ProductQuantityUpdatedIntegrationEvent(product.Id, product.Quantity), cancellationToken);
 
         return new UpdateInventoryItemCommandResponse(updatedProduct.ToInventoryItemDto());
     }

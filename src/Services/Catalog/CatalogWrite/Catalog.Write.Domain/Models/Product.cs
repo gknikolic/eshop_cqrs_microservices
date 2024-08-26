@@ -1,4 +1,6 @@
-﻿namespace Catalog.Write.Domain.Models;
+﻿using System;
+
+namespace Catalog.Write.Domain.Models;
 public class Product : Aggregate<Guid>
 {
     public Sku Sku { get; private set; }
@@ -14,10 +16,15 @@ public class Product : Aggregate<Guid>
     public Color Color { get; private set; }
     public Stock Stock { get; private set; }
 
+    // Fields for versioning
+    public int Version { get; private set; }
+    public Guid? PreviousVersionId { get; private set; }
+    public virtual Product PreviousVersion { get; private set; }
+
     // Private constructor for EF Core
     protected Product() { }
 
-    public Product(Guid id, Sku sku, string name, string description, Price price, Color color)
+    public Product(Guid id, Sku sku, string name, string description, Price price, Color color, int version = 1, Guid? previousVersionId = null)
     {
         Id = id;
         Sku = sku;
@@ -30,6 +37,49 @@ public class Product : Aggregate<Guid>
         Images = new List<ProductImage>();
         Reviews = new List<ProductReview>();
         Attributes = new List<ProductAttribute>();
+    }
+
+    public Product CreateNewVersion()
+    {
+        var newProduct = new Product(
+            id: Guid.NewGuid(),
+            this.Sku,
+            this.Name,
+            this.Description,
+            this.Price,
+            this.Color,
+            version: this.Version + 1,
+            previousVersionId: this.Id
+        );
+
+        // copy inventory related props
+        newProduct.Stock = this.Stock;
+        newProduct.IsActive = true;
+
+        this.IsActive = false;
+
+        // 
+        newProduct.ChangeCategory(this.Category);
+
+        // Clone images
+        foreach (var image in this.Images)
+        {
+            newProduct.AddImage(image.FilePath, image.AltText, image.DisplayOrder);
+        }
+
+        // Clone attributes
+        foreach (var attribute in this.Attributes)
+        {
+            newProduct.AddAttribute(attribute.Key, attribute.Value);
+        }
+
+        // Clone reviews
+        foreach (var review in this.Reviews)
+        {
+            newProduct.AddReview(new ProductReview(review.Rating, review.Comment, review.Customer));
+        }
+
+        return newProduct;
     }
 
     public void UpdateDetails(string name, string description, Price price, Guid categoryId, Color color)

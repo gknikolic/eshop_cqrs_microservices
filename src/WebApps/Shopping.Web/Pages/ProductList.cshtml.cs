@@ -16,11 +16,11 @@ namespace Shopping.Web.Pages
         {
             var response = await catalogService.GetProducts();
 
-            CategoryList = response.Products.SelectMany(p => p.Category).Distinct();
+            CategoryList = response.Products.SelectMany(p => p.Categories).Distinct();
 
             if (!string.IsNullOrWhiteSpace(categoryName))
             {
-                ProductList = response.Products.Where(p => p.Category.Contains(categoryName));
+                ProductList = response.Products.Where(p => p.Categories.Contains(categoryName));
                 SelectedCategory = categoryName;
             }
             else

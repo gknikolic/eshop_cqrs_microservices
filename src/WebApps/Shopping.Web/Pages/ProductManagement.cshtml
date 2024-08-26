@@ -1,7 +1,7 @@
 ﻿@page
-@model Shopping.Web.Pages.InventoryModel
+@model Shopping.Web.Pages.ProductManagementModel
 @{
-    ViewData["Title"] = "Inventory";
+    ViewData["Title"] = "ProductManagement";
 }
 
 <div class="container">
@@ -21,25 +21,38 @@
 <div class="container mb-4">
     <div class="row">
         <div class="col-12">
+            <a asp-page="CreateEditProduct" asp-route-id="" class="btn btn-success">Add new item</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
             <div class="table-responsive">
-                <table class="table table-striped" id="inventoryTable">
+                <table class="table table-striped" id="productTable">
                     <thead>
                         <tr>
+                            <th scope="col">Id</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Sku</th>
+                            <th scope="col">Category</th>
                             <th scope="col">Price</th>
-                            <th scope="col">Quantity</th>
+                            <th scope="col">Color</th>
+                            <th scope="col">Rate</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model.Items)
+                        @foreach (var item in Model.Products)
                         {
                             <tr>
+                                <td>@item.Id</td>
                                 <td>@item.Name</td>
+                                <td>@item.Sku</td>
+                                <td>@item.Categories</td>
                                 <td>@item.Price</td>
-                                <td>@item.Quantity</td>
+                                <td>@item.Color</td>
+                                <td>@item.RateString</td>
                                 <td>
-                                    <button class="btn btn-danger" data-toggle="modal" data-target="#updateInventoryItemModal" data-id="@item.Id" data-quantity="@item.Quantity">Edit</button>
+                                    <a asp-page="CreateEditProduct" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
                                 </td>
                             </tr>
                         }
@@ -50,8 +63,6 @@
     </div>
 </div>
 
-<!-- Partial for Update Item Modal -->
-<partial name="_UpdateInventoryItemModal" model="Model" />
 
 
 
@@ -60,18 +71,7 @@
 
     <script>
         $(document).ready(function () {
-
-            initDataTable("#inventoryTable");
-
-            $('#updateInventoryItemModal').on('show.bs.modal', function (event) {
-                var button = $(event.relatedTarget);
-                var id = button.data('id');
-                var quantity = button.data('quantity');
-
-                var modal = $(this);
-                modal.find('input[name="UpdateInventoryItemModel.Id"]').val(id);
-                modal.find('input[name="UpdateInventoryItemModel.Quantity"]').val(quantity);
-            });
+            initDataTable("#productTable");
         });
 
     </script>

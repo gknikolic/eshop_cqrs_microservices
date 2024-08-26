@@ -10,6 +10,6 @@ public class ReviewProductEndpoint : ICarterModule
         {
             var result = await sender.Send(new ReviewProductCommand(request.ProductReviewDto));
             return new ReviewProductResponse(result.Success, result.ProductReviewId);
-        });
+        }).RequireAuthorization();
     }
 }

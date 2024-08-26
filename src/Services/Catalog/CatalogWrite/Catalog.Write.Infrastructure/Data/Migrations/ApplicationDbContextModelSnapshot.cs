@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Catalog.Write.Infrastructure.Data.Migrations
+namespace Catalog.Write.Infrastructure.data.migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -18,6 +18,9 @@ namespace Catalog.Write.Infrastructure.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -25,6 +28,7 @@ namespace Catalog.Write.Infrastructure.Data.Migrations
             modelBuilder.Entity("Catalog.Write.Domain.Models.Category", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("CreatedAt")
@@ -52,12 +56,7 @@ namespace Catalog.Write.Infrastructure.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<Guid?>("ParentCategoryId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ParentCategoryId");
 
                     b.ToTable("Category", (string)null);
                 });
@@ -65,6 +64,7 @@ namespace Catalog.Write.Infrastructure.Data.Migrations
             modelBuilder.Entity("Catalog.Write.Domain.Models.Customer", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("CreatedAt")
@@ -97,6 +97,7 @@ namespace Catalog.Write.Infrastructure.Data.Migrations
             modelBuilder.Entity("Catalog.Write.Domain.Models.Product", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("CategoryId")
@@ -131,6 +132,9 @@ namespace Catalog.Write.Infrastructure.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<Guid?>("PreviousVersionId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
@@ -142,9 +146,18 @@ namespace Catalog.Write.Infrastructure.Data.Migrations
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
+                    b.Property<int>("Version")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("PreviousVersionId")
+                        .IsUnique()
+                        .HasFilter("[PreviousVersionId] IS NOT NULL");
 
                     b.ToTable("Product", (string)null);
                 });
@@ -190,6 +203,7 @@ namespace Catalog.Write.Infrastructure.Data.Migrations
             modelBuilder.Entity("Catalog.Write.Domain.Models.ProductImage", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AltText")
@@ -230,6 +244,7 @@ namespace Catalog.Write.Infrastructure.Data.Migrations
             modelBuilder.Entity("Catalog.Write.Domain.Models.ProductReview", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Comment")
@@ -302,16 +317,6 @@ namespace Catalog.Write.Infrastructure.Data.Migrations
                     b.ToTable("ProductStockChangeEvent", (string)null);
                 });
 
-            modelBuilder.Entity("Catalog.Write.Domain.Models.Category", b =>
-                {
-                    b.HasOne("Catalog.Write.Domain.Models.Category", "ParentCategory")
-                        .WithMany("Subcategories")
-                        .HasForeignKey("ParentCategoryId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("ParentCategory");
-                });
-
             modelBuilder.Entity("Catalog.Write.Domain.Models.Product", b =>
                 {
                     b.HasOne("Catalog.Write.Domain.Models.Category", "Category")
@@ -320,7 +325,13 @@ namespace Catalog.Write.Infrastructure.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Catalog.Write.Domain.Models.Product", "PreviousVersion")
+                        .WithOne()
+                        .HasForeignKey("Catalog.Write.Domain.Models.Product", "PreviousVersionId");
+
                     b.Navigation("Category");
+
+                    b.Navigation("PreviousVersion");
                 });
 
             modelBuilder.Entity("Catalog.Write.Domain.Models.ProductAttribute", b =>
@@ -367,8 +378,6 @@ namespace Catalog.Write.Infrastructure.Data.Migrations
             modelBuilder.Entity("Catalog.Write.Domain.Models.Category", b =>
                 {
                     b.Navigation("Products");
-
-                    b.Navigation("Subcategories");
                 });
 
             modelBuilder.Entity("Catalog.Write.Domain.Models.Product", b =>

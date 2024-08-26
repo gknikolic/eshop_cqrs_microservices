@@ -2,7 +2,6 @@
 @model Shopping.Web.Pages.ProductDetailModel
 @{
     ViewData["Title"] = "ProductDetail";
-    var isItemAvailable = Model.Product.IsActive && Model.Product.PeicesInStock > 0;
 }
 
 <style>
@@ -57,7 +56,7 @@
                 <div class="card-body">
                     <p class="price">@Model.Product.Price $</p>
                     <p class="price_discounted">@(Model.Product.Price + 120) $</p>
-                    <p class="stock">@(isItemAvailable ? $"In stock - {Model.Product.PeicesInStock} left" : "Unavailable")</p>
+                    <p class="stock">@(Model.Product.IsInStock ? $"In stock - {Model.Product.PeicesInStock} left" : "Unavailable")</p>
                     <form asp-page-handler="AddToCart" method="post" name="addToCartForm" id="add_cart_form">
                         <div class="form-group">
                             <label for="colors">Color</label>
@@ -162,15 +161,29 @@
                 <div class="card-header bg-primary text-white text-uppercase"><i class="fa fa-align-justify"></i> Description</div>
                 <div class="card-body">
                     <p class="card-text">@Model.Product.Description</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Specification -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-light mb-3">
+                <div class="card-header bg-primary text-white text-uppercase"><i class="fa fa-align-justify"></i> Specification</div>
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <table class="table table-borderless table-striped attributes-table">\
-                                @foreach(var spec in Model.Product.ProductAttributes)
+                            <table class="table table-borderless table-striped attributes-table">
+                                @if (Model.Product.ProductAttributes != null)
                                 {
-                                    <tr>
-                                        <td>@spec.Name</td>
-                                        <td>@spec.Value</td>
-                                    </tr>
+                                    @foreach (var spec in Model.Product.ProductAttributes)
+                                    {
+                                        <tr>
+                                            <td>@spec.Name</td>
+                                            <td>@spec.Value</td>
+                                        </tr>
+                                    }
                                 }
                             </table>
                         </div>

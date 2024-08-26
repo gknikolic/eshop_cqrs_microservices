@@ -1,6 +1,4 @@
 using Shopping.Web.Services.Clients;
-using Microsoft.AspNetCore.Authorization;
-using Shopping.Web.Helpers;
 
 namespace Shopping.Web.Pages
 {
@@ -39,9 +37,13 @@ namespace Shopping.Web.Pages
             return Page();
         }
 
-        [Authorize]
         public async Task<IActionResult> OnPostAddReviewAsync(Guid productId)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToPage("/Account/Login", new { returnUrl = $"/ProductDetail?productId={productId}" });
+            }
+
             if (Rating < 1 || Rating > 5 || string.IsNullOrWhiteSpace(Comment))
             {
                 ModelState.AddModelError(string.Empty, "Invalid review input.");
@@ -52,10 +54,8 @@ namespace Shopping.Web.Pages
 
             var review = new ProductReview
             {
-                UserName = userName,
                 Rating = Rating,
                 Comment = Comment,
-                UserId = User.GetId(),
                 ProductId = productId
             };
 
@@ -64,7 +64,6 @@ namespace Shopping.Web.Pages
             return RedirectToPage("ProductDetail", new { productId });
         }
 
-        [Authorize]
         public async Task<IActionResult> OnPostAddToCartAsync(Guid productId)
         {
             _logger.LogInformation("Add to cart button clicked");

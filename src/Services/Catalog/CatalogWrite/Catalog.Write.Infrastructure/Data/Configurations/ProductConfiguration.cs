@@ -3,6 +3,7 @@ using Catalog.Write.Domain.Models;
 using Catalog.Write.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Reflection.Emit;
 
 
 namespace Catalog.Write.Infrastructure.Data.Configurations;
@@ -19,6 +20,14 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         //       .IsRequired();
 
         //builder.Property(p => p.CategoryId).HasConversion(x => x.Value, p => new CategoryId(p));
+
+        builder.Property(p => p.Version)
+        .IsRequired()
+        .HasDefaultValue(1);
+
+       builder.HasOne(p => p.PreviousVersion)
+            .WithOne()
+            .HasForeignKey<Product>(p => p.PreviousVersionId);
 
         builder.Property(p => p.Sku)
                .HasConversion(sku => sku.Value, value => new Sku(value))

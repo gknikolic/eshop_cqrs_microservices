@@ -31,12 +31,18 @@ builder.Services.AddMarten(opts =>
 }).UseLightweightSessions();
 
 if (builder.Environment.IsDevelopment())
-    builder.Services.InitializeMartenWith<CatalogInitialData>();
+{
+    // products seeding from catalog write on init
+    // builder.Services.InitializeMartenWith<CatalogInitialData>();
+}
+
 
 //Async Communication Services
 builder.Services.AddMessageBroker(builder.Configuration, assembly);
 
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("Database")!);

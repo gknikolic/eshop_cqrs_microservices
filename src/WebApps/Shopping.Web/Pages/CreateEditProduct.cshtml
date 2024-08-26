@@ -8,47 +8,42 @@
 
 <form method="post" enctype="multipart/form-data">
     <input asp-for="Product.Id" type="hidden" class="form-control" />
-    <div class="form-group">
+    <div class="form-group col-md-6">
         <label asp-for="Product.Sku"></label>
         <input asp-for="Product.Sku" class="form-control" />
         <span asp-validation-for="Product.Sku" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    <div class="form-group col-md-6">
         <label asp-for="Product.Name"></label>
         <input asp-for="Product.Name" class="form-control" />
         <span asp-validation-for="Product.Name" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    <div class="form-group col-md-12">
         <label asp-for="Product.Description"></label>
         <textarea asp-for="Product.Description" class="form-control"></textarea>
         <span asp-validation-for="Product.Description" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    <div class="form-group col-md-3">
         <label asp-for="Product.Price"></label>
         <input asp-for="Product.Price" class="form-control" />
         <span asp-validation-for="Product.Price" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    <div class="form-group col-md-3">
         <label asp-for="Product.Category">Category</label>
         <select asp-for="Product.Category" class="form-control" asp-items="Model.CategorySelectList"></select>
         <span asp-validation-for="Product.Category" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    <div class="form-group col-md-3">
         <label asp-for="Product.Color"></label>
-        <input asp-for="Product.Color" class="form-control" />
+        <select asp-for="Product.Color" class="form-control" asp-items="Model.ColorSelectList"></select>
         <span asp-validation-for="Product.Color" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Product.IsActive"></label>
-        <input asp-for="Product.IsActive" class="form-control" />
-        <span asp-validation-for="Product.IsActive" class="text-danger"></span>
     </div>
 
     
     <!-- Product Attributes -->
     <div id="product-attributes">
         <h4>Product Attributes</h4>
-        @for (var i = 0; i < Model.Product.ProductAttributes.Count; i++)
+        @for (var i = 0; i < Model.Product.ProductAttributes?.Count; i++)
         {
             <div asp-for="Product.ProductAttributes" class="form-group">
                 <div class="row mb-2">
@@ -65,14 +60,13 @@
                     </div>
                 </div>
             </div>
-            <button type="button" class="btn btn-secondary" id="add-attribute">Add Attribute</button>
         }
-
+        <button type="button" class="btn btn-secondary" id="add-attribute">Add Attribute</button>
     </div>
 
     <div class="form-group">
         <label for="imageUpload">Upload Images</label>
-        <input type="file" name="Product.ImageFiles" multiple class="form-control-file" />
+        <div id="dropzone" class="dropzone"></div>
         <span asp-validation-for="Product.ImageFiles" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary">Create</button>
@@ -110,5 +104,56 @@
         }
 
         attachRemoveButtonEvent();
+
+        Dropzone.autoDiscover = false;
+
+        var dropzone = new Dropzone("#dropzone", {
+            url: "/your-form-handler-url", // This is the same URL as your form's action
+            autoProcessQueue: false, // Disable auto-upload
+            maxFilesize: 2, // Max file size in MB
+            acceptedFiles: ".jpg,.jpeg,.png,.gif",
+            addRemoveLinks: true,
+            dictDefaultMessage: "Drag and drop images here or click to upload",
+            paramName: "Product.ImageFiles", // This corresponds to the property name in your ViewModel
+            init: function () {
+                var myDropzone = this;
+
+                // Handle form submission
+                document.querySelector("form").addEventListener("submit", function (event) {
+                    event.preventDefault();
+                    // First, upload all files in the queue
+                    myDropzone.processQueue();
+                });
+
+                this.on("sendingmultiple", function (data, xhr, formData) {
+                    // Add additional form data here if needed
+                });
+
+                this.on("successmultiple", function (files, response) {
+                    // Handle the successful response here
+                    // Redirect or update the page as needed
+                });
+
+                this.on("errormultiple", function (files, response) {
+                    // Handle errors here
+                });
+
+                // If you have existing files, add them here
+                var existingFiles = @Html.Raw(Json.Serialize(Model.Product.UploadedImages));
+
+                existingFiles.forEach(function (fileName) {
+                    var mockFile = { name: fileName, size: 12345 }; // size is required but can be any number
+                    myDropzone.emit("addedfile", mockFile);
+                    myDropzone.emit("thumbnail", mockFile, "/images/" + fileName);
+                    myDropzone.emit("complete", mockFile);
+
+                    // Make sure that the files are marked as successfully uploaded
+                    myDropzone.files.push(mockFile);
+
+                    // Optionally, you can disable the removal of existing files
+                    mockFile.previewElement.querySelector(".dz-remove").remove();
+                }.bind(this));
+            }
+        });
     </script>
 }

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.css" integrity="sha512-oe8OpYjBaDWPt2VmSFR+qYOdnTjeV9QPLJUeqZyprDEQvQLJ9C5PCFclxwNuvb/GQgQngdCXzKSFltuHD3eCxA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/basic.min.css" integrity="sha512-MeagJSJBgWB9n+Sggsr/vKMRFJWs+OUphiDV7TJiYu+TNQD9RtVJaPDYP8hA/PAjwRnkdvU+NsTncYTKlltgiw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="//cdn.datatables.net/2.1.4/css/dataTables.dataTables.min.css" />
 
     
@@ -46,12 +47,28 @@
                         <li class="nav-item @(Context.Request.Path == "/OrderList" ? "active" : "")">
                             <a class="nav-link" asp-area="" asp-page="/OrderList">Order</a>
                         </li>
-                        <li class="nav-item @(Context.Request.Path == "/Inventory" ? "active" : "")">
-                            <a class="nav-link" asp-area="" asp-page="/Inventory">Inventory</a>
-                        </li>                        
-                        <li class="nav-item @(Context.Request.Path == "/Customers" ? "active" : "")">
-                            <a class="nav-link" asp-area="" asp-page="/Account/Customers">Customers</a>
-                        </li>
+                        <!-- Dropdown for Inventory and Customers -->
+                        @if(User.IsInRole("Admin") || User.IsInRole("Manager"))
+                        {
+                            <li class="nav-item dropdown @(Context.Request.Path == "/Inventory" || Context.Request.Path == "/Account/Customers" ? "active" : "")">
+                                <a class="nav-link dropdown-toggle @(Context.Request.Path == "/Inventory" || Context.Request.Path == "/Account/Customers" ? "active" : "")" href="#" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Management
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <li>
+                                        <a class="dropdown-item @(Context.Request.Path == "/Inventory" ? "active" : "")" asp-area="" asp-page="/Inventory">Inventory</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item @(Context.Request.Path == "/Account/Customers" ? "active" : "")" asp-area="" asp-page="/Account/Customers">Customers</a>
+                                    </li>                                    
+                                    <li>
+                                        <a class="dropdown-item @(Context.Request.Path == "/ProductManagement" ? "active" : "")" asp-area="" asp-page="/ProductManagement">Product Management</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+
+
                         <li class="nav-item @(Context.Request.Path == "/Contact" ? "active" : "")">
                             <a class="nav-link" asp-area="" asp-page="/Contact">Contact</a>
                         </li>
@@ -147,6 +164,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js" integrity="sha512-6sSYJqDreZRZGkJ3b+YfdhB3MzmuP9R7X1QZ6g5aIXhRvR1Y/N/P47jmnkENm7YL3oqsmI6AK+V6AD99uWDnIw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/6.0.0/bootbox.min.js" integrity="sha512-oVbWSv2O4y1UzvExJMHaHcaib4wsBMS5tEP3/YkMP6GmkwRJAa79Jwsv+Y/w7w2Vb/98/Xhvck10LyJweB8Jsw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js" integrity="sha512-eYSzo+20ajZMRsjxB6L7eyqo5kuXuS2+wEbbOkpaur+sA2shQameiJiWEzCIDwJqaB0a4a6tCuEvCOBHUg3Skg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js" integrity="sha512-U2WE1ktpMTuRBPoCFDzomoIorbOyUv0sP8B+INA3EzNAhehbzED1rOJg6bCqPf/Tuposxb5ja/MAUnC8THSbLQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="//cdn.datatables.net/2.1.4/js/dataTables.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" type="text/javascript"></script>
     <script type="text/javascript"  src="~/js/app.js"></script>

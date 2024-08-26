@@ -18,9 +18,6 @@ public class UpdateInventoryItemCommandValidator : AbstractValidator<UpdateInven
             RuleFor(x => x.ItemDto.Quantity)
                 .GreaterThanOrEqualTo(0)
                 .WithMessage("Quantity can't be negative.");
-            RuleFor(x => x.ItemDto.IsActive)
-                .NotNull()
-                .WithMessage("Is active can't be null.");
         });
     }
 }

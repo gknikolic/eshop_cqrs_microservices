@@ -37,7 +37,6 @@ public class InventoryModel(IInventoryService inventoryService, ILogger<Inventor
         {
             Id = UpdateInventoryItemModel.Id,
             Quantity = UpdateInventoryItemModel.Quantity,
-            IsActive = UpdateInventoryItemModel.IsActive
         };
 
         var result = await inventoryService.UpdateInventoryItem(new UpdateInventoryItemRequest(dto));
