@@ -42,10 +42,11 @@ public class InventoryModel(IInventoryService inventoryService, ILogger<Inventor
         var result = await inventoryService.UpdateInventoryItem(new UpdateInventoryItemRequest(dto));
         if (result != null)
         {
+            TempData["Error"] = "An error occurred while updating the item.";
             return RedirectToPage();
         }
 
-        ModelState.AddModelError(string.Empty, "An error occurred while updating the item.");
+        TempData["Success"] = "Item updated successfully.";
         return Page();
     }
 

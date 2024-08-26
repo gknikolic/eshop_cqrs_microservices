@@ -25,8 +25,8 @@
                 <table class="table table-striped" id="inventoryTable">
                     <thead>
                         <tr>
+                            <th scope="col">Id</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Price</th>
                             <th scope="col">Quantity</th>
                             <th scope="col"></th>
                         </tr>
@@ -35,8 +35,8 @@
                         @foreach (var item in Model.Items)
                         {
                             <tr>
+                                <td>@item.Id</td>
                                 <td>@item.Name</td>
-                                <td>@item.Price</td>
                                 <td>@item.Quantity</td>
                                 <td>
                                     <button class="btn btn-danger" data-toggle="modal" data-target="#updateInventoryItemModal" data-id="@item.Id" data-quantity="@item.Quantity">Edit</button>

@@ -15,7 +15,7 @@ public class UpdateItemEndpoint : ICarterModule
         {
             var result = await sender.Send(new UpdateInventoryItemCommand(request.InventoryItemDto));
 
-            return Results.Ok(result.Adapt<UpdateItemResponse>());
+            return Results.Ok(new UpdateItemResponse(result.ItemDto));
         });
     }
 }

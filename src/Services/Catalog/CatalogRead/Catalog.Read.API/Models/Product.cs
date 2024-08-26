@@ -5,6 +5,7 @@ public class Product
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = default!;
+    public string Sku { get; set; } = default!;
     public List<string> Categories { get; set; } = new();
     public string Description { get; set; } = default!;
     public List<string> ImageFiles { get; set; } = default!;
@@ -20,5 +21,4 @@ public class Product
     public List<ProductAttribute> ProductAttributes { get; set; }
 
     public bool isAvailable => PeicesInStock > 0;
-    public double AverageRating => ProductReviews?.Count > 0 ? ProductReviews.Average(r => r.Rating) : 0;
 }
