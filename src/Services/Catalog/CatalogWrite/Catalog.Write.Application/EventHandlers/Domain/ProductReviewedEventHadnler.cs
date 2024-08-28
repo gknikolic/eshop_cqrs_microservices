@@ -8,6 +8,7 @@ public class ProductReviewedEventHadnler(IPublishEndpoint publishEndpoint)
     public async Task Handle(ProductReviewedEvent notification, CancellationToken cancellationToken)
     {
         var message = new ProductReviewedIntegrationEvent();
+        message.Id = notification.Review.Id;
         message.ProductId = notification.ProductId;
         message.CustomerId = notification.Review.Customer.Id;
         message.CustomerName = notification.Review.Customer.Name;

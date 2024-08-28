@@ -24,6 +24,16 @@ public class ProductUpdatedEventHandler(IPublishEndpoint publishEndpoint)
             .Product.Attributes
             .Select(x => new BuildingBlocks.Messaging.Events.ProductEvents.Abstraction.ProductAttribute { Id = x.Id, Name = x.Key, Value = x.Value })
             .ToList();
+        message.ProductReviews = notification.Product.Reviews.Select(x => new BuildingBlocks.Messaging.Events.ProductEvents.Abstraction.ProductReview
+        {
+            Id = x.Id,
+            ProductId = x.ProductId,
+            CustomerId = x.CustomerId,
+            CustomerName = x.Customer.Name,
+            Comment = x.Comment,
+            Rating = x.Rating,
+            CreatedDate = x.CreatedAt.Value
+        }).ToList();
 
         await publishEndpoint.Publish(message, cancellationToken);
     }

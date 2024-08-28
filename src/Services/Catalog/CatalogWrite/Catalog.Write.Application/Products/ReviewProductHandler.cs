@@ -40,6 +40,7 @@ public class ReviewProductHandler(IApplicationDbContext context, IProductReposit
 
         product.AddDomainEvent(new ProductReviewedEvent(product.Id, review));
 
+        await context.ProductReviews.AddAsync(review);
         await context.SaveChangesAsync(cancellationToken);
 
         return new ReviewProductResult(true, review.Id);

@@ -12,7 +12,7 @@ public class ProductRepository(IApplicationDbContext dbContext)
     private IQueryable<Product> Products => dbContext.Products
         //.AsNoTracking()
         .Include(x => x.Category)
-        .Include(x => x.Reviews)
+        .Include(x => x.Reviews).ThenInclude(x => x.Customer)
         .Include(x => x.Images)
         .Include(x => x.Attributes)
         .Where(x => x.IsActive)

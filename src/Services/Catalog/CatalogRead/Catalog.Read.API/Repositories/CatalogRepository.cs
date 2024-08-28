@@ -19,6 +19,10 @@ public class CatalogRepository(IDocumentSession session) : ICatalogRepository
         {
             throw new InvalidOperationException($"Product with id {productId} not found.");
         }
+        if(product.ProductReviews == null)
+        {
+            product.ProductReviews = new List<ProductReview>();
+        }
         product.ProductReviews.Add(review);
         session.Update(product);
         await session.SaveChangesAsync(cancellationToken);

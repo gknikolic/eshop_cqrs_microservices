@@ -10,6 +10,7 @@ public class ProductReviewdIntegrationEventHadnler(ICatalogRepository repository
     {
         var review = new ProductReview
         {
+            Id = context.Message.Id,
             ProductId = context.Message.ProductId,
             Rating = context.Message.Rating,
             Comment = context.Message.Comment,

@@ -21,7 +21,17 @@ public class ProductCreatedIntegrationEventHandler_CattalogReadService(ICatalogR
             Categories = context.Message.Categories,
             Color = context.Message.Color,
             ProductAttributes = context.Message.ProductAttributes.Select(x => new ProductAttribute { Name = x.Name, Value = x.Value }).ToList(),
-            IsActive = context.Message.IsActive
+            IsActive = context.Message.IsActive,
+            ProductReviews = context.Message.ProductReviews.Select(x => new ProductReview
+            {
+                Comment = x.Comment,
+                CustomerId = x.CustomerId,
+                CustomerName = x.CustomerName,
+                Rating = x.Rating,
+                CreatedDate = x.CreatedDate,
+                Id = x.Id,
+                ProductId = x.ProductId
+            }).ToList()
         };
 
         await repository.AddProductAsync(product);

@@ -96,37 +96,6 @@
                         </ul>
                     </div>
 
-                    <!-- Display Reviews -->
-                    <div class="reviews_product p-3 mb-2">
-                        @if (Model.Product.ProductReviews != null && Model.Product.ProductReviews.Any())
-                        {
-                            @foreach (var review in Model.Product.ProductReviews)
-                            {
-                                <div class="review">
-                                    <strong>@review.UserName</strong>
-                                    <div class="star-rating">
-                                        @for (int i = 1; i <= 5; i++)
-                                        {
-                                            if (i <= review.Rating)
-                                            {
-                                                <span class="fa fa-star checked"></span>
-                                            }
-                                            else
-                                            {
-                                                <span class="fa fa-star"></span>
-                                            }
-                                        }
-                                    </div>
-                                    <p>@review.Comment</p>
-                                </div>
-                            }
-                        }
-                        else
-                        {
-                            <p>No reviews yet. Be the first to review this product!</p>
-                        }
-                    </div>
-
                     <!-- Add a Review Form -->
                     <div class="add-review">
                         <h5>Add Your Review</h5>
@@ -187,6 +156,53 @@
                                 }
                             </table>
                         </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Reviews -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-light mb-3">
+                <div class="card-header bg-primary text-white text-uppercase"><i class="fa fa-align-justify"></i> Reviews</div>
+                <div class="card-body">
+                    <!-- Display Reviews -->
+                    <div class="reviews_product p-3 mb-2">
+                        @if (Model.Product.ProductReviews != null && Model.Product.ProductReviews.Any())
+                        {
+                            @foreach (var review in Model.Product.ProductReviews)
+                            {
+                                <div class="card mb-3">
+                                    <div class="card-header">
+                                        <strong>@review.CustomerName</strong> @(review.CreatedDate.HasValue ? $" - {review.CreatedDate.Value.ToString("MMMM dd, yyyy")}" : "")
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="star-rating">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= review.Rating)
+                                                {
+                                                    <span class="fa fa-star checked"></span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="fa fa-star"></span>
+                                                }
+                                            }
+                                        </div>
+                                        <p class="card-text">@review.Comment</p>
+                                    </div>
+                                </div>
+
+                            }
+                        }
+                        else
+                        {
+                            <p>No reviews yet. Be the first to review this product!</p>
+                        }
                     </div>
 
                 </div>

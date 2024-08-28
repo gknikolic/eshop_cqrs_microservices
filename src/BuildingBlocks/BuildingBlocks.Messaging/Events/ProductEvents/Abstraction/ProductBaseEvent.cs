@@ -12,6 +12,7 @@ public abstract record ProductBaseEvent : IntegrationEvent
     public bool IsActive { get; set; }
     public List<string> Categories { get; set; }
     public List<ProductAttribute> ProductAttributes { get; set; }
+    public List<ProductReview> ProductReviews { get; set; }
 }
 
 public class ProductAttribute
@@ -19,4 +20,15 @@ public class ProductAttribute
     public Guid Id { get; set; }
     public string Name { get; set; }
     public string Value { get; set; }
+}
+
+public class ProductReview
+{
+    public Guid Id { get; set; }
+    public Guid ProductId { get; set; }
+    public Guid CustomerId { get; set; } = default!;
+    public string CustomerName { get; set; }
+    public string Comment { get; set; } = default!;
+    public int Rating { get; set; }
+    public DateTime CreatedDate { get; set; }
 }

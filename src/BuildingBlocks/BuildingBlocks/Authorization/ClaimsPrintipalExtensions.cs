@@ -19,7 +19,7 @@ public static class ClaimsPrintipalExtensions
         if(claimsPrincipal == null) {
             return Guid.Empty;
         }
-        return new Guid(claimsPrincipal.FindFirstValue(JwtRegisteredClaimNames.Sub));
+        return new Guid(claimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier));
     }
 
     public static string? GetName(this ClaimsPrincipal claimsPrincipal)

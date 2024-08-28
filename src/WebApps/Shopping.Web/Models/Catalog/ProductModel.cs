@@ -22,10 +22,11 @@ public class ProductReview
 {
     public Guid Id { get; set; }
     public Guid ProductId { get; set; }
-    public Guid UserId { get; set; }
-    public string UserName { get; set; } = default!;
+    public Guid CustomerId { get; set; }
+    public string CustomerName { get; set; } = default!;
     public string Comment { get; set; } = default!;
     public int Rating { get; set; } // Assuming rating is out of 5
+    public DateTime? CreatedDate { get; set; }
 }
 
 //wrapper classes

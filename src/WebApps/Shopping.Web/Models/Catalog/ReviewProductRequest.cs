@@ -1,3 +1,3 @@
 ﻿namespace Shopping.Web.Models.Catalog;
 
-public record ReviewProductRequest(ProductReview ProductReview);
+public record ReviewProductRequest(ProductReview review);
