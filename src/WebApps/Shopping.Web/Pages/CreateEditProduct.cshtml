@@ -151,10 +151,12 @@
 
                 // Create and add mock files from existing images
                 var existingFiles = @Html.Raw(Json.Serialize(Model.Product.UploadedImages));
-                existingFiles.forEach(function (fileName) {
-                    var url = "/images/product/" + fileName;
-                    createMockFileFromUrl(url, fileName);
-                });
+                if(existingFiles != null) {
+                    existingFiles.forEach(function (fileName) {
+                        var url = "/images/product/" + fileName;
+                        createMockFileFromUrl(url, fileName);
+                    });
+                }
 
                 // Handle form submission
                 document.querySelector("#productForm").addEventListener("submit", function (event) {
