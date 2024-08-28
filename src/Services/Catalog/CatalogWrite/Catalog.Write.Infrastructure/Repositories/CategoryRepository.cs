@@ -24,7 +24,7 @@ public class CategoryRepository(IApplicationDbContext dbContext)
 
     public async Task<Category> GetOrCreateAsync(string name)
     {
-        var category = await dbContext.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Name == name);
+        var category = await dbContext.Categories.FirstOrDefaultAsync(x => x.Name == name);
         if (category == null)
         {
             category = new Category(name, string.Empty);

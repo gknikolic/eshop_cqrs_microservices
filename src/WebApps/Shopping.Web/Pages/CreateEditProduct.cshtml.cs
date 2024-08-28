@@ -83,7 +83,7 @@ public class CreateProductModel(ICatalogService catalogService)
                 }
 
                 // Generate a unique file name and save the file
-                var fileName = $"{Guid.NewGuid()}_$_{Path.GetFileName(imageFile.FileName.Split("_$_").Last())}";
+                var fileName = $"{Guid.NewGuid().ToString().Replace("-", "")}_$_{Path.GetFileName(imageFile.FileName.Split("_$_").Last())}";
                 var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images/product", fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))

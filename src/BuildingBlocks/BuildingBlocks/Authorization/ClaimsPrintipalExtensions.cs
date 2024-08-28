@@ -11,7 +11,7 @@ public static class ClaimsPrintipalExtensions
         {
             return null;
         }
-        return claimsPrincipal.FindFirstValue(ClaimTypes.Name);
+        return claimsPrincipal.FindFirstValue(ClaimTypes.Email);
     }
 
     public static Guid GetUserId(this ClaimsPrincipal claimsPrincipal)
