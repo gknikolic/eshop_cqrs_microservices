@@ -9,13 +9,19 @@ public class CreateProductCommandValidator : AbstractValidator<CreateProductComm
     public CreateProductCommandValidator()
     {
         RuleFor(x => x.ProductDto).NotNull();
+        //RuleFor(x => x.ProductDto.Id).NotEmpty();
         RuleFor(x => x.ProductDto.Name).NotEmpty();
         RuleFor(x => x.ProductDto.Sku).NotEmpty();
         RuleFor(x => x.ProductDto.Price).NotEmpty().GreaterThanOrEqualTo(0);
         RuleFor(x => x.ProductDto.Category).NotEmpty();
         RuleFor(x => x.ProductDto.Color).NotEmpty();
+        RuleFor(x => x.ProductDto.Attributes).NotNull();
+        RuleForEach(x => x.ProductDto.Attributes).SetValidator(new ProductAttributeDtoValidator());
+        RuleFor(x => x.ProductDto.Images).NotNull();
+        RuleForEach(x => x.ProductDto.Images).SetValidator(new ProductImageDtoValidator());
     }
 }
+
 public class CreateProductHandler(IApplicationDbContext context, ICategoryRepository categoryRepository)
     : ICommandHandler<CreateProductCommand, CreateProductResult>
 {
@@ -36,7 +42,7 @@ public class CreateProductHandler(IApplicationDbContext context, ICategoryReposi
 
         request.ProductDto.Images.ForEach(image =>
         {
-            product.AddImage(image.FilePath, image.AltText, image.DisplayOrder);
+            product.AddImage(image.FilePath, image.AltText, image.DisplayOrder ?? 1);
         });
 
         foreach (var attribute in request.ProductDto.Attributes)

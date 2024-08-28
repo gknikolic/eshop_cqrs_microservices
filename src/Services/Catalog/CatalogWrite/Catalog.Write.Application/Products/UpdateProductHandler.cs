@@ -1,4 +1,6 @@
 ﻿using Catalog.Write.Application.Repositories;
+using FluentValidation.Validators;
+using Microsoft.Extensions.Logging;
 
 namespace Catalog.Write.Application.Products;
 public record UpdateProductCommand(ProductDto ProductDto) : ICommand<UpdateProductResult>;
@@ -8,19 +10,44 @@ public class UpdateProductCommandValidator : AbstractValidator<UpdateProductComm
     public UpdateProductCommandValidator()
     {
         RuleFor(x => x.ProductDto).NotNull();
+        RuleFor(x => x.ProductDto.Id).NotEmpty();
         RuleFor(x => x.ProductDto.Name).NotEmpty();
         RuleFor(x => x.ProductDto.Sku).NotEmpty();
         RuleFor(x => x.ProductDto.Price).NotEmpty().GreaterThanOrEqualTo(0);
         RuleFor(x => x.ProductDto.Category).NotEmpty();
         RuleFor(x => x.ProductDto.Color).NotEmpty();
+        RuleFor(x => x.ProductDto.Attributes).NotNull();
+        RuleForEach(x => x.ProductDto.Attributes).SetValidator(new ProductAttributeDtoValidator());
+        RuleFor(x => x.ProductDto.Images).NotNull();
+        RuleForEach(x => x.ProductDto.Images).SetValidator(new ProductImageDtoValidator());
     }
 }
-public class UpdateProductHandler(IApplicationDbContext context, ICategoryRepository categoryRepository, IProductRepository productRepository)
+
+public class ProductAttributeDtoValidator : AbstractValidator<ProductAttributeDto>
+{
+    public ProductAttributeDtoValidator()
+    {
+        RuleFor(x => x.Name).NotEmpty();
+        RuleFor(x => x.Value).NotEmpty();
+    }
+}
+
+public class ProductImageDtoValidator : AbstractValidator<ProductImageDto>
+{
+    public ProductImageDtoValidator()
+    {
+        RuleFor(x => x.FilePath).NotEmpty();
+        //RuleFor(x => x.AltText).NotEmpty();
+        //RuleFor(x => x.DisplayOrder).NotEmpty().GreaterThanOrEqualTo(0);
+    }
+}
+
+public class UpdateProductHandler(IApplicationDbContext context, ICategoryRepository categoryRepository, IProductRepository productRepository, ILogger<UpdateProductHandler> logger)
     : ICommandHandler<UpdateProductCommand, UpdateProductResult>
 {
     public async Task<UpdateProductResult> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
-        var product = await productRepository.GetAsync(request.ProductDto.Id);
+        var product = await productRepository.GetAsync(request.ProductDto.Id.Value);
 
         var category = await categoryRepository.GetOrCreateAsync(request.ProductDto.Category);
 
@@ -73,18 +100,26 @@ public class UpdateProductHandler(IApplicationDbContext context, ICategoryReposi
         var newImages = request.ProductDto.Images.Where(x => !newProduct.Images.Any(y => y.FilePath == x.FilePath)).ToList();
         foreach (var image in newImages)
         {
-            newProduct.AddImage(image.FilePath, image.AltText, image.DisplayOrder);
+            newProduct.AddImage(image.FilePath, image.AltText, image.DisplayOrder ?? 1);
         }
 
         // add domain events
         newProduct.AddDomainEvent(new ProductCreatedEvent(newProduct));
         product.AddDomainEvent(new ProductDeletedEvent(product.Id));
 
-        // save changes
-        await context.Products.AddAsync(newProduct);
-        context.Products.Update(product); // mark old product as deleted (isActive flag has been changed when creating a new version)
+        try
+        {
+            // save changes
+            await context.Products.AddAsync(newProduct);
+            context.Products.Update(product); // mark old product as deleted (isActive flag has been changed when creating a new version)
 
-        await context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
+        }
+        catch(Exception e)
+        {
+            return new UpdateProductResult(false, "Product updated successfully");
+        }
+
 
         return new UpdateProductResult(true, "Product updated successfully");
     }

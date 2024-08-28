@@ -33,6 +33,8 @@ public class Product : Aggregate<Guid>
         Price = price;
         IsActive = true;
         Color = color;
+        Version = version;
+        PreviousVersionId = previousVersionId;
         Stock = new Stock(0); // stock can be updated later with events from inventory service
         Images = new List<ProductImage>();
         Reviews = new List<ProductReview>();
@@ -54,7 +56,6 @@ public class Product : Aggregate<Guid>
 
         // copy inventory related props
         newProduct.Stock = this.Stock;
-        newProduct.IsActive = true;
 
         this.IsActive = false;
 

@@ -1,6 +1,8 @@
-﻿namespace Catalog.Write.API.Endpoints;
+﻿using Microsoft.AspNetCore.Mvc;
 
-public record  CreateProductRequest(ProductDto ProductModel);
+namespace Catalog.Write.API.Endpoints;
+
+public record  CreateProductRequest(ProductDto product);
 public record  CreateProductResponse(bool Success, Guid? ProductId);
 
 public class CreateProductEndpoint : ICarterModule
@@ -9,7 +11,7 @@ public class CreateProductEndpoint : ICarterModule
     {
         app.MapPost("/products", async (CreateProductRequest request, ISender sender) =>
         {
-            var result = await sender.Send(new CreateProductCommand(request.ProductModel));
+            var result = await sender.Send(new CreateProductCommand(request.product));
             return new CreateProductResponse(result.Success, result.ProductId);
         });
     }

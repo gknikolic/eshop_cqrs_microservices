@@ -24,7 +24,7 @@ public class AuthService(IHttpContextAccessor _httpContextAccessor, ITokenProvid
 
         var authProperties = new AuthenticationProperties
         {
-            IsPersistent = rememberMe,
+            IsPersistent = true,
             ExpiresUtc = rememberMe ? DateTimeOffset.UtcNow.AddDays(_RefreshTokenExpirationTime) : DateTimeOffset.UtcNow.AddMinutes(_TokenExpirationTime)
         };
 

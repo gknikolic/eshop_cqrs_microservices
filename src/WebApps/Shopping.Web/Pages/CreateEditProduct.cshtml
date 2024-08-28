@@ -4,76 +4,104 @@
     ViewData["Title"] = Model.IsEditMode ? "Edit Product" : "Create Product";
 }
 
-<h2>@(Model.IsEditMode ? $"Edit Product - {Model.Product.Id}" : "Create Product")  </h2>
+<h2>@ViewData["Title"]</h2>
 
-<form method="post" enctype="multipart/form-data">
-    <input asp-for="Product.Id" type="hidden" class="form-control" />
-    <div class="form-group col-md-6">
-        <label asp-for="Product.Sku"></label>
-        <input asp-for="Product.Sku" class="form-control" />
-        <span asp-validation-for="Product.Sku" class="text-danger"></span>
-    </div>
-    <div class="form-group col-md-6">
-        <label asp-for="Product.Name"></label>
-        <input asp-for="Product.Name" class="form-control" />
-        <span asp-validation-for="Product.Name" class="text-danger"></span>
-    </div>
-    <div class="form-group col-md-12">
-        <label asp-for="Product.Description"></label>
-        <textarea asp-for="Product.Description" class="form-control"></textarea>
-        <span asp-validation-for="Product.Description" class="text-danger"></span>
-    </div>
-    <div class="form-group col-md-3">
-        <label asp-for="Product.Price"></label>
-        <input asp-for="Product.Price" class="form-control" />
-        <span asp-validation-for="Product.Price" class="text-danger"></span>
-    </div>
-    <div class="form-group col-md-3">
-        <label asp-for="Product.Category">Category</label>
-        <select asp-for="Product.Category" class="form-control" asp-items="Model.CategorySelectList"></select>
-        <span asp-validation-for="Product.Category" class="text-danger"></span>
-    </div>
-    <div class="form-group col-md-3">
-        <label asp-for="Product.Color"></label>
-        <select asp-for="Product.Color" class="form-control" asp-items="Model.ColorSelectList"></select>
-        <span asp-validation-for="Product.Color" class="text-danger"></span>
-    </div>
+<div class="container mb-4">
+    <div class="row">
+        <div class="col-12">
+            <form method="post" enctype="multipart/form-data" id="productForm">
+                <input asp-for="Product.Id" type="hidden" class="form-control" />
+                <input asp-for="Product.Rate" type="hidden" class="form-control" />
 
-    
-    <!-- Product Attributes -->
-    <div id="product-attributes">
-        <h4>Product Attributes</h4>
-        <div class="attributes-container">
-            @for (var i = 0; i < Model.Product.ProductAttributes?.Count; i++)
-            {
-                <div asp-for="Product.ProductAttributes" class="form-group">
-                    <div class="row mb-2">
-                        <div class="col">
-                            <label>Attribute Name</label>
-                            <input type="text" class="form-control" asp-for="@Model.Product.ProductAttributes[i].Name" />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Product.Sku"></label>
+                            <input asp-for="Product.Sku" class="form-control" />
+                            <span asp-validation-for="Product.Sku" class="text-danger"></span>
                         </div>
-                        <div class="col">
-                            <label>Attribute Value</label>
-                            <input type="text" class="form-control" asp-for="@Model.Product.ProductAttributes[i].Value" />
+                        <div class="form-group">
+                            <label asp-for="Product.Name"></label>
+                            <input asp-for="Product.Name" class="form-control" />
+                            <span asp-validation-for="Product.Name" class="text-danger"></span>
                         </div>
-                        <div class="col-auto align-self-end">
-                            <button type="button" class="btn btn-danger remove-attribute">Remove</button>
+                         <div class="form-group">
+                            <label asp-for="Product.Category">Category</label>
+                            <select asp-for="Product.Category" class="form-control" asp-items="Model.CategorySelectList"></select>
+                            <span asp-validation-for="Product.Category" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="imageUpload">Product Images</label>
+                            <div id="dropzone" class="dropzone"></div>
+                            <span asp-validation-for="Product.ImageFiles" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
-            }
+    
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label asp-for="Product.Price"></label>
+                            <input asp-for="Product.Price" class="form-control" />
+                            <span asp-validation-for="Product.Price" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label asp-for="Product.Color"></label>
+                            <select asp-for="Product.Color" class="form-control" asp-items="Model.ColorSelectList"></select>
+                            <span asp-validation-for="Product.Color" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label asp-for="Product.Description"></label>
+                            <textarea asp-for="Product.Description" class="form-control"></textarea>
+                            <span asp-validation-for="Product.Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Attributes -->
+                <div id="product-attributes">
+                    <h4>Product Attributes</h4>
+                    <div class="attributes-container">
+                        @for (var i = 0; i < Model.Product.ProductAttributes?.Count; i++)
+                        {
+                            <div asp-for="Product.ProductAttributes" class="form-group">
+                                <div class="row mb-2">
+                                    <div class="col">
+                                        <label>Attribute Name</label>
+                                        <input type="text" class="form-control" asp-for="@Model.Product.ProductAttributes[i].Name" />
+                                    </div>
+                                    <div class="col">
+                                        <label>Attribute Value</label>
+                                        <input type="text" class="form-control" asp-for="@Model.Product.ProductAttributes[i].Value" />
+                                    </div>
+                                    <div class="col-auto align-self-end">
+                                        <button type="button" class="btn btn-danger remove-attribute">Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <button type="button" class="btn btn-secondary" id="add-attribute">Add Attribute</button>
+                </div>
+
+                <button type="submit" class="btn btn-primary pull-right">@(Model.IsEditMode ? "Update" : "Create")</button>
+            </form>
         </div>
-
-        <button type="button" class="btn btn-secondary" id="add-attribute">Add Attribute</button>
     </div>
+</div>
 
-    <div class="form-group">
-        <label for="imageUpload">Upload Images</label>
-        <div id="dropzone" class="dropzone"></div>
-        <span asp-validation-for="Product.ImageFiles" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">@(Model.IsEditMode ? "Update" : "Create")</button>
-</form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
@@ -121,42 +149,62 @@
             init: function () {
                 var myDropzone = this;
 
-                // Handle form submission
-                document.querySelector("form").addEventListener("submit", function (event) {
-                    event.preventDefault();
-                    // First, upload all files in the queue
-                    myDropzone.processQueue();
-                });
-
-                this.on("sendingmultiple", function (data, xhr, formData) {
-                    // Add additional form data here if needed
-                });
-
-                this.on("successmultiple", function (files, response) {
-                    // Handle the successful response here
-                    // Redirect or update the page as needed
-                });
-
-                this.on("errormultiple", function (files, response) {
-                    // Handle errors here
-                });
-
-                // If you have existing files, add them here
+                // Create and add mock files from existing images
                 var existingFiles = @Html.Raw(Json.Serialize(Model.Product.UploadedImages));
-
                 existingFiles.forEach(function (fileName) {
-                    var mockFile = { name: fileName, size: 12345 }; // size is required but can be any number
-                    myDropzone.emit("addedfile", mockFile);
-                    myDropzone.emit("thumbnail", mockFile, "/images/" + fileName);
-                    myDropzone.emit("complete", mockFile);
+                    var url = "/images/product/" + fileName;
+                    createMockFileFromUrl(url, fileName);
+                });
 
-                    // Make sure that the files are marked as successfully uploaded
-                    myDropzone.files.push(mockFile);
+                // Handle form submission
+                document.querySelector("#productForm").addEventListener("submit", function (event) {
+                    event.preventDefault();
 
-                    // Optionally, you can disable the removal of existing files
-                    mockFile.previewElement.querySelector(".dz-remove").remove();
-                }.bind(this));
+                    if ($(this).valid()) {
+                        var formData = new FormData(event.target);
+
+                        // Add all Dropzone files to FormData
+                        myDropzone.files.forEach(function (file) {
+                            if (file instanceof File) {
+                                formData.append("Product.ImageFiles", file);
+                            } else {
+                                console.error("This is not a File object:", file);
+                            }
+                        });
+
+                        // Send AJAX request
+                        $.ajax({
+                            url: this.action,
+                            type: "POST",
+                            data: formData,
+                            contentType: false,
+                            processData: false,
+                            success: function (response) {
+                                window.location.href = "/ProductList"; // Adjust the URL to your needs
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                console.error(jqXHR.responseText);
+                                alert("There was an error submitting the form. Please try again.");
+                            }
+                        });
+                    } else {
+                        alert("Please correct the errors before submitting the form.");
+                    }
+                });
             }
         });
+
+        // Function to create mock file from server URL and add it to Dropzone
+        function createMockFileFromUrl(url, fileName) {
+            fetch(url)
+                .then(response => response.blob())
+                .then(blob => {
+                    let file = new File([blob], fileName, { type: blob.type });
+                    dropzone.addFile(file);
+                })
+                .catch(error => {
+                    console.error("Error fetching and creating mock file:", error);
+                });
+        }
     </script>
 }

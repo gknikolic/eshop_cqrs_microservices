@@ -12,6 +12,8 @@ public class ResultDto
     /// </summary>
     public string Message { get; private set; }
 
+    public ResultDto() { } // for serialization
+
     /// <summary>
     /// Private constructor to create a result instance.
     /// </summary>

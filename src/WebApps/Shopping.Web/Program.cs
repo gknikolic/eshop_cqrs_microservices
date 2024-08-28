@@ -1,15 +1,22 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Refit;
 using Shopping.Web.Exceptions;
 using Shopping.Web.Helpers;
 using Shopping.Web.Services.Clients;
 using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // add authentication
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    })
     .AddCookie(options =>
     {
         options.LoginPath = "/Account/Login";
@@ -31,7 +38,20 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
                 return Task.CompletedTask;
             }
         };
-    });
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+            ValidAudience = builder.Configuration["JwtSettings:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"]))
+        };
+    }); ;
 
 builder.Services.AddAuthorization();
 
@@ -54,6 +74,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddRefitClient<ICatalogService>()
     .ConfigureHttpClient(c =>
     {
+        c.Timeout = TimeSpan.FromMinutes(10); // Set the timeout duration
+        //c.Timeout = TimeSpan.FromSeconds(60); // Set the timeout duration
         c.BaseAddress = new Uri(builder.Configuration["ApiSettings:GatewayAddress"]!);
     })
     .AddHttpMessageHandler<AuthTokenPassingHandler>();

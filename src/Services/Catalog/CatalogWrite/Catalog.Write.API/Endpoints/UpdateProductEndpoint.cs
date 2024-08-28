@@ -1,6 +1,8 @@
-﻿namespace Catalog.Write.API.Endpoints;
+﻿using Microsoft.AspNetCore.Mvc;
 
-public record UpdateProductRequest(ProductDto ProductModel);
+namespace Catalog.Write.API.Endpoints;
+
+public record UpdateProductRequest(ProductDto product);
 public record UpdateProductResponse(bool IsUpdated, string Message);
 
 public class UpdateProductEndpoint : ICarterModule
@@ -9,7 +11,7 @@ public class UpdateProductEndpoint : ICarterModule
     {
         app.MapPut("/products", async (UpdateProductRequest request, ISender sender) =>
         {
-            var result = await sender.Send(new UpdateProductCommand(request.ProductModel));
+            var result = await sender.Send(new UpdateProductCommand(request.product));
             return new UpdateProductResponse(result.IsUpdated, result.Message);
         });
     }

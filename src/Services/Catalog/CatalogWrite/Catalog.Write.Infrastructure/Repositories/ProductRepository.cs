@@ -10,11 +10,12 @@ public class ProductRepository(IApplicationDbContext dbContext)
     : IProductRepository
 {
     private IQueryable<Product> Products => dbContext.Products
-        .AsNoTracking()
+        //.AsNoTracking()
         .Include(x => x.Category)
         .Include(x => x.Reviews)
         .Include(x => x.Images)
         .Include(x => x.Attributes)
+        .Where(x => x.IsActive)
         .AsQueryable();
         //.AsSplitQuery()
 

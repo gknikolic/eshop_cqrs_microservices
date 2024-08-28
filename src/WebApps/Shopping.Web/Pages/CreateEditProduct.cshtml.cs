@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.IdentityModel.Tokens;
 using Shopping.Web.Enums;
-using Shopping.Web.Models;
 using Shopping.Web.Services.Clients;
 using System.ComponentModel.DataAnnotations;
 
@@ -85,8 +83,8 @@ public class CreateProductModel(ICatalogService catalogService)
                 }
 
                 // Generate a unique file name and save the file
-                var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(imageFile.FileName)}";
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+                var fileName = $"{Guid.NewGuid()}_$_{Path.GetFileName(imageFile.FileName.Split("_$_").Last())}";
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images/product", fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
@@ -97,58 +95,39 @@ public class CreateProductModel(ICatalogService catalogService)
             }
         }
 
+        // Save product details (assume the repository handles saving the product and images)
+        var product = new CreateUpdateProductModel
+        {
+            Sku = Product.Sku,
+            Name = Product.Name,
+            Description = Product.Description,
+            Price = Product.Price.Value,
+            Category = Product.Category,
+            Images = Product.UploadedImages.Select(x=> new ProductImageModel { FilePath = x, AltText = x, DisplayOrder = 1}).ToList(),
+            Color = Product.Color,
+            Attributes = Product.ProductAttributes.Select(attr => new ProductAttribute { Name = attr.Name, Value = attr.Value }).ToList(),
+        };
+
+        var imageResult = await HandleImages();
+
+        if (imageResult.success == false)
+        {
+            ModelState.AddModelError("Product.ImageFiles", imageResult.errors);
+            return Page();
+        }
+
         if (IsEditMode)
         {
-            var response = await catalogService.GetProduct(Product.Id);
-            var existingProduct = response.Product;
-            // Update the existing product with the new details
-            existingProduct.Sku = Product.Sku;
-            existingProduct.Name = Product.Name;
-            existingProduct.Description = Product.Description;
-            existingProduct.Price = Product.Price.Value;
-            existingProduct.Categories = new List<string> { Product.Category };
+            product.Id = Product.Id;
+            var result = await catalogService.UpdateProduct(new UpdateProductRequest(product));
+            return RedirectToPage("ProductList");
 
-            existingProduct.ProductAttributes = new List<ProductAttribute>();
-            foreach (var attribute in Product.ProductAttributes)
-            {
-                existingProduct.ProductAttributes.Add(new ProductAttribute { Name = attribute.Name, Value = attribute.Value });
-            }
-
-            var imageResult = await HandleImages();
-            //if(imageResult.success == false)
-            //{
-            //    ModelState.AddModelError("Product.ImageFiles", imageResult.errors);
-            //    return Page();
-            //}
-
-            var result = await catalogService.UpdateProduct(new UpdateProductRequest(existingProduct));
         }
         else
         {
-            // Save product details (assume the repository handles saving the product and images)
-            var product = new ProductModel
-            {
-                Sku = Product.Sku,
-                Name = Product.Name,
-                Description = Product.Description,
-                Price = Product.Price.Value,
-                Categories = new List<string> { Product.Category },
-                ImageFiles = new List<string>(),
-                ProductAttributes = Product.ProductAttributes.Select(attr => new ProductAttribute { Name = attr.Name, Value = attr.Value }).ToList()
-            };
-
-
-            foreach (var attribute in Product.ProductAttributes)
-            {
-                product.ProductAttributes.Add(new ProductAttribute { Name = attribute.Name, Value = attribute.Value });
-            }
-
-            var imageResult = await HandleImages();
-
             var result = await catalogService.CreateProduct(new CreateProductRequest(product));
+            return RedirectToPage("ProductList");
         }
-
-        return RedirectToPage("ProductList"); // Or wherever you want to redirect after creation
 
     }
 
@@ -215,8 +194,8 @@ public class ProductViewModel
     public string Category { get; set; }
     public bool IsActive { get; set; }
     public string Color { get; set; }
-    public string Rate { get; set; }
-    public List<string> UploadedImages { get; set; }
+    public string? Rate { get; set; }
+    public List<string>? UploadedImages { get; set; }
     public List<ProductAttribute> ProductAttributes { get; set; }
 
     [Required]

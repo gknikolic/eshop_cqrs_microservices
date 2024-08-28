@@ -13,7 +13,7 @@ public class InventoryRepository(IDocumentSession session)
         {
             Id = product.Id,
             Name = product.Name,
-            Quantity = 0,
+            Quantity = product.Quantity
         };
 
         session.Store(newProduct);

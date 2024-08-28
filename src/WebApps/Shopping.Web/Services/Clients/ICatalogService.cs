@@ -17,15 +17,15 @@ public interface ICatalogService
 
     // Commands - only Post, Put, Delete methods
 
-    [Post("/catalog-service/create-product")]
+    [Post("/catalog-service/products")]
     Task<ResultDto> CreateProduct(CreateProductRequest request);
 
-    [Put("/catalog-service/update-product")]
-    Task<ResultDto> UpdateProduct(UpdateProductRequest request);
+    [Put("/catalog-service/products")]
+    Task<ResultDto> UpdateProduct([Body]UpdateProductRequest request);
 
-    [Delete("/catalog-service/update-product")]
+    [Delete("/catalog-service/products")]
     Task<ResultDto> DeleteProduct(Guid productId);
 
-    [Post("/catalog-service/review-product")]
+    [Post("/catalog-service/products/review")]
     Task<ResultDto> ReviewProduct(ReviewProductRequest request);
 }
