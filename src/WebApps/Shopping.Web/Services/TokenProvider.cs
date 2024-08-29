@@ -29,7 +29,13 @@ public class TokenProvider(IHttpContextAccessor httpContextAccessor)
 
     public void SetToken(string token)
     {
-        httpContextAccessor.HttpContext?.Response.Cookies.Append(Constants.AccessTokenCookieName, token);
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            Expires = DateTime.Now.AddDays(7) // Set token expiration
+        };
+        httpContextAccessor.HttpContext?.Response.Cookies.Append(Constants.AccessTokenCookieName, token, cookieOptions);
     }
 
     public void StoreRefreshToken(string refreshToken)
