@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shopping-web-config
+data:
+  ASPNETCORE_ENVIRONMENT: "Development"
+  ASPNETCORE_HTTP_PORTS: "8080"
+  ASPNETCORE_HTTPS_PORTS: "8081"
+  ApiSettings__GatewayAddress: "http://yarpapigateway.eshop:8080"
+
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: shopping-web-secret
+type: Opaque
+data:
+  JwtSettings__Issuer: Y3VzdG9tZXItYXBpLXNlcnZpY2U=
+  JwtSettings__Audience: ZXNob3Atc2VydmljZXM=
+  JwtSettings__Key: bXlzZWNyZXRrZXkxMjM0NW15c2VjcmV0a2V5MTIzNDU=
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopping-web
+  labels:
+    app: shopping-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shopping-web
+  template:
+    metadata:
+      labels:
+        app: shopping-web
+    spec:
+      containers:
+      - name: shopping-web
+        image: gknikolic/shopingweb:1.0.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ASPNETCORE_URLS
+          value: http://+:8080
+        - name: ASPNETCORE_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: shopping-web-config
+              key: ASPNETCORE_ENVIRONMENT
+        - name: ASPNETCORE_HTTP_PORTS
+          valueFrom:
+            configMapKeyRef:
+              name: shopping-web-config
+              key: ASPNETCORE_HTTP_PORTS
+        - name: ASPNETCORE_HTTPS_PORTS
+          valueFrom:
+            configMapKeyRef:
+              name: shopping-web-config
+              key: ASPNETCORE_HTTPS_PORTS
+        - name: ApiSettings__GatewayAddress
+          valueFrom:
+            configMapKeyRef:
+              name: shopping-web-config
+              key: ApiSettings__GatewayAddress
+        - name: JwtSettings__Issuer
+          valueFrom:
+            secretKeyRef:
+              name: shopping-web-secret
+              key: JwtSettings__Issuer
+        - name: JwtSettings__Audience
+          valueFrom:
+            secretKeyRef:
+              name: shopping-web-secret
+              key: JwtSettings__Audience
+        - name: JwtSettings__Key
+          valueFrom:
+            secretKeyRef:
+              name: shopping-web-secret
+              key: JwtSettings__Key
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shopping-web
+spec:
+  selector:
+    app: shopping-web
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      # nodePort: 30008
+  type: LoadBalancer

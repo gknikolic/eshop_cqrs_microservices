@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orderdb-config
+data:
+
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: orderdb-secret
+type: Opaque
+data:
+  ACCEPT_EULA: WQ==
+  SA_PASSWORD: U3dOMTIzNDU2Nzg=
+
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: orderdb-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orderdb
+  labels:
+    app: orderdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orderdb
+  template:
+    metadata:
+      labels:
+        app: orderdb
+    spec:
+      containers:
+      - name: orderdb
+        image: mcr.microsoft.com/mssql/server
+        ports:
+        - containerPort: 1433
+        env:
+        - name: ACCEPT_EULA
+          valueFrom:
+            secretKeyRef:
+              name: orderdb-secret
+              key: ACCEPT_EULA
+        - name: SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: orderdb-secret
+              key: SA_PASSWORD
+        volumeMounts:
+        - name: orderdb-storage
+          mountPath: /var/opt/mssql
+          subPath: postgres-data
+      volumes:
+      - name: orderdb-storage
+        persistentVolumeClaim:
+          claimName: orderdb-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orderdb
+spec:
+  selector:
+    app: orderdb
+  # type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 1433
+      targetPort: 1433

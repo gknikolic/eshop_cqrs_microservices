@@ -1,0 +1,270 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: yarpapigateway-config
+data:
+  ASPNETCORE_ENVIRONMENT: "Development"
+  ASPNETCORE_HTTP_PORTS: "8080"
+  ASPNETCORE_HTTPS_PORTS: "8081"
+  reverseproxy.routes.catalog-read-route.clusterid: "catalog-read-cluster"
+  reverseproxy.routes.catalog-read-route.match.path: "/catalog-service/{**catch-all}"
+  reverseproxy.routes.catalog-read-route.match.methods.0: "GET"
+  reverseproxy.routes.catalog-read-route.transforms.0.pathpattern: "{**catch-all}"
+  reverseproxy.routes.catalog-write-route.clusterid: "catalog-write-cluster"
+  reverseproxy.routes.catalog-write-route.match.path: "/catalog-service/{**catch-all}"
+  reverseproxy.routes.catalog-write-route.match.methods.0: "POST"
+  reverseproxy.routes.catalog-write-route.match.methods.1: "PUT"
+  reverseproxy.routes.catalog-write-route.match.methods.2: "DELETE"
+  reverseproxy.routes.catalog-write-route.transforms.0.pathpattern: "{**catch-all}"
+  reverseproxy.routes.basket-route.clusterid: "basket-cluster"
+  reverseproxy.routes.basket-route.match.path: "/basket-service/{**catch-all}"
+  reverseproxy.routes.basket-route.transforms.0.pathpattern: "{**catch-all}"
+  reverseproxy.routes.inventory-route.clusterid: "inventory-cluster"
+  reverseproxy.routes.inventory-route.match.path: "/inventory-service/{**catch-all}"
+  reverseproxy.routes.inventory-route.transforms.0.pathpattern: "{**catch-all}"
+  reverseproxy.routes.ordering-route.clusterid: "ordering-cluster"
+  reverseproxy.routes.ordering-route.ratelimiterpolicy: "fixed"
+  reverseproxy.routes.ordering-route.match.path: "/ordering-service/{**catch-all}"
+  reverseproxy.routes.ordering-route.transforms.0.pathpattern: "{**catch-all}"
+  reverseproxy.routes.customer-route.clusterid: "customer-cluster"
+  reverseproxy.routes.customer-route.ratelimiterpolicy: "fixed"
+  reverseproxy.routes.customer-route.match.path: "/customer-service/{**catch-all}"
+  reverseproxy.routes.customer-route.transforms.0.pathpattern: "{**catch-all}"
+  reverseproxy.clusters.catalog-read-cluster.destinations.destination1.address: "http://catalog-read-api:8080"
+  reverseproxy.clusters.catalog-write-cluster.destinations.destination1.address: "http://catalog-write-api:8080"
+  reverseproxy.clusters.basket-cluster.destinations.destination1.address: "http://basket-api:8080"
+  reverseproxy.clusters.inventory-cluster.destinations.destination1.address: "http://inventory-api:8080"
+  reverseproxy.clusters.ordering-cluster.destinations.destination1.address: "http://ordering-api:8080"
+  reverseproxy.clusters.customer-cluster.destinations.destination1.address: "http://customer-api:8080"
+
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: yarpapigateway-secret
+type: Opaque
+data:
+  JwtSettings__Issuer: Y3VzdG9tZXItYXBpLXNlcnZpY2U=
+  JwtSettings__Audience: ZXNob3Atc2VydmljZXM=
+  JwtSettings__Key: bXlzZWNyZXRrZXkxMjM0NW15c2VjcmV0a2V5MTIzNDU=
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yarpapigateway
+  labels:
+    app: yarpapigateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: yarpapigateway
+  template:
+    metadata:
+      labels:
+        app: yarpapigateway
+    spec:
+      containers:
+      - name: yarpapigateway
+        image: gknikolic/yarpapigateway:1.0.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ASPNETCORE_URLS
+          value: http://+:8080
+        - name: ASPNETCORE_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: ASPNETCORE_ENVIRONMENT
+        - name: ASPNETCORE_HTTP_PORTS
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: ASPNETCORE_HTTP_PORTS
+        - name: ASPNETCORE_HTTPS_PORTS
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: ASPNETCORE_HTTPS_PORTS
+        - name: JwtSettings__Issuer
+          valueFrom:
+            secretKeyRef:
+              name: yarpapigateway-secret
+              key: JwtSettings__Issuer
+        - name: JwtSettings__Audience
+          valueFrom:
+            secretKeyRef:
+              name: yarpapigateway-secret
+              key: JwtSettings__Audience
+        - name: JwtSettings__Key
+          valueFrom:
+            secretKeyRef:
+              name: yarpapigateway-secret
+              key: JwtSettings__Key
+        - name: ReverseProxy__Routes__catalog-read-route__ClusterId
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.catalog-read-route.clusterid
+        - name: ReverseProxy__Routes__catalog-read-route__Match__Path
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.catalog-read-route.match.path
+        - name: ReverseProxy__Routes__catalog-read-route__Match__Methods__0
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.catalog-read-route.match.methods.0
+        - name: ReverseProxy__Routes__catalog-read-route__Transforms__0__PathPattern
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.catalog-read-route.transforms.0.pathpattern
+        - name: ReverseProxy__Routes__catalog-write-route__ClusterId
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.catalog-write-route.clusterid
+        - name: ReverseProxy__Routes__catalog-write-route__Match__Path
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.catalog-write-route.match.path
+        - name: ReverseProxy__Routes__catalog-write-route__Match__Methods__0
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.catalog-write-route.match.methods.0
+        - name: ReverseProxy__Routes__catalog-write-route__Match__Methods__1
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.catalog-write-route.match.methods.1
+        - name: ReverseProxy__Routes__catalog-write-route__Match__Methods__2
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.catalog-write-route.match.methods.2
+        - name: ReverseProxy__Routes__catalog-write-route__Transforms__0__PathPattern
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.catalog-write-route.transforms.0.pathpattern
+        - name: ReverseProxy__Routes__basket-route__ClusterId
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.basket-route.clusterid
+        - name: ReverseProxy__Routes__basket-route__Match__Path
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.basket-route.match.path
+        - name: ReverseProxy__Routes__basket-route__Transforms__0__PathPattern
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.basket-route.transforms.0.pathpattern
+        - name: ReverseProxy__Routes__inventory-route__ClusterId
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.inventory-route.clusterid
+        - name: ReverseProxy__Routes__inventory-route__Match__Path
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.inventory-route.match.path
+        - name: ReverseProxy__Routes__inventory-route__Transforms__0__PathPattern
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.inventory-route.transforms.0.pathpattern
+        - name: ReverseProxy__Routes__ordering-route__ClusterId
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.ordering-route.clusterid
+        - name: ReverseProxy__Routes__ordering-route__RateLimiterPolicy
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.ordering-route.ratelimiterpolicy
+        - name: ReverseProxy__Routes__ordering-route__Match__Path
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.ordering-route.match.path
+        - name: ReverseProxy__Routes__ordering-route__Transforms__0__PathPattern
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.ordering-route.transforms.0.pathpattern
+        - name: ReverseProxy__Routes__customer-route__ClusterId
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.customer-route.clusterid
+        - name: ReverseProxy__Routes__customer-route__RateLimiterPolicy
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.customer-route.ratelimiterpolicy
+        - name: ReverseProxy__Routes__customer-route__Match__Path
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.customer-route.match.path
+        - name: ReverseProxy__Routes__customer-route__Transforms__0__PathPattern
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.routes.customer-route.transforms.0.pathpattern
+        - name: ReverseProxy__Clusters__catalog-read-cluster__Destinations__destination1__Address
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.clusters.catalog-read-cluster.destinations.destination1.address
+        - name: ReverseProxy__Clusters__catalog-write-cluster__Destinations__destination1__Address
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.clusters.catalog-write-cluster.destinations.destination1.address
+        - name: ReverseProxy__Clusters__basket-cluster__Destinations__destination1__Address
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.clusters.basket-cluster.destinations.destination1.address
+        - name: ReverseProxy__Clusters__inventory-cluster__Destinations__destination1__Address
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.clusters.inventory-cluster.destinations.destination1.address
+        - name: ReverseProxy__Clusters__ordering-cluster__Destinations__destination1__Address
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.clusters.ordering-cluster.destinations.destination1.address
+        - name: ReverseProxy__Clusters__customer-cluster__Destinations__destination1__Address
+          valueFrom:
+            configMapKeyRef:
+              name: yarpapigateway-config
+              key: reverseproxy.clusters.customer-cluster.destinations.destination1.address
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: yarpapigateway
+spec:
+  selector:
+    app: yarpapigateway
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
