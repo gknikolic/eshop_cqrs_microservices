@@ -20,14 +20,27 @@ kubectl apply -f customerdb.yaml
 kubectl apply -f distributedcache.yaml
 kubectl apply -f orderdb.yaml
 kubectl apply -f messagebroker.yaml
+
+IF ERRORLEVEL 1 {
+	REM Wait for 60 seconds before applying customer API
+	timeout /t 90 /nobreak
+}
+
 kubectl apply -f catalog-read-api.yaml
-kubectl apply -f catalog-write-api.yaml
 kubectl apply -f basket-api.yaml
 kubectl apply -f inventory-api.yaml
-kubectl apply -f customer-api.yaml
 kubectl apply -f discount-grpc.yaml
 kubectl apply -f ordering-api.yaml
 kubectl apply -f yarpapigateway.yaml
+
+IF ERRORLEVEL 1 {
+	REM Wait for 60 seconds before applying customer API
+	timeout /t 60 /nobreak
+}
+
+kubectl apply -f catalog-write-api.yaml
+kubectl apply -f customer-api.yaml
+
 kubectl apply -f shopping-web.yaml
 
 @echo All services deployed successfully.
