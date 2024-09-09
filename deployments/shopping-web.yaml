@@ -19,6 +19,31 @@ data:
   JwtSettings__Issuer: Y3VzdG9tZXItYXBpLXNlcnZpY2U=
   JwtSettings__Audience: ZXNob3Atc2VydmljZXM=
   JwtSettings__Key: bXlzZWNyZXRrZXkxMjM0NW15c2VjcmV0a2V5MTIzNDU=
+  
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: wwwroot-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data/wwwroot"
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shopping-web-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
 
 
 ---
@@ -81,7 +106,13 @@ spec:
             secretKeyRef:
               name: shopping-web-secret
               key: JwtSettings__Key
-
+        volumeMounts:
+        - name: wwwroot-storage
+          mountPath: /app/wwwroot
+      volumes:
+      - name: wwwroot-storage
+        persistentVolumeClaim:
+          claimName: shopping-web-pvc
 
 ---
 apiVersion: v1

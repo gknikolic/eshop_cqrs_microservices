@@ -78,7 +78,7 @@ metadata:
 spec:
   selector:
     app: orderdb
-  # type: LoadBalancer
+  type: LoadBalancer
   ports:
     - protocol: TCP
       port: 1433
