@@ -1,0 +1,115 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: catalog-write-api-config
+data:
+  ASPNETCORE_ENVIRONMENT: "Development"
+  ASPNETCORE_HTTP_PORTS: "8080"
+  ASPNETCORE_HTTPS_PORTS: "8081"
+
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: catalog-write-api-secret
+type: Opaque
+data:
+  MessageBroker__Host: YW1xcDovL21lc3NhZ2Vicm9rZXI6NTY3Mg==
+  MessageBroker__UserName: Z3Vlc3Q=
+  MessageBroker__Password: Z3Vlc3Q=
+  ConnectionStrings__Database: U2VydmVyPWNhdGFsb2ctd3JpdGUtZGI7RGF0YWJhc2U9Q2F0YWxvZ0RiO1VzZXIgSWQ9c2E7UGFzc3dvcmQ9U3dOMTIzNDU2Nzg7RW5jcnlwdD1GYWxzZTtUcnVzdFNlcnZlckNlcnRpZmljYXRlPVRydWU=
+  JwtSettings__Issuer: Y3VzdG9tZXItYXBpLXNlcnZpY2U=
+  JwtSettings__Audience: ZXNob3Atc2VydmljZXM=
+  JwtSettings__Key: bXlzZWNyZXRrZXkxMjM0NW15c2VjcmV0a2V5MTIzNDU=
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog-write-api
+  labels:
+    app: catalog-write-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: catalog-write-api
+  template:
+    metadata:
+      labels:
+        app: catalog-write-api
+    spec:
+      containers:
+      - name: catalog-write-api
+        image: gknikolic/catalogwriteapi:1.0.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ASPNETCORE_URLS
+          value: http://+:8080
+        - name: ASPNETCORE_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: catalog-write-api-config
+              key: ASPNETCORE_ENVIRONMENT
+        - name: ASPNETCORE_HTTP_PORTS
+          valueFrom:
+            configMapKeyRef:
+              name: catalog-write-api-config
+              key: ASPNETCORE_HTTP_PORTS
+        - name: ASPNETCORE_HTTPS_PORTS
+          valueFrom:
+            configMapKeyRef:
+              name: catalog-write-api-config
+              key: ASPNETCORE_HTTPS_PORTS
+        - name: MessageBroker__Host
+          valueFrom:
+            secretKeyRef:
+              name: catalog-write-api-secret
+              key: MessageBroker__Host
+        - name: MessageBroker__UserName
+          valueFrom:
+            secretKeyRef:
+              name: catalog-write-api-secret
+              key: MessageBroker__UserName
+        - name: MessageBroker__Password
+          valueFrom:
+            secretKeyRef:
+              name: catalog-write-api-secret
+              key: MessageBroker__Password
+        - name: ConnectionStrings__Database
+          valueFrom:
+            secretKeyRef:
+              name: catalog-write-api-secret
+              key: ConnectionStrings__Database
+        - name: JwtSettings__Issuer
+          valueFrom:
+            secretKeyRef:
+              name: catalog-write-api-secret
+              key: JwtSettings__Issuer
+        - name: JwtSettings__Audience
+          valueFrom:
+            secretKeyRef:
+              name: catalog-write-api-secret
+              key: JwtSettings__Audience
+        - name: JwtSettings__Key
+          valueFrom:
+            secretKeyRef:
+              name: catalog-write-api-secret
+              key: JwtSettings__Key
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog-write-api
+spec:
+  selector:
+    app: catalog-write-api
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

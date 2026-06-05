@@ -1,0 +1,152 @@
+﻿@page
+@model Shopping.Web.Pages.Account.CustomersModel
+@{
+    ViewData["Title"] = "Customers";
+}
+
+<style>
+
+    .buttons .btn {
+        padding: 0 0.3rem !important;
+    }
+
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-page="Index">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Customers</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-4">
+    <div class="row">
+        <div class="col-12">
+            @* <a asp-page="Create" class="btn btn-success">Add new customer</a> *@
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-striped" id="customersTable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">UserName</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">FullName</th>
+                            <th scope="col">EmailConfirmed</th>
+                            <th scope="col">Role</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Customers)
+                        {
+                            <tr>
+                                <td class="user-id">@item.Id</td>
+                                <td>@item.UserName</td>
+                                <td>@item.Email</td>
+                                <td>@item.FullName</td>
+                                <td>@item.EmailConfirmed</td>
+                                <td>@item.Role</td>
+                                <td class="buttons">
+                                    <form method="post" asp-page-handler="LoginAs" class="d-inline-block">
+                                        <button class="btn btn-link btnLoginAs showTootip" type="button" title="Login As User">
+                                            <i class="fa-solid fa-right-to-bracket"></i>
+                                        </button>
+                                    </form>
+                                    <button class="btn btn-link d-inline-block showTootip" data-toggle="modal" data-target="#changePasswordModal" data-id="@item.Id" title="Change password">
+                                        <i class="fa-solid fa-key"></i>
+                                    </button>
+                                    <form method="post" asp-page-handler="DeleteUser" class="d-inline">
+                                        <button class="btn btn-link d-inline showTootip" type="button" onclick="confirmDelete('@item.Id')" title="Delete user">
+                                            <i class="fa-regular fa-trash-can"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_ChangePasswordModal" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function confirmDelete(userId) {
+            app.confirmAction("Are you sure you want to delete this user?", function (result) {
+                if (result) {
+                    // Show loader and submit the form
+                    app.blockUI();
+                    document.getElementById('deleteForm-' + userId).submit();
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            initDataTable("#customersTable");
+
+            $(".btnLoginAs").on("click", function (e) { 
+                e.preventDefault();
+
+                var $form = $(this).closest("form");
+                var userId = $(this).closest("tr").find(".user-id").text();
+                $form.append('<input type="hidden" name="userId" value="' + userId + '">');
+
+                $.ajax({
+                    type: "POST",
+                    url: $form.attr("action"),
+                    data: $form.serialize(),
+                    success: function (response) {
+                        console.log(response);
+                    },
+                    error: function (response) {
+                        console.log(response);
+                    }
+                });
+            })
+
+
+
+            // $('#changeRoleModal').on('show.bs.modal', function (event) {
+            //     var button = $(event.relatedTarget);
+            //     var id = button.data('id');
+            //     var role = button.data('role');
+            //     var modal = $(this);
+            //     modal.find('#changeRoleModalLabel').text('Change Role for ' + id);
+            //     modal.find('#changeRoleModal input[name="Id"]').val(id);
+            //     modal.find('#changeRoleModal select[name="Role"]').val(role);
+            // });
+
+            // $('#DeleteUserModal').on('show.bs.modal', function (event) {
+            //     var button = $(event.relatedTarget);
+            //     var id = button.data('id');
+            //     var modal = $(this);
+            //     modal.find('#DeleteUserModalLabel').text('Delete User ' + id);
+            //     modal.find('#DeleteUserModal input[name="Id"]').val(id);
+            // });
+
+            // $('#changePasswordModal').on('show.bs.modal', function (event) {
+            //     var button = $(event.relatedTarget);
+            //     var id = button.data('id');
+            //     var modal = $(this);
+            //     modal.find('#changePasswordModalLabel').text('Change Password for ' + id);
+            //     modal.find('#changePasswordModal input[name="Id"]').val(id);
+            // });
+        })
+        
+    </script>
+}

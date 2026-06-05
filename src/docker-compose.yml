@@ -1,11 +1,20 @@
 version: '3.4'
 
 services:
-  catalogdb:
-    image: postgres
+  catalog_read_db:
+    image: postgres  
+    
+  catalog_write_db:
+    image: mcr.microsoft.com/mssql/server
 
   basketdb:
     image: postgres
+
+  inventorydb:
+    image: postgres
+
+  customerdb:
+    image: mcr.microsoft.com/mssql/server
 
   distributedcache:
     image: redis
@@ -16,17 +25,36 @@ services:
   messagebroker:
     image: rabbitmq:management
 
-  catalog.api:
-    image: ${DOCKER_REGISTRY-}catalogapi
+
+  catalog.read.api:
+    image: ${DOCKER_REGISTRY-}catalogreadapi
     build:
       context: .
-      dockerfile: Services/Catalog/Catalog.API/Dockerfile
+      dockerfile: Services/Catalog/CatalogRead/Catalog.Read.API/Dockerfile
+
+  catalog.write.api:
+    image: ${DOCKER_REGISTRY-}catalogwriteapi
+    build:
+      context: .
+      dockerfile: Services/Catalog/CatalogWrite/Catalog.Write.API/Dockerfile
 
   basket.api:
     image: ${DOCKER_REGISTRY-}basketapi
     build:
       context: .
       dockerfile: Services/Basket/Basket.API/Dockerfile
+
+  inventory.api:
+    image: ${DOCKER_REGISTRY-}inventoryapi
+    build:
+      context: .
+      dockerfile: Services/Inventory/Inventory.API/Dockerfile
+
+  customer.api:
+    image: ${DOCKER_REGISTRY-}customerapi
+    build:
+      context: .
+      dockerfile: Services/Customer/Customer.API/Dockerfile
 
   discount.grpc:
     image: ${DOCKER_REGISTRY-}discountgrpc
@@ -53,11 +81,10 @@ services:
       dockerfile: WebApps/Shopping.Web/Dockerfile
 
 volumes:
-  postgres_catalog:
+  postgres_catalog_read:
+  sqlserver_catalog_write:
+  sqlserver_order:
+  sqlserver_customer:
   postgres_basket:
-
-
-
-
-
+  postgres_inventory:
 

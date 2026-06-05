@@ -1,23 +1,50 @@
-﻿using MediatR;
+﻿using BuildingBlocks.DDD_Abstractions;
+using MediatR;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Ordering.Infrastructure.Data.Interceptors;
-public class DispatchDomainEventsInterceptor(IMediator mediator) 
+public class DispatchDomainEventsInterceptor(IMediator mediator)
     : SaveChangesInterceptor
 {
+    private List<IDomainEvent> _domainEvents;
+
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {
-        DispatchDomainEvents(eventData.Context).GetAwaiter().GetResult();
+        PrepareDomainEvents(eventData.Context).GetAwaiter().GetResult();
         return base.SavingChanges(eventData, result);
     }
 
     public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
     {
-        await DispatchDomainEvents(eventData.Context);
+        await PrepareDomainEvents(eventData.Context);
         return await base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 
-    public async Task DispatchDomainEvents(DbContext? context)
+    public override int SavedChanges(SaveChangesCompletedEventData eventData, int result)
+    {
+        DispetchDomainEvents().GetAwaiter().GetResult();
+        return base.SavedChanges(eventData, result);
+    }
+
+    public override async ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result, CancellationToken cancellationToken = default)
+    {
+        await DispetchDomainEvents();
+        return await base.SavedChangesAsync(eventData, result, cancellationToken);
+    }
+
+    public override void SaveChangesFailed(DbContextErrorEventData eventData)
+    {
+        _domainEvents?.Clear(); // Clear domain events if saving changes failed
+        base.SaveChangesFailed(eventData);
+    }
+
+    public override async Task SaveChangesFailedAsync(DbContextErrorEventData eventData, CancellationToken cancellationToken = default)
+    {
+        _domainEvents?.Clear(); // Clear domain events if saving changes failed
+        await base.SaveChangesFailedAsync(eventData, cancellationToken);
+    }
+
+    private async Task PrepareDomainEvents(DbContext? context)
     {
         if (context == null) return;
 
@@ -26,13 +53,20 @@ public class DispatchDomainEventsInterceptor(IMediator mediator)
             .Where(a => a.Entity.DomainEvents.Any())
             .Select(a => a.Entity);
 
-        var domainEvents = aggregates
+        _domainEvents = aggregates
             .SelectMany(a => a.DomainEvents)
             .ToList();
 
         aggregates.ToList().ForEach(a => a.ClearDomainEvents());
+    }
 
-        foreach (var domainEvent in domainEvents)
+    private async Task DispetchDomainEvents()
+    {
+        if (_domainEvents == null || !_domainEvents.Any()) return;
+
+        foreach (var domainEvent in _domainEvents)
+        {
             await mediator.Publish(domainEvent);
+        }
     }
 }

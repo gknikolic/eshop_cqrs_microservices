@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: messagebroker-config
+data:
+  # Add any configuration data here if needed
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: messagebroker-secret
+type: Opaque
+data:
+  RABBITMQ_DEFAULT_USER: Z3Vlc3Q=  # Base64 encoded "guest"
+  RABBITMQ_DEFAULT_PASS: Z3Vlc3Q=  # Base64 encoded "guest"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: messagebroker
+  labels:
+    app: messagebroker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: messagebroker
+  template:
+    metadata:
+      labels:
+        app: messagebroker
+    spec:
+      hostname: ecommerce-mq  # Move hostname to pod spec level
+      containers:
+      - name: messagebroker
+        image: rabbitmq:management
+        ports:
+        - containerPort: 5672  # RabbitMQ Port for messaging
+        - containerPort: 15672 # RabbitMQ Management Plugin Port
+        env:
+        - name: RABBITMQ_DEFAULT_USER
+          valueFrom:
+            secretKeyRef:
+              name: messagebroker-secret
+              key: RABBITMQ_DEFAULT_USER
+        - name: RABBITMQ_DEFAULT_PASS
+          valueFrom:
+            secretKeyRef:
+              name: messagebroker-secret
+              key: RABBITMQ_DEFAULT_PASS
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: messagebroker
+spec:
+  selector:
+    app: messagebroker
+  ports:
+    # Port for RabbitMQ client connections
+    - name: amqp
+      protocol: TCP
+      port: 5672
+      targetPort: 5672
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: messagebroker-management
+spec:
+  selector:
+    app: messagebroker
+  ports:
+    # Port for RabbitMQ management UI
+    - name: management
+      protocol: TCP
+      port: 15672
+      targetPort: 15672
+  type: LoadBalancer

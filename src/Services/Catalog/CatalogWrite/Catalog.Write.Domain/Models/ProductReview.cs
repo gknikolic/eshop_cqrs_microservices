@@ -1,0 +1,32 @@
+﻿namespace Catalog.Write.Domain.Models;
+public class ProductReview : Entity<Guid>
+{
+    public int Rating { get; private set; }
+    public string Comment { get; private set; }
+
+    public virtual Guid ProductId { get; private set; }
+    public virtual Product Product { get; private set; }
+    public virtual Guid CustomerId { get; private set; }
+    public virtual Customer Customer { get; private set; }
+
+
+    // for ef
+    protected ProductReview() { }
+
+    public ProductReview(int rating, string comment, Customer customer)
+    {
+        if (rating < 1 || rating > 5)
+            throw new ArgumentException("Rating must be between 1 and 5", nameof(rating));
+
+        Id = Guid.NewGuid();
+        Rating = rating;
+        Comment = comment ?? throw new ArgumentException("Comment cannot be null", nameof(comment));
+        Customer = customer ?? throw new ArgumentException("Customer cannot be null", nameof(customer));
+    }
+
+    public void UpdateComment(string comment)
+    {
+        Comment = comment ?? throw new ArgumentException("Comment cannot be null", nameof(comment));
+        // don't update CreatedAt as we don't want to change the review date
+    }
+}

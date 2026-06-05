@@ -2,6 +2,7 @@ using Discount.Grpc;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using BuildingBlocks.Messaging.MassTransit;
+using BuildingBlocks.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,11 @@ builder.Services.AddMarten(opts =>
     opts.Connection(builder.Configuration.GetConnectionString("Database")!);
     opts.Schema.For<ShoppingCart>().Identity(x => x.UserName);
 }).UseLightweightSessions();
+
+// Configure JWT Authentication
+builder.Services.AddJwtAuthentication(builder.Configuration);
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 builder.Services.Decorate<IBasketRepository, CachedBasketRepository>();
@@ -60,6 +66,9 @@ builder.Services.AddHealthChecks()
     .AddRedis(builder.Configuration.GetConnectionString("Redis")!);
 
 var app = builder.Build();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Configure the HTTP request pipeline.
 app.MapCarter();

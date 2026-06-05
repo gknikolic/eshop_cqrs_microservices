@@ -4,7 +4,15 @@
     ViewData["Title"] = "ProductDetail";
 }
 
+<style>
+    .attributes-table tr td:first-child {
+        font-weight: bold;
+        width: 30%;
+    }
+</style>
+
 <div class="container">
+    <!-- Breadcrumb -->
     <div class="row">
         <div class="col">
             <nav aria-label="breadcrumb">
@@ -16,28 +24,36 @@
             </nav>
         </div>
     </div>
-</div>
 
-<div class="container">
+    <!-- Product Details -->
     <div class="row">
-        <!-- Image -->
+        <!-- Image Carousel Section -->
         <div class="col-12 col-lg-6">
-            <div class="card bg-light mb-3">
-                <div class="card-body">
-                    <a href="" data-toggle="modal" data-target="#productModal">
-                        <img class="img-fluid" src="~/images/product/@Model.Product.ImageFile.Replace('-','x')" />
-                        <p class="text-center">@Model.Product.Name</p>
-                    </a>
+            <div class="image-slider">
+                <div class="current-image">
+                    <img id="mainProductImage" class="d-block w-100" src="~/images/product/@Model.Product.ImageFiles[0]" alt="Main Product Image">
+                </div>
+                <div class="image-thumbnails mt-3">
+                    <div class="row">
+                        @for (int i = 0; i < Model.Product.ImageFiles.Count; i++)
+                        {
+                            var imageFile = Model.Product.ImageFiles[i];
+                            <div class="col-3">
+                                <img class="img-thumbnail slider-thumb" src="~/images/product/@imageFile" alt="Thumbnail @i" data-index="@i" onclick="changeImage('@imageFile')">
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Add to cart -->
+        <!-- Add to Cart Section -->
         <div class="col-12 col-lg-6 add_to_cart_block">
             <div class="card bg-light mb-3">
                 <div class="card-body">
                     <p class="price">@Model.Product.Price $</p>
                     <p class="price_discounted">@(Model.Product.Price + 120) $</p>
+                    <p class="stock">@(Model.Product.IsInStock ? $"In stock - {Model.Product.PeicesInStock} left" : "Unavailable")</p>
                     <form asp-page-handler="AddToCart" method="post" name="addToCartForm" id="add_cart_form">
                         <div class="form-group">
                             <label for="colors">Color</label>
@@ -76,40 +92,124 @@
                             <li class="list-inline-item"><i class="fa fa-phone fa-2x"></i><br />+33 1 22 54 65 60</li>
                         </ul>
                     </div>
-                    <div class="reviews_product p-3 mb-2 ">
-                        3 reviews
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        (4/5)
-                        <a class="pull-right" href="#reviews">View all reviews</a>
-                    </div>
-                    <div class="datasheet p-3 mb-2 bg-info text-white">
-                        <a href="" class="text-white"><i class="fa fa-file-text"></i> Download DataSheet</a>
+
+                    <!-- Add a Review Form -->
+                    <div class="add-review">
+                        <h5>Add Your Review</h5>
+                        <form asp-page-handler="AddReview" method="post">
+                            <div class="form-group">
+                                <label for="rating">Rating</label>
+                                <div class="star-rating">
+                                    <input type="radio" id="star5" name="Rating" value="5" /><label for="star5" title="5 stars"><span class="fa fa-star"></span></label>
+                                    <input type="radio" id="star4" name="Rating" value="4" /><label for="star4" title="4 stars"><span class="fa fa-star"></span></label>
+                                    <input type="radio" id="star3" name="Rating" value="3" /><label for="star3" title="3 stars"><span class="fa fa-star"></span></label>
+                                    <input type="radio" id="star2" name="Rating" value="2" /><label for="star2" title="2 stars"><span class="fa fa-star"></span></label>
+                                    <input type="radio" id="star1" name="Rating" value="1" /><label for="star1" title="1 star"><span class="fa fa-star"></span></label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="comment">Your Review</label>
+                                <textarea class="form-control" id="comment" name="Comment" rows="3" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit Review</button>
+                            <input type="hidden" asp-for="@Model.Product.Id" name="ProductId" />
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Product Description -->
     <div class="row">
-        <!-- Description -->
         <div class="col-12">
             <div class="card border-light mb-3">
                 <div class="card-header bg-primary text-white text-uppercase"><i class="fa fa-align-justify"></i> Description</div>
                 <div class="card-body">
-                    <p class="card-text">
-                        @Model.Product.Description
-                    </p>
-                    <p class="card-text">
-                        @Model.Product.Description
-                    </p>
+                    <p class="card-text">@Model.Product.Description</p>
                 </div>
             </div>
         </div>
+    </div>
 
+    <!-- Product Specification -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-light mb-3">
+                <div class="card-header bg-primary text-white text-uppercase"><i class="fa fa-align-justify"></i> Specification</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-borderless table-striped attributes-table">
+                                @if (Model.Product.ProductAttributes != null)
+                                {
+                                    @foreach (var spec in Model.Product.ProductAttributes)
+                                    {
+                                        <tr>
+                                            <td>@spec.Name</td>
+                                            <td>@spec.Value</td>
+                                        </tr>
+                                    }
+                                }
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Reviews -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-light mb-3">
+                <div class="card-header bg-primary text-white text-uppercase"><i class="fa fa-align-justify"></i> Reviews</div>
+                <div class="card-body">
+                    <!-- Display Reviews -->
+                    <div class="reviews_product p-3 mb-2">
+                        @if (Model.Product.ProductReviews != null && Model.Product.ProductReviews.Any())
+                        {
+                            @foreach (var review in Model.Product.ProductReviews)
+                            {
+                                <div class="card mb-3">
+                                    <div class="card-header">
+                                        <strong>@review.CustomerName</strong> @(review.CreatedDate.HasValue ? $" - {review.CreatedDate.Value.ToString("MMMM dd, yyyy")}" : "")
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="star-rating">
+                                            @for (int i = 1; i <= 5; i++)
+                                            {
+                                                if (i <= review.Rating)
+                                                {
+                                                    <span class="fa fa-star checked"></span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="fa fa-star"></span>
+                                                }
+                                            }
+                                        </div>
+                                        <p class="card-text">@review.Comment</p>
+                                    </div>
+                                </div>
+
+                            }
+                        }
+                        else
+                        {
+                            <p>No reviews yet. Be the first to review this product!</p>
+                        }
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
+<script type="text/javascript">
+    function changeImage(imageFile) {
+        document.getElementById("mainProductImage").src = "/images/product/" + imageFile;
+    }
+</script>

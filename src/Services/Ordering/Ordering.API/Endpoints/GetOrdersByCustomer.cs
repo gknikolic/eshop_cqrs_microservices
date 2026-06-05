@@ -1,4 +1,4 @@
-﻿using Ordering.Application.Orders.Queries.GetOrdersByCustomer;
+﻿using Ordering.Application.CQRS.Queries.GetOrdersByCustomer;
 
 namespace Ordering.API.Endpoints;
 

@@ -1,0 +1,212 @@
+﻿@page
+@model CreateProductModel
+@{
+    ViewData["Title"] = Model.IsEditMode ? "Edit Product" : "Create Product";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="container mb-4">
+    <div class="row">
+        <div class="col-12">
+            <form method="post" enctype="multipart/form-data" id="productForm">
+                <input asp-for="Product.Id" type="hidden" class="form-control" />
+                <input asp-for="Product.Rate" type="hidden" class="form-control" />
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Product.Sku"></label>
+                            <input asp-for="Product.Sku" class="form-control" />
+                            <span asp-validation-for="Product.Sku" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Product.Name"></label>
+                            <input asp-for="Product.Name" class="form-control" />
+                            <span asp-validation-for="Product.Name" class="text-danger"></span>
+                        </div>
+                         <div class="form-group">
+                            <label asp-for="Product.Category">Category</label>
+                            <select asp-for="Product.Category" class="form-control" asp-items="Model.CategorySelectList"></select>
+                            <span asp-validation-for="Product.Category" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="imageUpload">Product Images</label>
+                            <div id="dropzone" class="dropzone"></div>
+                            <span asp-validation-for="Product.ImageFiles" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label asp-for="Product.Price"></label>
+                            <input asp-for="Product.Price" class="form-control" />
+                            <span asp-validation-for="Product.Price" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label asp-for="Product.Color"></label>
+                            <select asp-for="Product.Color" class="form-control" asp-items="Model.ColorSelectList"></select>
+                            <span asp-validation-for="Product.Color" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label asp-for="Product.Description"></label>
+                            <textarea asp-for="Product.Description" class="form-control"></textarea>
+                            <span asp-validation-for="Product.Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Attributes -->
+                <div id="product-attributes">
+                    <h4>Product Attributes</h4>
+                    <div class="attributes-container">
+                        @for (var i = 0; i < Model.Product.ProductAttributes?.Count; i++)
+                        {
+                            <div asp-for="Product.ProductAttributes" class="form-group">
+                                <div class="row mb-2">
+                                    <div class="col">
+                                        <label>Attribute Name</label>
+                                        <input type="text" class="form-control" asp-for="@Model.Product.ProductAttributes[i].Name" />
+                                    </div>
+                                    <div class="col">
+                                        <label>Attribute Value</label>
+                                        <input type="text" class="form-control" asp-for="@Model.Product.ProductAttributes[i].Value" />
+                                    </div>
+                                    <div class="col-auto align-self-end">
+                                        <button type="button" class="btn btn-danger remove-attribute">Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <button type="button" class="btn btn-secondary" id="add-attribute">Add Attribute</button>
+                </div>
+
+                <button type="submit" class="btn btn-primary pull-right">@(Model.IsEditMode ? "Update" : "Create")</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('add-attribute').addEventListener('click', function () {
+            var attributeIndex = document.querySelectorAll('#product-attributes .row').length;
+            var newAttribute = `
+                <div class="row mb-2">
+                    <div class="col">
+                        <label>Attribute Name</label>
+                        <input type="text" class="form-control" name="Product.ProductAttributes[${attributeIndex}].Name" />
+                    </div>
+                    <div class="col">
+                        <label>Attribute Value</label>
+                        <input type="text" class="form-control" name="Product.ProductAttributes[${attributeIndex}].Value" />
+                    </div>
+                    <div class="col-auto align-self-end">
+                        <button type="button" class="btn btn-danger remove-attribute">Remove</button>
+                    </div>
+                </div>`;
+            document.querySelector('.attributes-container').insertAdjacentHTML('beforeend', newAttribute);
+            attachRemoveButtonEvent();
+        });
+
+        function attachRemoveButtonEvent() {
+            document.querySelectorAll('.remove-attribute').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    this.closest('.row').remove();
+                });
+            });
+        }
+
+        attachRemoveButtonEvent();
+
+        Dropzone.autoDiscover = false;
+
+        var dropzone = new Dropzone("#dropzone", {
+            url: "/your-form-handler-url", // This is the same URL as your form's action
+            autoProcessQueue: false, // Disable auto-upload
+            maxFilesize: 2, // Max file size in MB
+            acceptedFiles: ".jpg,.jpeg,.png,.gif",
+            addRemoveLinks: true,
+            dictDefaultMessage: "Drag and drop images here or click to upload",
+            paramName: "Product.ImageFiles", // This corresponds to the property name in your ViewModel
+            init: function () {
+                var myDropzone = this;
+
+                // Create and add mock files from existing images
+                var existingFiles = @Html.Raw(Json.Serialize(Model.Product.UploadedImages));
+                if(existingFiles != null) {
+                    existingFiles.forEach(function (fileName) {
+                        var url = "/images/product/" + fileName;
+                        createMockFileFromUrl(url, fileName);
+                    });
+                }
+
+                // Handle form submission
+                document.querySelector("#productForm").addEventListener("submit", function (event) {
+                    event.preventDefault();
+
+                    if ($(this).valid()) {
+                        var formData = new FormData(event.target);
+
+                        // Add all Dropzone files to FormData
+                        myDropzone.files.forEach(function (file) {
+                            if (file instanceof File) {
+                                formData.append("Product.ImageFiles", file);
+                            } else {
+                                console.error("This is not a File object:", file);
+                            }
+                        });
+
+                        // Send AJAX request
+                        $.ajax({
+                            url: this.action,
+                            type: "POST",
+                            data: formData,
+                            contentType: false,
+                            processData: false,
+                            success: function (response) {
+                                window.location.href = "/ProductList"; // Adjust the URL to your needs
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                console.error(jqXHR.responseText);
+                                alert("There was an error submitting the form. Please try again.");
+                            }
+                        });
+                    } else {
+                        alert("Please correct the errors before submitting the form.");
+                    }
+                });
+            }
+        });
+
+        // Function to create mock file from server URL and add it to Dropzone
+        function createMockFileFromUrl(url, fileName) {
+            fetch(url)
+                .then(response => response.blob())
+                .then(blob => {
+                    let file = new File([blob], fileName, { type: blob.type });
+                    dropzone.addFile(file);
+                })
+                .catch(error => {
+                    console.error("Error fetching and creating mock file:", error);
+                });
+        }
+    </script>
+}

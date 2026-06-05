@@ -1,3 +1,5 @@
+using Shopping.Web.Services.Clients;
+
 namespace Shopping.Web.Pages
 {
     public class ProductListModel
@@ -14,11 +16,11 @@ namespace Shopping.Web.Pages
         {
             var response = await catalogService.GetProducts();
 
-            CategoryList = response.Products.SelectMany(p => p.Category).Distinct();
+            CategoryList = response.Products.SelectMany(p => p.Categories).Distinct();
 
             if (!string.IsNullOrWhiteSpace(categoryName))
             {
-                ProductList = response.Products.Where(p => p.Category.Contains(categoryName));
+                ProductList = response.Products.Where(p => p.Categories.Contains(categoryName));
                 SelectedCategory = categoryName;
             }
             else
@@ -32,9 +34,15 @@ namespace Shopping.Web.Pages
         public async Task<IActionResult> OnPostAddToCartAsync(Guid productId)
         {
             logger.LogInformation("Add to cart button clicked");
+
+            if (User.Identity.IsAuthenticated == false)
+            {
+                return RedirectToPage("/Account/Login", new { returnUrl = $"/ProductDetail?productId={productId}" });
+            }
+
             var productResponse = await catalogService.GetProduct(productId);
 
-            var basket = await basketService.LoadUserBasket();
+            var basket = await basketService.LoadUserBasket(User);
 
             basket.Items.Add(new ShoppingCartItemModel
             {

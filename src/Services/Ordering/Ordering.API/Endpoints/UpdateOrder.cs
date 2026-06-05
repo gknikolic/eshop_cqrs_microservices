@@ -1,4 +1,4 @@
-﻿using Ordering.Application.Orders.Commands.UpdateOrder;
+﻿using Ordering.Application.CQRS.Commands.UpdateOrder;
 
 namespace Ordering.API.Endpoints;
 

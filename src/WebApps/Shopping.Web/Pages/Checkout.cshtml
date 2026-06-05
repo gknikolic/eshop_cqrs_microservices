@@ -38,6 +38,14 @@
                     </li>
                 }
 
+                @if(Model.Cart.Items.Any(x => x.Discount != 0))
+                {
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Discount</span>
+                        <span class="text-danger">-$@Model.Cart.Items.Sum(x => x.Discount * x.Quantity)</span>
+                    </li>
+                }
+
                 <li class="list-group-item d-flex justify-content-between">
                     <span>Total (USD)</span>
                     <strong>$@Model.Cart.TotalPrice</strong>
@@ -54,6 +62,7 @@
             </form>
         </div>
         <div class="col-md-8 order-md-1">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
             <h4 class="mb-3">Billing address</h4>
             <form asp-page-handler="CheckOut" method="post" class="needs-validation" novalidate>
                 <div class="row">

@@ -1,0 +1,13 @@
+﻿global using Catalog.Write.Application.Data;
+global using Catalog.Write.Application.Dtos;
+global using Catalog.Write.Domain.Enum;
+global using Catalog.Write.Domain.Events;
+global using Catalog.Write.Domain.Models;
+global using Catalog.Write.Domain.ValueObjects;
+global using MassTransit;
+global using BuildingBlocks.CQRS;
+global using BuildingBlocks.Messaging.Events.InventoryEvents;
+global using FluentValidation;
+global using Microsoft.EntityFrameworkCore;
+global using Catalog.Write.Domain.Exceptions;
+global using MediatR;

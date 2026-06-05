@@ -1,8 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using BuildingBlocks.Authorization;
+using BuildingBlocks.DDD_Abstractions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace Ordering.Infrastructure.Data.Interceptors;
-public class AuditableEntityInterceptor : SaveChangesInterceptor
+public class AuditableEntityInterceptor 
+    (IHttpContextAccessor httpContextAccessor)
+    : SaveChangesInterceptor
 {
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {
@@ -20,20 +27,33 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
     {
         if (context == null) return;
 
+        string? currentUser = httpContextAccessor.HttpContext?.User?.GetEmail();
+
         foreach (var entry in context.ChangeTracker.Entries<IEntity>())
         {
             if (entry.State == EntityState.Added)
             {
-                entry.Entity.CreatedBy = "mehmet";
+                entry.Entity.CreatedBy = currentUser;
                 entry.Entity.CreatedAt = DateTime.UtcNow;
             }
 
             if (entry.State == EntityState.Added || entry.State == EntityState.Modified || entry.HasChangedOwnedEntities())
             {
-                entry.Entity.LastModifiedBy = "mehmet";
+                entry.Entity.LastModifiedBy = currentUser;
                 entry.Entity.LastModified = DateTime.UtcNow;
             }
         }
+    }
+
+    private string? GetCurrentUserId()
+    {
+        var httpContext = httpContextAccessor.HttpContext;
+        if (httpContext?.User?.Identity?.IsAuthenticated == true)
+        {
+            return httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        }
+
+        return null; // or throw an exception if user info is required
     }
 }
 

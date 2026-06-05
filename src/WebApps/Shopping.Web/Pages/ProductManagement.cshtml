@@ -1,0 +1,78 @@
+﻿@page
+@model Shopping.Web.Pages.ProductManagementModel
+@{
+    ViewData["Title"] = "ProductManagement";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-page="Index">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Inventory items</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+@* <h1>Inventory</h1> *@
+
+<div class="container mb-4">
+    <div class="row">
+        <div class="col-12">
+            <a asp-page="CreateEditProduct" asp-route-id="" class="btn btn-success">Add new item</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-striped" id="productTable">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Sku</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Color</th>
+                            <th scope="col">Rate</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Products)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.Name</td>
+                                <td>@item.Sku</td>
+                                <td>@string.Join(", ", item.Categories)</td>
+                                <td>@item.Price</td>
+                                <td>@item.Color</td>
+                                <td>@item.RateString</td>
+                                <td>
+                                    <a asp-page="CreateEditProduct" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function () {
+            initDataTable("#productTable");
+        });
+
+    </script>
+}

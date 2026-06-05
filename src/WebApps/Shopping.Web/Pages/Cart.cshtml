@@ -27,8 +27,10 @@
                             <th scope="col"> </th>
                             <th scope="col">Product</th>
                             <th scope="col">Available</th>
-                            <th scope="col" class="text-center">Quantity</th>
-                            <th scope="col" class="text-right">Price</th>
+                            <th scope="col" class="text-center" style="width:1%;">Quantity</th>
+                            <th scope="col" class="text-center">Unit Price</th>
+                            <th scope="col" class="text-center">Discount</th>
+                            <th scope="col" class="text-right">Total Price</th>
                             <th> </th>
                         </tr>
                     </thead>
@@ -40,8 +42,10 @@
                                 <td><img src="https://dummyimage.com/50x50/55595c/fff" /></td>
                                 <td>@cartItem.ProductName</td>
                                 <td>In stock</td>
-                                <td><input class="form-control" type="text" value="@cartItem.Quantity" /></td>
-                                <td class="text-right">@(cartItem.Price * cartItem.Quantity) $</td>
+                                <td><input class="form-control txtQuantity" type="number" min="1" step="1" value="@cartItem.Quantity"/></td>
+                                <td class="text-right">@cartItem.Price $</td>
+                                <td class="text-danger text-right discount">@(cartItem.Discount != 0 ? $"-{cartItem.Discount} $" : "")</td>
+                                <td class="text-right totalPrice">@cartItem.TotalPrice $</td>
                                 <td class="text-right">
 
                                     <form asp-page-handler="removetocart" method="post">
@@ -58,8 +62,10 @@
                             <td></td>
                             <td></td>
                             <td></td>
+                            <td></td>
+                            <td></td>
                             <td><strong>Total</strong></td>
-                            <td class="text-right"><strong>@Model.Cart.TotalPrice $</strong></td>
+                            <td id="cartTotalPrice" class="text-right"><strong>@Model.Cart.TotalPrice $</strong></td>
                         </tr>
                     </tbody>
                 </table>
@@ -69,7 +75,7 @@
             <div class="row">
                 <div class="col-sm-12  col-md-6">
                     @*<button class="btn btn-lg btn-block btn-danger">Continue Shopping</button>*@
-                    <a asp-page="Product" class="btn btn-lg btn-block btn-success">Continue Shopping</a>
+                    <a asp-page="ProductList" class="btn btn-lg btn-block btn-success">Continue Shopping</a>
                 </div>
                 <div class="col-sm-12 col-md-6 text-right">
                     @*<button class="btn btn-lg btn-block btn-danger text-uppercase">CheckOut</button>*@
@@ -80,4 +86,40 @@
     </div>
 </div>
 
+@section Scripts {
+    <script>
+        $(document).ready(function () {
 
+            $(".txtQuantity").on("change", function () {
+                var quantity = $(this).val();
+                var productId = $(this).closest("tr").find("input[name='productId']").val();
+
+                $.ajax({
+                    url: '@Url.Page("Cart", "UpdateQuantity")', // URL to the server-side handler
+                    type: 'POST',
+                    data: {
+                        productId: productId,
+                        quantity: quantity
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            // console.log(data);
+                            updateCart(data.cart, $(this).closest("tr"));
+                        } else {
+                            alert("Error updating quantity.");
+                        }
+                    }
+                });
+            });
+
+            function updateCart(cart, $row) {
+                cart.items.forEach(function (item) {
+                    var row = $("input[name='productId'][value='" + item.productId + "']").closest("tr");
+                    row.find(".totalPrice").text(item.totalPrice + " $");
+                    row.find(".txtQuantity").val(item.quantity);
+                });
+                $("#cartTotalPrice").text(cart.totalPrice + " $");
+            }
+        });
+    </script>
+}
