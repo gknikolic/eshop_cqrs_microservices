@@ -64,14 +64,14 @@ spec:
     spec:
       initContainers:
       - name: init-static-files
-        image: gknikolic/shopingweb:1.0.0
+        image: gknikolic/shopingweb:1.0.3
         command: ["sh", "-c", "cp -r /app/wwwroot/* /mnt/wwwroot"]
         volumeMounts:
         - name: wwwroot-storage
           mountPath: /mnt/wwwroot
       containers:
       - name: shopping-web
-        image: gknikolic/shopingweb:1.0.0
+        image: gknikolic/shopingweb:1.0.3
         ports:
         - containerPort: 8080
         env:

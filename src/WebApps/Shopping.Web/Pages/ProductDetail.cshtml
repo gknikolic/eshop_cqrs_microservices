@@ -29,24 +29,21 @@
     <div class="row">
         <!-- Image Carousel Section -->
         <div class="col-12 col-lg-6">
-            <div id="productCarousel" class="carousel slide" data-ride="carousel">
-                <div class="carousel-inner">
-                    @for (int i = 0; i < Model.Product.ImageFiles.Count; i++)
-                    {
-                        var imageFile = Model.Product.ImageFiles[i].Replace('-', 'x');
-                        <div class="carousel-item @(i == 0 ? "active" : "")">
-                            <img class="d-block w-100" src="~/images/product/@imageFile" alt="Product image @i">
-                        </div>
-                    }
+            <div class="image-slider">
+                <div class="current-image">
+                    <img id="mainProductImage" class="d-block w-100" src="~/images/product/@Model.Product.ImageFiles[0]" alt="Main Product Image">
                 </div>
-                <a class="carousel-control-prev" href="#productCarousel" role="button" data-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#productCarousel" role="button" data-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </a>
+                <div class="image-thumbnails mt-3">
+                    <div class="row">
+                        @for (int i = 0; i < Model.Product.ImageFiles.Count; i++)
+                        {
+                            var imageFile = Model.Product.ImageFiles[i];
+                            <div class="col-3">
+                                <img class="img-thumbnail slider-thumb" src="~/images/product/@imageFile" alt="Thumbnail @i" data-index="@i" onclick="changeImage('@imageFile')">
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -210,3 +207,9 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    function changeImage(imageFile) {
+        document.getElementById("mainProductImage").src = "/images/product/" + imageFile;
+    }
+</script>
